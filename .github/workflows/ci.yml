@@ -33,7 +33,7 @@ jobs:
           cp patches/XakaVisualsScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsScreen.java
           cp patches/XakaVisualsClient.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsClient.java
           cp patches/XakaVisualsMusic.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsMusic.java
-          sed -i '/dependencies {/a\    include(implementation("com.googlecode.soundlibs:mp3spi:1.9.5.4"))' source/XakaVisuals/build.gradle
+          sed -i '/dependencies {/a\    include(implementation("com.googlecode.soundlibs:mp3spi:1.9.5.4"))\n    include(implementation("com.googlecode.soundlibs:jlayer:1.0.1.4"))\n    include(implementation("com.googlecode.soundlibs:tritonus-share:0.3.7.4"))' source/XakaVisuals/build.gradle
           cp patches/XakaVisualsRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsRenderer.java
           cp patches/XakaHudPositionScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaHudPositionScreen.java
           mkdir -p source/XakaVisuals/src/main/java/dev/xaka/visuals/mixin
