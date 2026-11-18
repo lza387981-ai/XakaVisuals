@@ -31,7 +31,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean petWither = false;
     public static int petSize = 5;
     public static boolean fpsBoost = false;
-    private static net.minecraft.particle.ParticleStatus previousParticles = null;
+    private static Object previousParticles = null;
 
     private static final int[] ACCENTS = {
             0xFF9B78FF, 0xFF69D6B0, 0xFFFF7EAA, 0xFFFFB45E, 0xFF69A9FF
@@ -59,12 +59,20 @@ public final class XakaVisualsClient implements ClientModInitializer {
         XakaVisualsRenderer.register();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (fpsBoost && previousParticles == null) {
-                previousParticles = client.options.getParticles().getValue();
-                client.options.getParticles().setValue(net.minecraft.particle.ParticleStatus.MINIMAL);
-            } else if (!fpsBoost && previousParticles != null) {
-                client.options.getParticles().setValue(previousParticles);
-                previousParticles = null;
+            try {
+                Object particleOption = client.options.getParticles();
+                java.lang.reflect.Method getter = particleOption.getClass().getMethod("getValue");
+                java.lang.reflect.Method setter = particleOption.getClass().getMethod("setValue", getter.getReturnType());
+                if (fpsBoost && previousParticles == null) {
+                    previousParticles = getter.invoke(particleOption);
+                    Object minimal = java.lang.Enum.valueOf((Class) getter.getReturnType(), "MINIMAL");
+                    setter.invoke(particleOption, minimal);
+                } else if (!fpsBoost && previousParticles != null) {
+                    setter.invoke(particleOption, previousParticles);
+                    previousParticles = null;
+                }
+            } catch (ReflectiveOperationException | IllegalArgumentException ignored) {
+                // If this Minecraft version exposes a different option type, leave it untouched.
             }
         });
 
