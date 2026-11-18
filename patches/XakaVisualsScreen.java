@@ -13,12 +13,13 @@ public final class XakaVisualsScreen extends Screen {
     private static final int TEXT = 0xFFF1F2F8;
     private static final int MUTED = 0xFF929BAF;
 
-    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings"};
+    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand"};
     private static final String[] CATEGORY_HINTS = {
             "Small details. A cleaner game.",
             "Your information, your layout.",
             "Make every transition feel smooth.",
-            "Tune XakaVisuals to your taste."
+            "Tune XakaVisuals to your taste.",
+            "Adjust your first-person hand and held item."
     };
 
     private int selectedCategory;
@@ -123,6 +124,16 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 219, XakaVisualsClient.bodyMarkerSquare ? "Marker: square" : "Marker: circle", "Click to switch shape", false, accent, false);
                 sliderRow(c, mx, my, left, right, top + 268, "Body marker size", XakaVisualsClient.bodyMarkerSize, 3, 15, accent, 1);
             }
+            case 4 -> {
+                infoCard(c, left, top, right, "First-person hand", "Move your hand and held item without moving the camera.");
+                sliderRow(c, mx, my, left, right, top + 72, "Hand left / right",
+                        Math.round((XakaVisualsClient.handOffsetX + 0.5f) * 20), 0, 20, accent, 5);
+                sliderRow(c, mx, my, left, right, top + 121, "Hand up / down",
+                        Math.round((XakaVisualsClient.handOffsetY + 0.5f) * 20), 0, 20, accent, 6);
+                sliderRow(c, mx, my, left, right, top + 170, "Hand near / far",
+                        Math.round((XakaVisualsClient.handOffsetZ + 0.5f) * 20), 0, 20, accent, 7);
+                row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
+            }
             case 3 -> {
                 infoCard(c, left, top, right, "Accent color", "Choose a signature color for the XakaVisuals interface.");
                 String[] names = {"Violet", "Mint", "Rose", "Amber", "Blue"};
@@ -147,6 +158,9 @@ public final class XakaVisualsScreen extends Screen {
             case 2 -> String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetX);
             case 3 -> String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetZ);
             case 4 -> String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetY);
+            case 5 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetX);
+            case 6 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetY);
+            case 7 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetZ);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -166,6 +180,9 @@ public final class XakaVisualsScreen extends Screen {
             case 2 -> XakaVisualsClient.bodyMarkerOffsetX = Math.round((-0.5f + t) * 10) / 10.0f;
             case 3 -> XakaVisualsClient.bodyMarkerOffsetZ = Math.round((-0.5f + t) * 10) / 10.0f;
             case 4 -> XakaVisualsClient.bodyMarkerOffsetY = Math.round((-0.5f + t) * 10) / 10.0f;
+            case 5 -> XakaVisualsClient.handOffsetX = Math.round((-0.5f + t) * 100) / 100.0f;
+            case 6 -> XakaVisualsClient.handOffsetY = Math.round((-0.5f + t) * 100) / 100.0f;
+            case 7 -> XakaVisualsClient.handOffsetZ = Math.round((-0.5f + t) * 100) / 100.0f;
         }
     }
 
@@ -256,6 +273,15 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 366)) {
                 if (mouseX > (left + right) / 2.0) XakaVisualsClient.petWither = !XakaVisualsClient.petWither;
                 else XakaVisualsClient.petSize = XakaVisualsClient.petSize >= 10 ? 3 : XakaVisualsClient.petSize + 2;
+            }
+        } else if (selectedCategory == 4) {
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) { activeSlider = 5; setSlider(5, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 6; setSlider(6, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 170)) { activeSlider = 7; setSlider(7, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 219)) {
+                XakaVisualsClient.handOffsetX = 0.0f;
+                XakaVisualsClient.handOffsetY = 0.0f;
+                XakaVisualsClient.handOffsetZ = 0.0f;
             }
         } else if (selectedCategory == 3) {
             if (inside(mouseX, mouseY, left, top + 78, left + 118, top + 109))
