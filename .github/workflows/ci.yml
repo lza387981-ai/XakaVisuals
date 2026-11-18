@@ -43,7 +43,7 @@ jobs:
             "required": true,
             "package": "dev.xaka.visuals.mixin",
             "compatibilityLevel": "JAVA_21",
-            "client": ["HeldItemRendererMixin", "PlayerEntityModelMixin", "MainMenuBackgroundMixin"],
+            "client": ["HeldItemRendererMixin", "PlayerEntityModelMixin"],
             "injectors": { "defaultRequire": 1 }
           }
           EOF
