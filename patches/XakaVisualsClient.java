@@ -21,6 +21,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean markerEnabled = false;
     public static boolean markerSquare = false;
     public static int markerSize = 5;
+    public static int targetFrameColorIndex = 0;
     public static boolean haloEnabled = false;
     public static int haloSize = 8;
     public static boolean bodyMarkerEnabled = false;
@@ -58,8 +59,24 @@ public final class XakaVisualsClient implements ClientModInitializer {
             0xFF9B78FF, 0xFF69D6B0, 0xFFFF7EAA, 0xFFFFB45E, 0xFF69A9FF
     };
 
+    private static final int[] TARGET_FRAME_COLORS = {
+            0xFFFFFFFF, 0xFF9B78FF, 0xFF69D6B0, 0xFFFF7EAA,
+            0xFFFFB45E, 0xFF69A9FF, 0xFFFFE36E, 0xFFFF5C5C
+    };
+    private static final String[] TARGET_FRAME_COLOR_NAMES = {
+            "White", "Violet", "Mint", "Rose", "Amber", "Blue", "Gold", "Red"
+    };
+
     public static int accent() {
         return ACCENTS[Math.floorMod(accentIndex, ACCENTS.length)];
+    }
+
+    public static int targetFrameColor() {
+        return TARGET_FRAME_COLORS[Math.floorMod(targetFrameColorIndex, TARGET_FRAME_COLORS.length)];
+    }
+
+    public static String targetFrameColorName() {
+        return TARGET_FRAME_COLOR_NAMES[Math.floorMod(targetFrameColorIndex, TARGET_FRAME_COLOR_NAMES.length)];
     }
 
     @Override
