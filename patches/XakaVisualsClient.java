@@ -112,6 +112,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
         });
 
         XakaVisualsRenderer.register();
+        ClientTickEvents.END_CLIENT_TICK.register(XakaVisualsMusic::tickMouse);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) {
@@ -167,6 +168,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.options.hudHidden) return;
+
+            XakaVisualsMusic.renderHud(drawContext, client);
 
             // Draw the watermark with vanilla text primitives: no external texture/resource can go missing.
             if (watermark) {
