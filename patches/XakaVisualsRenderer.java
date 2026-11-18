@@ -114,46 +114,42 @@ public final class XakaVisualsRenderer {
         }
 
         if (wings) {
-            // Cosmetic wing geometry is anchored behind the player's body and flaps locally.
+            // Filled, feathered wing meshes: one textured membrane per side, not floating line segments.
             float yaw = (float) Math.toRadians(bodyYaw);
             float sideX = (float) Math.cos(yaw);
             float sideZ = (float) Math.sin(yaw);
             float backX = (float) Math.sin(yaw);
             float backZ = (float) -Math.cos(yaw);
-            float phase = (float) (client.world.getTime() + context.tickCounter().getTickDelta(false))
+            float phase = (float) (client.world.getTime() + tickDelta)
                     * 0.22f * XakaVisualsClient.wingSpeed;
-            float flap = (float) Math.sin(phase) * 0.30f;
-            int wingColor = color;
-            var wingLines = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
-            float span = XakaVisualsClient.wingStyle == 2 ? 0.82f : 0.72f;
+            float flap = (float) Math.sin(phase) * 0.24f;
+            float span = XakaVisualsClient.wingStyle == 2 ? 0.92f
+                    : XakaVisualsClient.wingStyle == 1 ? 0.82f : 0.74f;
+            Identifier wingTexture = Identifier.of("xakavisuals", "textures/entity/cosmetic_wing.png");
+            var wingLayer = net.minecraft.client.render.RenderLayer.getEntityTranslucent(wingTexture);
+            var wingMesh = consumers.getBuffer(wingLayer);
+            var wingOutline = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
             for (int side : new int[]{-1, 1}) {
-                float tipY = 1.18f + flap * side;
-                double rootX = bx - backX * 0.12;
-                double rootY = by + 1.05;
-                double rootZ = bz - backZ * 0.12;
+                double rootX = bx - backX * 0.17;
+                double rootY = by + 1.02;
+                double rootZ = bz - backZ * 0.17;
                 double tipX = rootX + sideX * span * side + backX * 0.12;
+                double tipY = by + 1.28 + flap * side;
                 double tipZ = rootZ + sideZ * span * side + backZ * 0.12;
-                double outerX = rootX + sideX * span * 0.72 * side + backX * 0.38;
-                double outerZ = rootZ + sideZ * span * 0.72 * side + backZ * 0.38;
-                double innerX = rootX + sideX * span * 0.22 * side + backX * 0.34;
-                double innerZ = rootZ + sideZ * span * 0.22 * side + backZ * 0.34;
-                double outerY = by + (XakaVisualsClient.wingStyle == 2 ? 1.30f : 1.48f) + flap * side * 0.75f;
-                double innerY = by + 1.32f + flap * side * 0.35f;
-                line(wingLines, rootX, rootY, rootZ, tipX, by + tipY, tipZ, wingColor);
-                line(wingLines, tipX, by + tipY, tipZ, outerX, outerY, outerZ, wingColor);
-                line(wingLines, outerX, outerY, outerZ, innerX, innerY, innerZ, wingColor);
-                line(wingLines, innerX, innerY, innerZ, rootX, rootY, rootZ, wingColor);
-                // Feather ribs / bat-like struts make the selected silhouette readable.
-                for (int feather = 1; feather <= 3; feather++) {
-                    double f = feather / 4.0;
-                    double fx = rootX + (tipX - rootX) * f;
-                    double fz = rootZ + (tipZ - rootZ) * f;
-                    double fy = rootY + (by + tipY - rootY) * f;
-                    double ex = rootX + (outerX - rootX) * f;
-                    double ez = rootZ + (outerZ - rootZ) * f;
-                    double ey = rootY + (outerY - rootY) * f;
-                    line(wingLines, fx, fy, fz, ex, ey, ez, wingColor);
-                }
+                double outerX = rootX + sideX * span * 0.86 * side + backX * 0.48;
+                double outerY = by + 1.48 + flap * side * 0.70;
+                double outerZ = rootZ + sideZ * span * 0.86 * side + backZ * 0.48;
+                double innerX = rootX + sideX * span * 0.24 * side + backX * 0.40;
+                double innerY = by + 1.30 + flap * side * 0.30;
+                double innerZ = rootZ + sideZ * span * 0.24 * side + backZ * 0.40;
+                drawWingMesh(wingMesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
+                        outerX,outerY,outerZ, innerX,innerY,innerZ,
+                        color, side == 1);
+                int outlineColor = (color & 0x00FFFFFF) | 0xD0000000;
+                line(wingOutline, rootX,rootY,rootZ, tipX,tipY,tipZ, outlineColor);
+                line(wingOutline, tipX,tipY,tipZ, outerX,outerY,outerZ, outlineColor);
+                line(wingOutline, outerX,outerY,outerZ, innerX,innerY,innerZ, outlineColor);
+                line(wingOutline, innerX,innerY,innerZ, rootX,rootY,rootZ, outlineColor);
             }
         }
 
@@ -191,6 +187,34 @@ public final class XakaVisualsRenderer {
 
 
 
+
+
+    private static void drawWingMesh(net.minecraft.client.render.VertexConsumer out,
+            double rx,double ry,double rz, double tx,double ty,double tz,
+            double ox,double oy,double oz, double ix,double iy,double iz,
+            int color, boolean mirror) {
+        double ax=tx-rx, ay=ty-ry, az=tz-rz;
+        double bx=ix-rx, by=iy-ry, bz=iz-rz;
+        double nx=ay*bz-az*by, ny=az*bx-ax*bz, nz=ax*by-ay*bx;
+        double len=Math.sqrt(nx*nx+ny*ny+nz*nz);
+        if (len < 1.0e-6) len=1.0;
+        nx/=len; ny/=len; nz/=len;
+        float u0=mirror?1.0f:0.0f, u1=mirror?0.0f:1.0f;
+        // Front and back faces keep the decorative mesh visible from either camera angle.
+        wingVertex(out,rx,ry,rz,color,u0,1,nx,ny,nz);
+        wingVertex(out,tx,ty,tz,color,u1,0,nx,ny,nz);
+        wingVertex(out,ox,oy,oz,color,u1,1,nx,ny,nz);
+        wingVertex(out,ix,iy,iz,color,u0,0,nx,ny,nz);
+        wingVertex(out,ox,oy,oz,color,u1,1,-nx,-ny,-nz);
+        wingVertex(out,tx,ty,tz,color,u1,0,-nx,-ny,-nz);
+        wingVertex(out,rx,ry,rz,color,u0,1,-nx,-ny,-nz);
+        wingVertex(out,ix,iy,iz,color,u0,0,-nx,-ny,-nz);
+    }
+
+    private static void wingVertex(net.minecraft.client.render.VertexConsumer out,
+            double x,double y,double z,int color,float u,float v,float nx,float ny,float nz) {
+        out.vertex((float)x,(float)y,(float)z,color,u,v,0,0x00F000F0,nx,ny,nz);
+    }
 
     private static void drawTexturedTargetFrame(net.minecraft.client.render.VertexConsumerProvider consumers,
             double x, double y, double z, Vector3f right, Vector3f up,
