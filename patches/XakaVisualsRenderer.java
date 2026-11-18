@@ -100,9 +100,10 @@ public final class XakaVisualsRenderer {
                 matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(
                         (float) Math.sin(client.world.getTime() * 0.10) * 5.0f));
             }
-            float scale = XakaVisualsClient.petSize <= 0 ? 0.32f
-                    : Math.min(0.62f, 0.25f + XakaVisualsClient.petSize * 0.035f);
-            if (petType == 2) scale *= 0.72f;
+            // Slightly larger companion proportions so the pet stays clearly visible.
+            float scale = XakaVisualsClient.petSize <= 0 ? 0.38f
+                    : Math.min(0.82f, 0.30f + XakaVisualsClient.petSize * 0.05f);
+            if (petType == 2) scale *= 0.82f;
             if (petType == 3) scale *= 1.22f;
             matrices.scale(scale, scale, scale);
             EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
