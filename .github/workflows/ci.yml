@@ -160,6 +160,63 @@ jobs:
           PY
 
 
+      - name: Generate feathered cosmetic wing texture
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 - <<'PY'
+          from PIL import Image, ImageDraw, ImageFilter
+          from pathlib import Path
+          import math
+          out = Path("source/XakaVisuals/src/main/resources/assets/xakavisuals/textures/entity/cosmetic_wing.png")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          S = 256
+          mask = Image.new("L", (S,S), 0)
+          md = ImageDraw.Draw(mask)
+          # A broad, curved wing silhouette with a pointed outer tip and scalloped feather edge.
+          outline = [(18,226),(44,184),(67,145),(93,109),(122,77),(154,48),(188,24),
+                     (231,12),(222,57),(220,93),(224,128),(214,161),(196,191),
+                     (171,218),(141,238),(104,249),(65,247),(35,239)]
+          md.polygon(outline, fill=255)
+          mask = mask.filter(ImageFilter.GaussianBlur(1.2))
+          im = Image.new("RGBA", (S,S), (0,0,0,0))
+          pix = im.load()
+          for y in range(S):
+              for x in range(S):
+                  a = mask.getpixel((x,y))
+                  if a:
+                      t = max(0,min(1,(x+y)/(2*S)))
+                      pix[x,y] = (int(245-35*t), int(231-48*t), 255, int(a*0.88))
+          # Layered feather vanes fan outward from the wing root.
+          detail = Image.new("RGBA", (S,S), (0,0,0,0))
+          d = ImageDraw.Draw(detail)
+          feathers = [
+              ((38,222),(75,161),(110,116)),
+              ((45,230),(99,180),(143,130)),
+              ((55,236),(124,199),(174,149)),
+              ((72,240),(148,215),(199,174)),
+              ((92,243),(169,225),(216,197)),
+              ((115,241),(185,227),(222,218)),
+              ((133,232),(195,217),(210,235))
+          ]
+          for i,(root,mid,tip) in enumerate(feathers):
+              d.polygon([root,mid,tip,(mid[0]+12,mid[1]+10)], fill=(255,255,255,38))
+              d.line([root,mid,tip], fill=(255,255,255,155), width=2)
+          # Subtle luminous outer rim and a strong curved central spar.
+          edge = Image.new("RGBA",(S,S),(0,0,0,0))
+          ed = ImageDraw.Draw(edge)
+          ed.line(outline+[outline[0]], fill=(255,255,255,190), width=3, joint="curve")
+          glow = edge.filter(ImageFilter.GaussianBlur(7))
+          im.alpha_composite(glow)
+          im.alpha_composite(detail)
+          im.alpha_composite(edge)
+          # Clip all decoration to the wing silhouette, retaining a soft glow just outside it.
+          alpha = im.getchannel("A")
+          clipped = Image.new("RGBA",(S,S),(0,0,0,0))
+          clipped.paste(im,(0,0),mask)
+          clipped.save(out)
+          print(f"Generated {out} ({out.stat().st_size} bytes)")
+          PY
+
       - name: Generate XAKA main menu background
         run: |
           python3 -m pip install --quiet pillow
