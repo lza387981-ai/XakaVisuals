@@ -33,6 +33,7 @@ jobs:
           cp patches/XakaVisualsScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsScreen.java
           cp patches/XakaVisualsClient.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsClient.java
           cp patches/XakaVisualsRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsRenderer.java
+          cp patches/XakaHudPositionScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaHudPositionScreen.java
           mkdir -p source/XakaVisuals/src/main/java/dev/xaka/visuals/mixin
           cp patches/HeldItemRendererMixin.java source/XakaVisuals/src/main/java/dev/xaka/visuals/mixin/HeldItemRendererMixin.java
           cp patches/PlayerEntityModelMixin.java source/XakaVisuals/src/main/java/dev/xaka/visuals/mixin/PlayerEntityModelMixin.java
