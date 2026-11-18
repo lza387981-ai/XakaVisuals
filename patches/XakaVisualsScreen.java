@@ -176,7 +176,7 @@ public final class XakaVisualsScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
         int panelW = Math.min(620, width - 28);
-        int panelH = Math.min(390, height - 28);
+        int panelH = Math.min(440, height - 28);
         int x = (width - panelW) / 2;
         int y = (height - panelH) / 2;
         int navY = y + 96;
@@ -208,7 +208,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.fpsBoost = !XakaVisualsClient.fpsBoost;
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
-            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.haloSize = XakaVisualsClient.haloSize >= 14 ? 4 : XakaVisualsClient.haloSize + 2;
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.haloSize = Math.max(4, Math.min(18, 4 + (int)((mouseX - left) / (right - left) * 14)));
             if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.bodyMarkerEnabled = !XakaVisualsClient.bodyMarkerEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.bodyMarkerSquare = !XakaVisualsClient.bodyMarkerSquare;
             if (hitRow(mouseX, mouseY, left, right, top + 268)) {
@@ -230,9 +230,9 @@ public final class XakaVisualsScreen extends Screen {
             if (inside(mouseX, mouseY, left + 126, top + 78, left + 244, top + 109))
                 XakaVisualsClient.accentIndex = Math.floorMod(XakaVisualsClient.accentIndex + 1, 5);
             if (hitRow(mouseX, mouseY, left, right, top + 126)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;
-            if (hitRow(mouseX, mouseY, left, right, top + 175)) XakaVisualsClient.bodyMarkerOffsetX = stepOffset(XakaVisualsClient.bodyMarkerOffsetX);
-            if (hitRow(mouseX, mouseY, left, right, top + 224)) XakaVisualsClient.bodyMarkerOffsetZ = stepOffset(XakaVisualsClient.bodyMarkerOffsetZ);
-            if (hitRow(mouseX, mouseY, left, right, top + 273)) XakaVisualsClient.bodyMarkerOffsetY = stepOffset(XakaVisualsClient.bodyMarkerOffsetY);
+            if (hitRow(mouseX, mouseY, left, right, top + 175)) XakaVisualsClient.bodyMarkerOffsetX = Math.round((-0.5f + (float)(mouseX - left) / (right - left)) * 10) / 10.0f;
+            if (hitRow(mouseX, mouseY, left, right, top + 224)) XakaVisualsClient.bodyMarkerOffsetZ = Math.round((-0.5f + (float)(mouseX - left) / (right - left)) * 10) / 10.0f;
+            if (hitRow(mouseX, mouseY, left, right, top + 273)) XakaVisualsClient.bodyMarkerOffsetY = Math.round((-0.5f + (float)(mouseX - left) / (right - left)) * 10) / 10.0f;
         }
         return true;
     }
