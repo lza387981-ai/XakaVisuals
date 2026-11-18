@@ -352,7 +352,7 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetZ = 0.0f;
             }
         } else if (selectedCategory == 5) {
-            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.activeDance = (XakaVisualsClient.activeDance + 1) % 5;
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.activeDance = (XakaVisualsClient.activeDance + 1) % 6;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.dancePlaying = !XakaVisualsClient.dancePlaying;
             if (hitRow(mouseX, mouseY, left, right, top + 170)) { activeSlider = 8; setSlider(8, mouseX, left, right); }
         } else if (selectedCategory == 3) {
