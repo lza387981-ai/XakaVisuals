@@ -4,7 +4,7 @@ import dev.xaka.visuals.XakaVisualsClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.Hand;
+import net.minecraft.util.Hand;
 import net.minecraft.item.ItemStack;
 import net.minecraft.client.render.VertexConsumerProvider;
 import org.spongepowered.asm.mixin.Mixin;
