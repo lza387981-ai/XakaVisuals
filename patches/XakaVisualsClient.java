@@ -110,10 +110,10 @@ public final class XakaVisualsClient implements ClientModInitializer {
             if (watermark) {
                 Identifier logo = Identifier.of("xakavisuals", "textures/gui/xaka_logo.png");
                 drawContext.drawTexture(RenderLayer::getGuiTextured, logo,
-                        8, 8, 0.0f, 0.0f, 128, 66, 512, 264);
+                        6, 6, 0.0f, 0.0f, 64, 33, 512, 264);
             }
 
-            int hudY = watermark ? 78 : 8;
+            int hudY = watermark ? 43 : 8;
             if (enemyHpEnabled && client.player != null
                     && client.crosshairTarget instanceof net.minecraft.util.hit.EntityHitResult hit
                     && hit.getEntity() instanceof net.minecraft.entity.LivingEntity target
