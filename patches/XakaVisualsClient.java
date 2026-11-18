@@ -46,13 +46,16 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static int activeDance = 0;
     public static float danceSpeed = 1.0f;
     public static int danceEntityId = -1;
+    private static boolean wasDancePlaying = false;
+    private static double lastDanceX, lastDanceY, lastDanceZ;
 
     public static String danceName() {
-        return switch (Math.floorMod(activeDance, 4)) {
+        return switch (Math.floorMod(activeDance, 5)) {
             case 0 -> "Robot";
             case 1 -> "Shuffle";
             case 2 -> "Floss";
-            default -> "Moonwalk";
+            case 3 -> "Moonwalk";
+            default -> "XakaDance";
         };
     }
     private static Object previousParticles = null;
@@ -99,7 +102,33 @@ public final class XakaVisualsClient implements ClientModInitializer {
         XakaVisualsRenderer.register();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            danceEntityId = dancePlaying && client.player != null ? client.player.getId() : -1;
+            if (client.player == null) {
+                dancePlaying = false;
+                danceEntityId = -1;
+                wasDancePlaying = false;
+                return;
+            }
+
+            var pos = client.player.getPos();
+            if (dancePlaying && !wasDancePlaying) {
+                lastDanceX = pos.x;
+                lastDanceY = pos.y;
+                lastDanceZ = pos.z;
+            } else if (dancePlaying) {
+                double dx = pos.x - lastDanceX;
+                double dy = pos.y - lastDanceY;
+                double dz = pos.z - lastDanceZ;
+                // Stop the emote after actual player movement; tiny floating-point jitter is ignored.
+                if (dx * dx + dy * dy + dz * dz > 0.0025) {
+                    dancePlaying = false;
+                }
+                lastDanceX = pos.x;
+                lastDanceY = pos.y;
+                lastDanceZ = pos.z;
+            }
+
+            wasDancePlaying = dancePlaying;
+            danceEntityId = dancePlaying ? client.player.getId() : -1;
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
