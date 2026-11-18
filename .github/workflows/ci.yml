@@ -31,8 +31,13 @@ jobs:
       - name: Apply mobile rendering fix
         run: cp patches/XakaVisualsScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsScreen.java
 
-      - name: Inspect client source for feature work
-        run: sed -n '1,260p' source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsClient.java
+      - name: Inspect Java sources for feature work
+        run: |
+          find source/XakaVisuals/src/main/java -type f -name '*.java' -print
+          while IFS= read -r file; do
+            echo "===== SOURCE: $file ====="
+            sed -n '1,320p' "$file"
+          done < <(find source/XakaVisuals/src/main/java -type f -name '*.java' | sort)
 
       - name: Build Fabric mod
         working-directory: source/XakaVisuals
