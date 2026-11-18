@@ -35,11 +35,14 @@ jobs:
         run: |
           echo "===== BUILD FILE ====="
           sed -n '1,260p' source/XakaVisuals/build.gradle
+          echo "===== RESOURCE FILE LIST ====="
+          find source/XakaVisuals/src/main/resources -maxdepth 3 -type f -print
           echo "===== MOD METADATA ====="
-          find source/XakaVisuals/src/main/resources -maxdepth 2 -type f -print -exec sed -n '1,220p' {} \\;
-          echo "===== MIXIN CONFIGS ====="
+          for file in $(find source/XakaVisuals/src/main/resources -maxdepth 2 -type f -name 'fabric.mod.json'); do
+            cat "$file"
+          done
+          echo "===== MIXIN CONFIG FILE LIST ====="
           find source/XakaVisuals/src/main/resources -type f -iname '*mixin*' -print
-
       - name: Build Fabric mod
         working-directory: source/XakaVisuals
         run: gradle build --no-daemon
