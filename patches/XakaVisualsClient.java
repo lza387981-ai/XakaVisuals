@@ -115,6 +115,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
         });
 
         XakaVisualsRenderer.register();
+        XakaVisualsRemoteRenderer.register();
+        XakaVisualsSyncClient.register();
+        ClientTickEvents.END_CLIENT_TICK.register(XakaVisualsSyncClient::tick);
         ClientTickEvents.END_CLIENT_TICK.register(XakaVisualsMusic::tickMouse);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
