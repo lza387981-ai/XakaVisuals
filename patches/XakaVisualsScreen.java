@@ -91,7 +91,8 @@ public final class XakaVisualsScreen extends Screen {
         context.drawTextWithShadow(textRenderer, "XakaVisuals  •  crafted for your game", contentX,
                 y + panelH - 27, MUTED);
         context.drawTextWithShadow(textRenderer, "v1.0.0", right - 35, y + panelH - 27, MUTED);
-        super.render(context, mouseX, mouseY, delta);
+        // Do not call super.render() here: it renders the screen background after our UI,
+        // which can apply the blur shader over the entire frame on some Minecraft versions.
     }
 
     private void renderCategory(DrawContext c, int mx, int my, int left, int right, int top, int accent) {
