@@ -36,6 +36,20 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static float handOffsetY = 0.0f;
     public static float handOffsetZ = 0.0f;
     public static boolean fpsBoost = false;
+    // Local emote playback; the renderer mixin applies it only to this player's model.
+    public static boolean dancePlaying = false;
+    public static int activeDance = 0;
+    public static float danceSpeed = 1.0f;
+    public static int danceEntityId = -1;
+
+    public static String danceName() {
+        return switch (Math.floorMod(activeDance, 4)) {
+            case 0 -> "Robot";
+            case 1 -> "Shuffle";
+            case 2 -> "Floss";
+            default -> "Moonwalk";
+        };
+    }
     private static Object previousParticles = null;
 
     private static final int[] ACCENTS = {
@@ -62,6 +76,10 @@ public final class XakaVisualsClient implements ClientModInitializer {
         });
 
         XakaVisualsRenderer.register();
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            danceEntityId = dancePlaying && client.player != null ? client.player.getId() : -1;
+        });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             try {
