@@ -129,26 +129,27 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 float health = Math.max(0.0f, target.getHealth());
                 float maxHealth = Math.max(1.0f, target.getMaxHealth());
                 int sw = client.getWindow().getScaledWidth();
-                int cardW = 156;
+                int cardW = 136;
+                int cardH = 32;
                 int cardX = (sw - cardW) / 2;
-                int cardY = Math.max(8, client.getWindow().getScaledHeight() / 2 - 82);
+                int cardY = Math.max(8, client.getWindow().getScaledHeight() / 2 - 112);
                 int hpColor = health / maxHealth > 0.5f ? 0xFF55D68B
                         : health / maxHealth > 0.25f ? 0xFFFFC15A : 0xFFFF626F;
-                drawContext.fill(cardX, cardY, cardX + cardW, cardY + 39, 0xD9101420);
-                drawContext.fill(cardX, cardY, cardX + 2, cardY + 39, accent());
+                drawContext.fill(cardX, cardY, cardX + cardW, cardY + cardH, 0xD9101420);
+                drawContext.fill(cardX, cardY, cardX + 2, cardY + cardH, accent());
                 String targetName = target.getDisplayName().getString();
-                if (targetName.length() > 18) targetName = targetName.substring(0, 18);
+                if (targetName.length() > 16) targetName = targetName.substring(0, 16);
                 drawContext.drawTextWithShadow(client.textRenderer, targetName,
-                        cardX + 8, cardY + 5, 0xFFF2F3F8);
+                        cardX + 7, cardY + 4, 0xFFF2F3F8);
                 String hpText = String.format(java.util.Locale.ROOT, "%.1f / %.1f HP", health, maxHealth);
                 drawContext.drawTextWithShadow(client.textRenderer, hpText,
-                        cardX + 8, cardY + 19, 0xFFE2E7F0);
-                int barX = cardX + 91;
-                int barY = cardY + 25;
-                int barW = 56;
-                drawContext.fill(barX, barY, barX + barW, barY + 5, 0xFF343B49);
+                        cardX + 7, cardY + 17, 0xFFE2E7F0);
+                int barX = cardX + 83;
+                int barY = cardY + 23;
+                int barW = 45;
+                drawContext.fill(barX, barY, barX + barW, barY + 4, 0xFF343B49);
                 drawContext.fill(barX, barY, barX + Math.round(barW * Math.min(1.0f, health / maxHealth)),
-                        barY + 5, hpColor);
+                        barY + 4, hpColor);
             }
             if (fps) {
                 String fpsText = client.getCurrentFps() + " FPS";
