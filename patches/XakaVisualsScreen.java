@@ -13,7 +13,7 @@ public final class XakaVisualsScreen extends Screen {
     private static final int TEXT = 0xFFF1F2F8;
     private static final int MUTED = 0xFF929BAF;
 
-    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC"};
+    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC", "Cosmetics"};
     private static final String[] CATEGORY_HINTS = {
             "Small details. A cleaner game.",
             "Your information, your layout.",
@@ -21,7 +21,8 @@ public final class XakaVisualsScreen extends Screen {
             "Tune XakaVisuals to your taste.",
             "Adjust your first-person hand and held item.",
             "Play a local character emote.",
-            "Your MP3 playlist and floating mini-player."
+            "Your MP3 playlist and floating mini-player.",
+            "Animated wings and character accessories."
     };
 
     private int selectedCategory;
@@ -204,7 +205,7 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetY);
             case 7 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetZ);
             case 8 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.danceSpeed);
-            case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";
+            case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";\n            case 10 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.wingSpeed);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -228,7 +229,7 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> XakaVisualsClient.handOffsetY = Math.round((-0.5f + t) * 100) / 100.0f;
             case 7 -> XakaVisualsClient.handOffsetZ = Math.round((-0.5f + t) * 100) / 100.0f;
             case 8 -> XakaVisualsClient.danceSpeed = 0.5f + t * 1.5f;
-            case 9 -> XakaVisualsMusic.setVolume(t);
+            case 9 -> XakaVisualsMusic.setVolume(t);\n            case 10 -> XakaVisualsClient.wingSpeed = 0.5f + t * 1.5f;
         }
     }
 
@@ -392,7 +393,7 @@ public final class XakaVisualsScreen extends Screen {
             case 1 -> 408;
             case 2, 3 -> 333;
             case 4, 5 -> 284;
-            case 6 -> 370;
+            case 6 -> 370;\n            case 7 -> 284;
             default -> 310;
         };
     }
@@ -411,7 +412,7 @@ public final class XakaVisualsScreen extends Screen {
     }
 
     private String categoryIcon(int index) {
-        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; default -> "⚙"; };
+        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; case 7 -> "✧"; default -> "⚙"; };
     }
 
     private float easeOut(float t) { return 1f - (float) Math.pow(1f - t, 3); }
