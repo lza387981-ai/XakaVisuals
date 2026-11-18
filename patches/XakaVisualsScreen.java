@@ -126,9 +126,10 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top, "Clean interface", "A calm, distraction-free visual style", true, accent, false);
                 row(c, mx, my, left, right, top + 49, "Smooth animations", "Animated menu transitions", XakaVisualsClient.animations, accent, true);
                 row(c, mx, my, left, right, top + 98, "Compact HUD", "Reduce the height of HUD panels", XakaVisualsClient.compactHud, accent, true);
-                row(c, mx, my, left, right, top + 147, "Center marker", "Decorative circle or square on the HUD", XakaVisualsClient.markerEnabled, accent, true);
+                row(c, mx, my, left, right, top + 147, "Enemy target frame", "Slowly rotating corner brackets around the target", XakaVisualsClient.markerEnabled, accent, true);
                 row(c, mx, my, left, right, top + 196, "Floating pet", "Toggle your local decorative companion", XakaVisualsClient.petEnabled, accent, true);
                 row(c, mx, my, left, right, top + 245, XakaVisualsClient.petWither ? "Pet: Wither" : "Pet: Creeper", "Click right side to switch; left side changes size", false, accent, false);
+                row(c, mx, my, left, right, top + 294, "Frame color: " + XakaVisualsClient.targetFrameColorName(), "Tap to cycle through 8 colors", false, XakaVisualsClient.targetFrameColor(), false);
             }
             case 1 -> {
                 row(c, mx, my, left, right, top, "Watermark", "Show the XakaVisuals brand in-game", XakaVisualsClient.watermark, accent, true);
@@ -316,6 +317,8 @@ public final class XakaVisualsScreen extends Screen {
                 if (mouseX > (left + right) / 2.0) XakaVisualsClient.petWither = !XakaVisualsClient.petWither;
                 else XakaVisualsClient.petSize = XakaVisualsClient.petSize >= 10 ? 3 : XakaVisualsClient.petSize + 2;
             }
+            if (hitRow(mouseX, mouseY, left, right, top + 294))
+                XakaVisualsClient.targetFrameColorIndex = (XakaVisualsClient.targetFrameColorIndex + 1) % 8;
         } else if (selectedCategory == 1) {
             if (hitRow(mouseX, mouseY, left, right, top)) XakaVisualsClient.watermark = !XakaVisualsClient.watermark;
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.fps = !XakaVisualsClient.fps;
@@ -364,7 +367,8 @@ public final class XakaVisualsScreen extends Screen {
 
     private int categoryContentHeight() {
         return switch (selectedCategory) {
-            case 0, 1 -> 310;
+            case 0 -> 310;
+            case 1 -> 359;
             case 2, 3 -> 333;
             case 4, 5 -> 284;
             default -> 310;
