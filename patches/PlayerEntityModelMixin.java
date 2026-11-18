@@ -4,7 +4,6 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.model.ModelPart;
 import dev.xaka.visuals.XakaVisualsClient;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,20 +14,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** Applies a cosmetic dance to the local player's third-person model only. */
 @Mixin(PlayerEntityModel.class)
 public abstract class PlayerEntityModelMixin {
-    @Accessor("head") protected abstract ModelPart xaka$getHead();
-    @Accessor("body") protected abstract ModelPart xaka$getBody();
-    @Accessor("rightArm") protected abstract ModelPart xaka$getRightArm();
-    @Accessor("leftArm") protected abstract ModelPart xaka$getLeftArm();
-    @Accessor("rightLeg") protected abstract ModelPart xaka$getRightLeg();
-    @Accessor("leftLeg") protected abstract ModelPart xaka$getLeftLeg();
+    @Shadow @Final protected ModelPart head;
+    @Shadow @Final protected ModelPart body;
+    @Shadow @Final protected ModelPart rightArm;
+    @Shadow @Final protected ModelPart leftArm;
+    @Shadow @Final protected ModelPart rightLeg;
+    @Shadow @Final protected ModelPart leftLeg;
 
     @Inject(method = "setAngles", at = @At("TAIL"))
     private void xakavisuals$applyDance(PlayerEntityRenderState state, CallbackInfo ci) {
         if (!XakaVisualsClient.dancePlaying || state.id != XakaVisualsClient.danceEntityId) return;
 
-        ModelPart head = xaka$getHead(), body = xaka$getBody();
-        ModelPart rightArm = xaka$getRightArm(), leftArm = xaka$getLeftArm();
-        ModelPart rightLeg = xaka$getRightLeg(), leftLeg = xaka$getLeftLeg();
         float t = state.age * 0.22f * XakaVisualsClient.danceSpeed;
         float wave = (float) Math.sin(t);
         float wave2 = (float) Math.sin(t * 2.0f);
