@@ -41,6 +41,7 @@ public final class XakaVisualsRenderer {
         var matrices = context.matrixStack();
         var consumers = context.consumers();
         int color = XakaVisualsClient.accent();
+        int targetFrameColor = XakaVisualsClient.targetFrameColor();
 
         if (halo) {
             float radius = 0.34f + XakaVisualsClient.haloSize * 0.035f;
@@ -104,20 +105,52 @@ public final class XakaVisualsRenderer {
             double centerZ = targetPos.z - camera.z + towardCamera.z * 0.16
                     + right.z * XakaVisualsClient.bodyMarkerOffsetX
                     + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
-            // Larger marker with three closely spaced outlines to make the ring visibly bolder.
-            float radius = 0.42f + XakaVisualsClient.bodyMarkerSize * 0.045f;
+            // Four corner brackets rotate slowly clockwise around the targeted player.
+            float radius = 0.43f + XakaVisualsClient.markerSize * 0.035f;
+            float rotation = (float) ((client.world.getTime() + context.tickCounter().getTickDelta(false)) * 0.0105);
             var out = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
-            for (int layer = -1; layer <= 1; layer++) {
-                float layerRadius = radius + layer * 0.018f;
-                if (XakaVisualsClient.bodyMarkerSquare) {
-                    drawBillboardSquare(out, centerX, centerY, centerZ, right, up, layerRadius, color);
-                } else {
-                    drawBillboardCircle(out, centerX, centerY, centerZ, right, up, layerRadius, color, 64);
-                }
-            }
+            drawRotatingTargetFrame(out, centerX, centerY, centerZ, right, up, radius, rotation,
+                    withAlpha(targetFrameColor, 0x35));
+            drawRotatingTargetFrame(out, centerX, centerY, centerZ, right, up, radius, rotation,
+                    withAlpha(targetFrameColor, 0x90));
+            drawRotatingTargetFrame(out, centerX, centerY, centerZ, right, up, radius, rotation, targetFrameColor);
         }
     }
 
+
+
+    private static int withAlpha(int color, int alpha) {
+        return (color & 0x00FFFFFF) | ((alpha & 0xFF) << 24);
+    }
+
+    private static void drawRotatingTargetFrame(net.minecraft.client.render.VertexConsumer out,
+            double x, double y, double z, Vector3f right, Vector3f up,
+            float radius, float rotation, int color) {
+        float c = (float) Math.cos(rotation), s = (float) Math.sin(rotation);
+        float arm = radius * 0.43f;
+        float[][] corners = {{-1,-1},{1,-1},{1,1},{-1,1}};
+        for (float[] corner : corners) {
+            float cx = corner[0] * radius, cy = corner[1] * radius;
+            float ix = cx - corner[0] * arm, iy = cy;
+            float jx = cx, jy = cy - corner[1] * arm;
+            drawFrameSegment(out, x, y, z, right, up, ix, iy, cx, cy, c, s, color);
+            drawFrameSegment(out, x, y, z, right, up, cx, cy, jx, jy, c, s, color);
+        }
+    }
+
+    private static void drawFrameSegment(net.minecraft.client.render.VertexConsumer out,
+            double x, double y, double z, Vector3f right, Vector3f up,
+            float ax, float ay, float bx, float by, float c, float s, int color) {
+        float rax = ax * c - ay * s, ray = ax * s + ay * c;
+        float rbx = bx * c - by * s, rby = bx * s + by * c;
+        double x1 = x + right.x * rax + up.x * ray;
+        double y1 = y + right.y * rax + up.y * ray;
+        double z1 = z + right.z * rax + up.z * ray;
+        double x2 = x + right.x * rbx + up.x * rby;
+        double y2 = y + right.y * rbx + up.y * rby;
+        double z2 = z + right.z * rbx + up.z * rby;
+        line(out, x1, y1, z1, x2, y2, z2, color);
+    }
 
     private static void drawBillboardCircle(net.minecraft.client.render.VertexConsumer out,
                                             double x, double y, double z, Vector3f right, Vector3f up,
