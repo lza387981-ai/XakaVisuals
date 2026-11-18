@@ -66,14 +66,17 @@ public final class XakaVisualsRenderer {
                     ? new WitherEntity(EntityType.WITHER, client.world)
                     : new CreeperEntity(EntityType.CREEPER, client.world);
             companion.setPosition(px, py, pz);
-            companion.setYaw(player.getYaw());
+            // Face the same horizontal direction as the active camera, not the player's body yaw.
+            // Passing the yaw to the dispatcher is important: render() otherwise overrides entity yaw.
+            float facingYaw = context.camera().getYaw();
+            companion.setYaw(facingYaw);
             matrices.push();
             matrices.translate(px - camera.x, py - camera.y, pz - camera.z);
             float scale = XakaVisualsClient.petSize <= 0 ? 0.32f
                     : Math.min(0.62f, 0.25f + XakaVisualsClient.petSize * 0.035f);
             matrices.scale(scale, scale, scale);
             EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
-            dispatcher.render(companion, 0.0, 0.0, 0.0, 0.0f,
+            dispatcher.render(companion, 0.0, 0.0, 0.0, facingYaw,
                     matrices, consumers, 0x00F000F0);
             matrices.pop();
         }
