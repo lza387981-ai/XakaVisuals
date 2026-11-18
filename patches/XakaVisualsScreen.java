@@ -100,16 +100,19 @@ public final class XakaVisualsScreen extends Screen {
             case 0 -> {
                 row(c, mx, my, left, right, top, "Clean interface", "A calm, distraction-free visual style", true, accent, false);
                 row(c, mx, my, left, right, top + 49, "Smooth animations", "Animated menu transitions", XakaVisualsClient.animations, accent, true);
-                row(c, mx, my, left, right, top + 98, "Compact HUD", "Reduce the height of HUD panels", XakaVisualsClient.compactHud, accent, true);\n                row(c, mx, my, left, right, top + 147, "Center marker", "Decorative circle or square on the HUD", XakaVisualsClient.markerEnabled, accent, true);
+                row(c, mx, my, left, right, top + 98, "Compact HUD", "Reduce the height of HUD panels", XakaVisualsClient.compactHud, accent, true);
+                row(c, mx, my, left, right, top + 147, "Center marker", "Decorative circle or square on the HUD", XakaVisualsClient.markerEnabled, accent, true);
             }
             case 1 -> {
                 row(c, mx, my, left, right, top, "Watermark", "Show the XakaVisuals brand in-game", XakaVisualsClient.watermark, accent, true);
                 row(c, mx, my, left, right, top + 49, "FPS counter", "Display your current frame rate", XakaVisualsClient.fps, accent, true);
-                row(c, mx, my, left, right, top + 98, "Coordinates", "Show your current block position", XakaVisualsClient.coordinates, accent, true);\n                row(c, mx, my, left, right, top + 147, "Marker shape", XakaVisualsClient.markerSquare ? "Square — click to use circle" : "Circle — click to use square", XakaVisualsClient.markerSquare, accent, false);
+                row(c, mx, my, left, right, top + 98, "Coordinates", "Show your current block position", XakaVisualsClient.coordinates, accent, true);
+                row(c, mx, my, left, right, top + 147, "Marker shape", XakaVisualsClient.markerSquare ? "Square — click to use circle" : "Circle — click to use square", XakaVisualsClient.markerSquare, accent, false);
             }
             case 2 -> {
                 infoCard(c, left, top, right, "Visual polish", "The interface uses subtle motion and a restrained accent palette.");
-                row(c, mx, my, left, right, top + 72, "Menu animations", "Enable or disable interface motion", XakaVisualsClient.animations, accent, true);\n                row(c, mx, my, left, right, top + 121, "Marker size: " + XakaVisualsClient.markerSize, "Click to cycle through marker sizes", false, accent, false);
+                row(c, mx, my, left, right, top + 72, "Menu animations", "Enable or disable interface motion", XakaVisualsClient.animations, accent, true);
+                row(c, mx, my, left, right, top + 121, "Marker size: " + XakaVisualsClient.markerSize, "Click to cycle through marker sizes", false, accent, false);
             }
             case 3 -> {
                 infoCard(c, left, top, right, "Accent color", "Choose a signature color for the XakaVisuals interface.");
@@ -180,13 +183,16 @@ public final class XakaVisualsScreen extends Screen {
         int top = y + 74;
         if (selectedCategory == 0) {
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.animations = !XakaVisualsClient.animations;
-            if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;\n            if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerEnabled = !XakaVisualsClient.markerEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;
+            if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerEnabled = !XakaVisualsClient.markerEnabled;
         } else if (selectedCategory == 1) {
             if (hitRow(mouseX, mouseY, left, right, top)) XakaVisualsClient.watermark = !XakaVisualsClient.watermark;
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.fps = !XakaVisualsClient.fps;
-            if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.coordinates = !XakaVisualsClient.coordinates;\n            if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerSquare = !XakaVisualsClient.markerSquare;
+            if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.coordinates = !XakaVisualsClient.coordinates;
+            if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerSquare = !XakaVisualsClient.markerSquare;
         } else if (selectedCategory == 2) {
-            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.animations = !XakaVisualsClient.animations;\n            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.markerSize = XakaVisualsClient.markerSize >= 12 ? 3 : XakaVisualsClient.markerSize + 3;
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.animations = !XakaVisualsClient.animations;
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.markerSize = XakaVisualsClient.markerSize >= 12 ? 3 : XakaVisualsClient.markerSize + 3;
         } else if (selectedCategory == 3) {
             if (inside(mouseX, mouseY, left, top + 78, left + 118, top + 109))
                 XakaVisualsClient.accentIndex = Math.floorMod(XakaVisualsClient.accentIndex - 1, 5);
