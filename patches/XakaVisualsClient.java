@@ -34,8 +34,18 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static float bodyMarkerOffsetZ = 0.0f;
     public static int accentIndex = 0;
     public static boolean petEnabled = false;
-    public static boolean petWither = false;
+    // 0=Creeper, 1=Wither, 2=Warden, 3=Allay.
+    public static int petType = 0;
     public static int petSize = 5;
+
+    public static String petName() {
+        return switch (Math.floorMod(petType, 4)) {
+            case 0 -> "Creeper";
+            case 1 -> "Wither";
+            case 2 -> "Mini Warden";
+            default -> "Mini Allay";
+        };
+    }
     // First-person hand/item offsets, in camera-local blocks.
     public static float handOffsetX = 0.0f;
     public static float handOffsetY = 0.0f;
