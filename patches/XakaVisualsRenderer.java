@@ -107,7 +107,7 @@ public final class XakaVisualsRenderer {
                     + right.z * XakaVisualsClient.bodyMarkerOffsetX
                     + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
             // Render the PNG frame as a camera-facing textured quad; tint changes its color.
-            float frameSize = 1.28f + XakaVisualsClient.markerSize * 0.025f;
+            float frameSize = 0.78f + XakaVisualsClient.markerSize * 0.015f;
             float frameWidth = frameSize;
             float frameHeight = frameSize;
             // Use a monotonic high-resolution clock so rotation never pauses at tick boundaries.
@@ -129,12 +129,21 @@ public final class XakaVisualsRenderer {
         float c = (float) Math.cos(rotation), s = (float) Math.sin(rotation);
         float hw = width * 0.5f, hh = height * 0.5f;
         // Clockwise texture coordinates, camera-facing plane.
+        // Front face.
         texturedVertex(out, x,y,z,right,up,-hw,-hh,c,s,tint,0,1);
         texturedVertex(out, x,y,z,right,up, hw,-hh,c,s,tint,1,1);
         texturedVertex(out, x,y,z,right,up, hw, hh,c,s,tint,1,0);
         texturedVertex(out, x,y,z,right,up,-hw,-hh,c,s,tint,0,1);
         texturedVertex(out, x,y,z,right,up, hw, hh,c,s,tint,1,0);
         texturedVertex(out, x,y,z,right,up,-hw, hh,c,s,tint,0,0);
+        // Back face with reversed winding: prevents one triangle/face disappearing
+        // on render layers or drivers that apply back-face culling.
+        texturedVertex(out, x,y,z,right,up, hw, hh,c,s,tint,1,0);
+        texturedVertex(out, x,y,z,right,up, hw,-hh,c,s,tint,1,1);
+        texturedVertex(out, x,y,z,right,up,-hw,-hh,c,s,tint,0,1);
+        texturedVertex(out, x,y,z,right,up,-hw, hh,c,s,tint,0,0);
+        texturedVertex(out, x,y,z,right,up, hw, hh,c,s,tint,1,0);
+        texturedVertex(out, x,y,z,right,up,-hw,-hh,c,s,tint,0,1);
     }
 
     private static void texturedVertex(net.minecraft.client.render.VertexConsumer out,
