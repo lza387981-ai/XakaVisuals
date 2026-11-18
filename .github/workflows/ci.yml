@@ -107,6 +107,48 @@ jobs:
           print(f"Generated {out} ({out.stat().st_size} bytes)")
           PY
 
+      - name: Generate enemy target frame texture
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 - <<'PY'
+          from PIL import Image, ImageDraw, ImageFilter
+          from pathlib import Path
+          out = Path("source/XakaVisuals/src/main/resources/assets/xakavisuals/textures/gui/target_frame.png")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          S = 512
+          base = Image.new("RGBA", (S, S), (0,0,0,0))
+          glow = Image.new("RGBA", (S, S), (0,0,0,0))
+          def corner_paths(draw, color, width):
+              # Four separate rounded L-shaped brackets with slim orbit accents.
+              m, length = 72, 112
+              paths = [
+                  [(m+length,m),(m+18,m),(m,m+18),(m,m+length)],
+                  [(S-m-length,m),(S-m-18,m),(S-m,m+18),(S-m,m+length)],
+                  [(m,S-m-length),(m,S-m-18),(m+18,S-m),(m+length,S-m)],
+                  [(S-m-length,S-m),(S-m-18,S-m),(S-m,S-m-18),(S-m,S-m-length)]
+              ]
+              for pts in paths:
+                  draw.line(pts, fill=color, width=width, joint="curve")
+                  # rounded endpoint dots make the corners feel polished
+                  rr=width//2
+                  for px,py in (pts[0],pts[-1]):
+                      draw.ellipse((px-rr,py-rr,px+rr,py+rr), fill=color)
+              orbit = [
+                  ([(m+12,m+86),(m+30,m+36),(m+86,m+12)], 5),
+                  ([(S-m-12,m+86),(S-m-30,m+36),(S-m-86,m+12)], 5),
+                  ([(m+12,S-m-86),(m+30,S-m-36),(m+86,S-m-12)], 5),
+                  ([(S-m-12,S-m-86),(S-m-30,S-m-36),(S-m-86,S-m-12)], 5)
+              ]
+              for pts,_ in orbit: draw.line(pts, fill=color, width=5, joint="curve")
+          d=ImageDraw.Draw(glow)
+          corner_paths(d,(255,255,255,190),48)
+          base.alpha_composite(glow.filter(ImageFilter.GaussianBlur(25)))
+          d=ImageDraw.Draw(base)
+          corner_paths(d,(255,255,255,255),24)
+          base.save(out)
+          print(f"Generated {out} ({out.stat().st_size} bytes)")
+          PY
+
       - name: Inspect project configuration
         run: |
           echo "===== BUILD FILE ====="
