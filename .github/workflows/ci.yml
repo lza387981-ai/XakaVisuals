@@ -31,6 +31,9 @@ jobs:
       - name: Apply mobile rendering fix
         run: cp patches/XakaVisualsScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsScreen.java
 
+      - name: Inspect client source for feature work
+        run: sed -n '1,260p' source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsClient.java
+
       - name: Build Fabric mod
         working-directory: source/XakaVisuals
         run: gradle build --no-daemon
