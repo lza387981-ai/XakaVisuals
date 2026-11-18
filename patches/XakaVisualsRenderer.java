@@ -80,8 +80,10 @@ public final class XakaVisualsRenderer {
                     : Math.min(0.62f, 0.25f + XakaVisualsClient.petSize * 0.035f);
             matrices.scale(scale, scale, scale);
             EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
-            dispatcher.render(companion, 0.0, 0.0, 0.0, facingYaw,
-                    matrices, consumers, 0x00F000F0);
+            // The dispatcher argument is tickDelta, NOT entity yaw. Passing yaw here
+            // made the renderer interpolate with values such as 180/360 and spin.
+            dispatcher.render(companion, 0.0, 0.0, 0.0,
+                    context.tickCounter().getTickDelta(false), matrices, consumers, 0x00F000F0);
             matrices.pop();
         }
 
