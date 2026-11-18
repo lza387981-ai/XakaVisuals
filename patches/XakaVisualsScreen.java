@@ -128,7 +128,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 98, "Compact HUD", "Reduce the height of HUD panels", XakaVisualsClient.compactHud, accent, true);
                 row(c, mx, my, left, right, top + 147, "Enemy target frame", "Slowly rotating corner brackets around the target", XakaVisualsClient.markerEnabled, accent, true);
                 row(c, mx, my, left, right, top + 196, "Floating pet", "Toggle your local decorative companion", XakaVisualsClient.petEnabled, accent, true);
-                row(c, mx, my, left, right, top + 245, XakaVisualsClient.petWither ? "Pet: Wither" : "Pet: Creeper", "Click right side to switch; left side changes size", false, accent, false);
+                row(c, mx, my, left, right, top + 245, "Pet: " + XakaVisualsClient.petName(), "Click right side to switch; left side changes size", false, accent, false);
                 row(c, mx, my, left, right, top + 294, "Frame color: " + XakaVisualsClient.targetFrameColorName(), "Tap to cycle through 8 colors", false, XakaVisualsClient.targetFrameColor(), false);
             }
             case 1 -> {
@@ -315,7 +315,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerEnabled = !XakaVisualsClient.markerEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.petEnabled = !XakaVisualsClient.petEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 245)) {
-                if (mouseX > (left + right) / 2.0) XakaVisualsClient.petWither = !XakaVisualsClient.petWither;
+                if (mouseX > (left + right) / 2.0) XakaVisualsClient.petType = (XakaVisualsClient.petType + 1) % 4;
                 else XakaVisualsClient.petSize = XakaVisualsClient.petSize >= 10 ? 3 : XakaVisualsClient.petSize + 2;
             }
             if (hitRow(mouseX, mouseY, left, right, top + 294))
@@ -370,7 +370,7 @@ public final class XakaVisualsScreen extends Screen {
 
     private int categoryContentHeight() {
         return switch (selectedCategory) {
-            case 0 -> 310;
+            case 0 -> 350;
             case 1 -> 408;
             case 2, 3 -> 333;
             case 4, 5 -> 284;
