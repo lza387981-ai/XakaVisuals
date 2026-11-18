@@ -11,6 +11,7 @@ import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
+import net.minecraft.util.math.RotationAxis;
 
 /** Local-only cosmetics: a thick halo, camera-relative companion and crosshair player marker. */
 public final class XakaVisualsRenderer {
@@ -69,21 +70,20 @@ public final class XakaVisualsRenderer {
                     : new CreeperEntity(EntityType.CREEPER, client.world);
             companion.setPosition(px, py, pz);
             // Keep the pet facing the player's body direction. Camera yaw is intentionally ignored.
-            float facingYaw = bodyYaw;
-            companion.setYaw(facingYaw);
-            companion.setBodyYaw(facingYaw);
-            companion.setHeadYaw(facingYaw);
+            companion.setYaw(0.0f);
+            companion.setBodyYaw(0.0f);
+            companion.setHeadYaw(0.0f);
             companion.setPitch(0.0f);
             matrices.push();
             matrices.translate(px - camera.x, py - camera.y, pz - camera.z);
+            // Rotate the rendered model once; do not also pass player yaw to the dispatcher.
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-bodyYaw));
             float scale = XakaVisualsClient.petSize <= 0 ? 0.32f
                     : Math.min(0.62f, 0.25f + XakaVisualsClient.petSize * 0.035f);
             matrices.scale(scale, scale, scale);
             EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
-            // The dispatcher argument is tickDelta, NOT entity yaw. Passing yaw here
-            // made the renderer interpolate with values such as 180/360 and spin.
-            dispatcher.render(companion, 0.0, 0.0, 0.0,
-                    context.tickCounter().getTickDelta(false), matrices, consumers, 0x00F000F0);
+            dispatcher.render(companion, 0.0, 0.0, 0.0, 0.0f,
+                    matrices, consumers, 0x00F000F0);
             matrices.pop();
         }
 
