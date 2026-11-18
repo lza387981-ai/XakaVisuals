@@ -58,14 +58,16 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static int danceEntityId = -1;
     private static boolean wasDancePlaying = false;
     private static double lastDanceX, lastDanceY, lastDanceZ;
+    public static float danceStartAge = 0.0f;
 
     public static String danceName() {
-        return switch (Math.floorMod(activeDance, 5)) {
+        return switch (Math.floorMod(activeDance, 6)) {
             case 0 -> "Robot";
             case 1 -> "Shuffle";
             case 2 -> "Floss";
             case 3 -> "Moonwalk";
-            default -> "XakaDance";
+            case 4 -> "XakaDance";
+            default -> "HohoDance";
         };
     }
     private static Object previousParticles = null;
@@ -124,12 +126,14 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 lastDanceX = pos.x;
                 lastDanceY = pos.y;
                 lastDanceZ = pos.z;
+                danceStartAge = client.player.age;
             } else if (dancePlaying) {
                 double dx = pos.x - lastDanceX;
                 double dy = pos.y - lastDanceY;
                 double dz = pos.z - lastDanceZ;
                 // Stop the emote after actual player movement; tiny floating-point jitter is ignored.
-                if (dx * dx + dy * dy + dz * dz > 0.0025) {
+                if (dx * dx + dy * dy + dz * dz > 0.0025
+                        || (activeDance == 5 && client.player.age - danceStartAge >= 100.0f)) {
                     dancePlaying = false;
                 }
                 lastDanceX = pos.x;
