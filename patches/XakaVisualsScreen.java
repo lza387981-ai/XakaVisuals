@@ -28,6 +28,7 @@ public final class XakaVisualsScreen extends Screen {
     private long lastFrame;
     private int activeSlider = -1;
     private int navScrollOffset = 0;
+    private int contentScrollOffset = 0;
     private boolean navDragging = false;
 
     public XakaVisualsScreen() {
@@ -102,8 +103,12 @@ public final class XakaVisualsScreen extends Screen {
         context.drawTextWithShadow(textRenderer, CATEGORY_HINTS[selectedCategory], contentX, y + 40, MUTED);
         context.fill(contentX, y + 59, right, y + 60, 0xFF293142);
         // Clip category cards to the panel so no control can spill outside on short mobile screens.
-        context.enableScissor(contentX, y + 68, right, y + panelH - 48);
-        renderCategory(context, mouseX, mouseY, contentX, right, y + 74, accent);
+        int contentViewportTop = y + 68;
+        int contentViewportBottom = y + panelH - 48;
+        int contentMaxScroll = Math.max(0, categoryContentHeight() - (contentViewportBottom - contentViewportTop));
+        contentScrollOffset = Math.max(0, Math.min(contentScrollOffset, contentMaxScroll));
+        context.enableScissor(contentX, contentViewportTop, right, contentViewportBottom);
+        renderCategory(context, mouseX, mouseY, contentX, right, y + 74 - contentScrollOffset, accent);
         context.disableScissor();
 
         if (selectedCategory != 2 && selectedCategory != 3) {
@@ -261,7 +266,18 @@ public final class XakaVisualsScreen extends Screen {
                 && mouseY >= navViewportTop && mouseY <= navViewportBottom) {
             int navStep = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
             int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
-            navScrollOffset = Math.max(0, Math.min(navMaxScroll, navScrollOffset - (int) Math.round(verticalAmount * 24)));
+            navScrollOffset = Math.max(0, Math.min(navMaxScroll, navScrollOffset - (int) Math.round(verticalAmount * 30)));
+            return true;
+        }
+        int contentLeft = x + 188;
+        int contentRight = x + panelW - 18;
+        int contentTop = y + 68;
+        int contentBottom = y + panelH - 48;
+        if (mouseX >= contentLeft && mouseX <= contentRight
+                && mouseY >= contentTop && mouseY <= contentBottom) {
+            int max = Math.max(0, categoryContentHeight() - (contentBottom - contentTop));
+            contentScrollOffset = Math.max(0, Math.min(max,
+                    contentScrollOffset - (int)Math.round(verticalAmount * 32)));
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
@@ -295,7 +311,7 @@ public final class XakaVisualsScreen extends Screen {
 
         int left = x + 188;
         int right = x + panelW - 18;
-        int top = y + 74;
+        int top = y + 74 - contentScrollOffset;
         if (mouseY < y + 68 || mouseY > y + panelH - 48) return true;
         if (selectedCategory == 0) {
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.animations = !XakaVisualsClient.animations;
@@ -350,6 +366,15 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 273)) { activeSlider = 4; setSlider(4, mouseX, left, right); }
         }
         return true;
+    }
+
+    private int categoryContentHeight() {
+        return switch (selectedCategory) {
+            case 0, 1 -> 310;
+            case 2, 3 -> 333;
+            case 4, 5 -> 284;
+            default -> 310;
+        };
     }
 
     private float stepOffset(float value) {
