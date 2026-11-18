@@ -104,13 +104,15 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 49, "Smooth animations", "Animated menu transitions", XakaVisualsClient.animations, accent, true);
                 row(c, mx, my, left, right, top + 98, "Compact HUD", "Reduce the height of HUD panels", XakaVisualsClient.compactHud, accent, true);
                 row(c, mx, my, left, right, top + 147, "Center marker", "Decorative circle or square on the HUD", XakaVisualsClient.markerEnabled, accent, true);
-                row(c, mx, my, left, right, top + 196, "FPS Boost", "Minimal particles; original setting is restored when disabled", XakaVisualsClient.fpsBoost, accent, true);
+                row(c, mx, my, left, right, top + 196, "Floating pet", "Toggle your local decorative companion", XakaVisualsClient.petEnabled, accent, true);
+                row(c, mx, my, left, right, top + 245, XakaVisualsClient.petWither ? "Pet: Wither" : "Pet: Creeper", "Click right side to switch; left side changes size", false, accent, false);
             }
             case 1 -> {
                 row(c, mx, my, left, right, top, "Watermark", "Show the XakaVisuals brand in-game", XakaVisualsClient.watermark, accent, true);
                 row(c, mx, my, left, right, top + 49, "FPS counter", "Display your current frame rate", XakaVisualsClient.fps, accent, true);
                 row(c, mx, my, left, right, top + 98, "Coordinates", "Show your current block position", XakaVisualsClient.coordinates, accent, true);
                 row(c, mx, my, left, right, top + 147, "Marker shape", XakaVisualsClient.markerSquare ? "Square — click to use circle" : "Circle — click to use square", XakaVisualsClient.markerSquare, accent, false);
+                row(c, mx, my, left, right, top + 196, "FPS Boost", "Minimal particles; restores your previous setting", XakaVisualsClient.fpsBoost, accent, true);
             }
             case 2 -> {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
@@ -119,8 +121,6 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 170, "Body marker", "Toggle a ring or square around your waist", XakaVisualsClient.bodyMarkerEnabled, accent, true);
                 row(c, mx, my, left, right, top + 219, XakaVisualsClient.bodyMarkerSquare ? "Marker: square" : "Marker: circle", "Click to switch shape", false, accent, false);
                 row(c, mx, my, left, right, top + 268, "Marker size: " + XakaVisualsClient.bodyMarkerSize, "Click to change size; height: " + String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetY), false, accent, false);
-                row(c, mx, my, left, right, top + 317, "Floating pet", "Toggle your local decorative companion", XakaVisualsClient.petEnabled, accent, true);
-                row(c, mx, my, left, right, top + 366, XakaVisualsClient.petWither ? "Pet: Wither" : "Pet: Creeper", "Click to switch companion; size " + XakaVisualsClient.petSize, false, accent, false);
             }
             case 3 -> {
                 infoCard(c, left, top, right, "Accent color", "Choose a signature color for the XakaVisuals interface.");
@@ -195,12 +195,17 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.animations = !XakaVisualsClient.animations;
             if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerEnabled = !XakaVisualsClient.markerEnabled;
-            if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.fpsBoost = !XakaVisualsClient.fpsBoost;
+            if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.petEnabled = !XakaVisualsClient.petEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 245)) {
+                if (mouseX > (left + right) / 2.0) XakaVisualsClient.petWither = !XakaVisualsClient.petWither;
+                else XakaVisualsClient.petSize = XakaVisualsClient.petSize >= 10 ? 3 : XakaVisualsClient.petSize + 2;
+            }
         } else if (selectedCategory == 1) {
             if (hitRow(mouseX, mouseY, left, right, top)) XakaVisualsClient.watermark = !XakaVisualsClient.watermark;
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.fps = !XakaVisualsClient.fps;
             if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.coordinates = !XakaVisualsClient.coordinates;
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerSquare = !XakaVisualsClient.markerSquare;
+            if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.fpsBoost = !XakaVisualsClient.fpsBoost;
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.haloSize = XakaVisualsClient.haloSize >= 14 ? 4 : XakaVisualsClient.haloSize + 2;
