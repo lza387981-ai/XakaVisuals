@@ -98,12 +98,16 @@ public final class XakaVisualsRenderer {
             double centerZ = targetPos.z - camera.z + towardCamera.z * 0.16
                     + right.z * XakaVisualsClient.bodyMarkerOffsetX
                     + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
-            float radius = 0.30f + XakaVisualsClient.bodyMarkerSize * 0.035f;
+            // Larger marker with three closely spaced outlines to make the ring visibly bolder.
+            float radius = 0.42f + XakaVisualsClient.bodyMarkerSize * 0.045f;
             var out = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
-            if (XakaVisualsClient.bodyMarkerSquare) {
-                drawBillboardSquare(out, centerX, centerY, centerZ, right, up, radius, color);
-            } else {
-                drawBillboardCircle(out, centerX, centerY, centerZ, right, up, radius, color, 64);
+            for (int layer = -1; layer <= 1; layer++) {
+                float layerRadius = radius + layer * 0.018f;
+                if (XakaVisualsClient.bodyMarkerSquare) {
+                    drawBillboardSquare(out, centerX, centerY, centerZ, right, up, layerRadius, color);
+                } else {
+                    drawBillboardCircle(out, centerX, centerY, centerZ, right, up, layerRadius, color, 64);
+                }
             }
         }
     }
