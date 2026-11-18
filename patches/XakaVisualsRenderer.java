@@ -72,7 +72,7 @@ public final class XakaVisualsRenderer {
             matrices.scale(scale, scale, scale);
             EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
             dispatcher.render(companion, 0.0, 0.0, 0.0, 0.0f,
-                    context.tickCounter().getTickDelta(false), matrices, consumers, 0x00F000F0);
+                    matrices, consumers, 0x00F000F0);
             matrices.pop();
         }
 
