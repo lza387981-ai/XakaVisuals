@@ -23,7 +23,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean bodyMarkerEnabled = false;
     public static boolean bodyMarkerSquare = false;
     public static int bodyMarkerSize = 5;
+    public static float bodyMarkerOffsetX = 0.0f;
     public static float bodyMarkerOffsetY = 0.0f;
+    public static float bodyMarkerOffsetZ = 0.0f;
     public static int accentIndex = 0;
 
     private static final int[] ACCENTS = {
