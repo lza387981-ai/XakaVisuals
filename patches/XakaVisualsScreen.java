@@ -28,6 +28,7 @@ public final class XakaVisualsScreen extends Screen {
     private long lastFrame;
     private int activeSlider = -1;
     private int navScrollOffset = 0;
+    private boolean navDragging = false;
 
     public XakaVisualsScreen() {
         super(Text.literal("XakaVisuals"));
@@ -281,10 +282,12 @@ public final class XakaVisualsScreen extends Screen {
         int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
         navScrollOffset = Math.max(0, Math.min(navScrollOffset, navMaxScroll));
         if (mouseY >= navViewportTop && mouseY <= navViewportBottom) {
+            navDragging = true;
             for (int i = 0; i < CATEGORIES.length; i++) {
                 int rowTop = navY + i * navStep - navScrollOffset;
                 if (inside(mouseX, mouseY, x + 20, rowTop, x + 155, rowTop + navRowHeight)) {
                     selectedCategory = i;
+                    navDragging = true;
                     return true;
                 }
             }
@@ -374,6 +377,20 @@ public final class XakaVisualsScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (navDragging && button == 0) {
+            int panelW = Math.min(620, width - 28);
+            int panelH = Math.min(440, height - 28);
+            int x = (width - panelW) / 2;
+            int y = (height - panelH) / 2;
+            int top = y + 85;
+            int bottom = y + panelH - 55;
+            if (mouseY >= top && mouseY <= bottom) {
+                int step = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
+                int max = Math.max(0, CATEGORIES.length * step - (bottom - top));
+                navScrollOffset = Math.max(0, Math.min(max, navScrollOffset - (int)Math.round(deltaY)));
+            }
+            return true;
+        }
         if (activeSlider >= 0 && button == 0) {
             int panelW = Math.min(620, width - 28);
             int x = (width - panelW) / 2;
@@ -385,7 +402,7 @@ public final class XakaVisualsScreen extends Screen {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (button == 0) activeSlider = -1;
+        if (button == 0) { activeSlider = -1; navDragging = false; }
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
