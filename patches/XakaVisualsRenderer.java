@@ -24,7 +24,8 @@ public final class XakaVisualsRenderer {
 
         boolean halo = XakaVisualsClient.haloEnabled;
         boolean marker = XakaVisualsClient.bodyMarkerEnabled;
-        if (!halo && !marker) return;
+        boolean pet = XakaVisualsClient.petEnabled;
+        if (!halo && !marker && !pet) return;
 
         Vec3d camera = context.camera().getPos();
         Vec3d position = player.getPos();
@@ -42,6 +43,32 @@ public final class XakaVisualsRenderer {
             float radius = 0.22f + XakaVisualsClient.haloSize * 0.025f;
             drawCircle(lines, baseX, baseY, baseZ, radius, player.getHeight() + 0.18f, argb, 48);
         }
+        if (pet) {
+            // Tiny, local-only outline pets float beside the owner; they are not entities
+            // and have no collision, AI, attacks, or world interaction.
+            double bob = Math.sin(client.world.getTime() * 0.12) * 0.08;
+            double side = player.getWidth() * 0.75 + 0.38;
+            double px = baseX + side;
+            double py = baseY + 0.85 + bob;
+            double pz = baseZ + 0.18;
+            float s = 0.10f + XakaVisualsClient.petSize * 0.018f;
+            if (!XakaVisualsClient.petWither) {
+                int green = 0xFF62E66B;
+                drawBox(lines, px, py + s * 0.55, pz, s, green);
+                drawBox(lines, px, py - s * 0.75, pz, s * 0.72f, green);
+                for (int lx = -1; lx <= 1; lx += 2) {
+                    for (int lz = -1; lz <= 1; lz += 2) {
+                        drawBox(lines, px + lx * s * 0.48, py - s * 1.55, pz + lz * s * 0.42, s * 0.22f, green);
+                    }
+                }
+            } else {
+                int wither = 0xFF454955;
+                drawBox(lines, px, py, pz, s * 0.85f, wither);
+                drawBox(lines, px - s * 1.05, py + s * 0.25, pz, s * 0.48f, wither);
+                drawBox(lines, px + s * 1.05, py + s * 0.25, pz, s * 0.48f, wither);
+                drawBox(lines, px, py - s * 0.9, pz, s * 0.65f, wither);
+            }
+        }
         if (marker) {
             float radius = 0.18f + XakaVisualsClient.bodyMarkerSize * 0.025f;
             float y = player.getHeight() * 0.55f + XakaVisualsClient.bodyMarkerOffsetY;
@@ -58,6 +85,16 @@ public final class XakaVisualsRenderer {
                 drawCircle(lines, markerX, baseY, markerZ, radius, y, argb, 40);
             }
         }
+    }
+
+    private static void drawBox(VertexConsumer out, double x, double y, double z, float half, int color) {
+        double x0=x-half, x1=x+half, y0=y-half, y1=y+half, z0=z-half, z1=z+half;
+        line(out,x0,y0,z0,x1,y0,z0,color); line(out,x1,y0,z0,x1,y0,z1,color);
+        line(out,x1,y0,z1,x0,y0,z1,color); line(out,x0,y0,z1,x0,y0,z0,color);
+        line(out,x0,y1,z0,x1,y1,z0,color); line(out,x1,y1,z0,x1,y1,z1,color);
+        line(out,x1,y1,z1,x0,y1,z1,color); line(out,x0,y1,z1,x0,y1,z0,color);
+        line(out,x0,y0,z0,x0,y1,z0,color); line(out,x1,y0,z0,x1,y1,z0,color);
+        line(out,x1,y0,z1,x1,y1,z1,color); line(out,x0,y0,z1,x0,y1,z1,color);
     }
 
     private static void drawCircle(VertexConsumer out, double x, double y0, double z, float radius,
