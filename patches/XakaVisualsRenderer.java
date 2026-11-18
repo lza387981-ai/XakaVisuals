@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.MathHelper;
 
 /** Local-only cosmetics: a thick halo, camera-relative companion and crosshair player marker. */
 public final class XakaVisualsRenderer {
@@ -55,7 +56,9 @@ public final class XakaVisualsRenderer {
         if (pet) {
             // Anchor the companion to the player body, not the camera, so turning the view
             // does not spin the pet around or make it orbit the screen.
-            float bodyYaw = player.getBodyYaw();
+            float tickDelta = context.tickCounter().getTickDelta(false);
+            // Interpolate across the shortest angular path to avoid 360-degree snapping.
+            float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, player.prevBodyYaw, player.bodyYaw);
             float playerYawRad = (float) Math.toRadians(bodyYaw);
             Vector3f left = new Vector3f((float) Math.cos(playerYawRad), 0.0f,
                     (float) Math.sin(playerYawRad));
