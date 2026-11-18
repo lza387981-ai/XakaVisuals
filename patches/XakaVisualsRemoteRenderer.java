@@ -136,15 +136,16 @@ public final class XakaVisualsRemoteRenderer {
         double len=Math.sqrt(nx*nx+ny*ny+nz*nz);
         if (len < 1.0e-6) len=1.0;
         nx/=len; ny/=len; nz/=len;
+        float nxf=(float)nx, nyf=(float)ny, nzf=(float)nz;
         float u0=mirror?1.0f:0.0f, u1=mirror?0.0f:1.0f;
-        wingVertex(out,rx,ry,rz,color,u0,1,nx,ny,nz);
-        wingVertex(out,tx,ty,tz,color,u1,0,nx,ny,nz);
-        wingVertex(out,ox,oy,oz,color,u1,1,nx,ny,nz);
-        wingVertex(out,ix,iy,iz,color,u0,0,nx,ny,nz);
-        wingVertex(out,ox,oy,oz,color,u1,1,-nx,-ny,-nz);
-        wingVertex(out,tx,ty,tz,color,u1,0,-nx,-ny,-nz);
-        wingVertex(out,rx,ry,rz,color,u0,1,-nx,-ny,-nz);
-        wingVertex(out,ix,iy,iz,color,u0,0,-nx,-ny,-nz);
+        wingVertex(out,rx,ry,rz,color,u0,1,nxf,nyf,nzf);
+        wingVertex(out,tx,ty,tz,color,u1,0,nxf,nyf,nzf);
+        wingVertex(out,ox,oy,oz,color,u1,1,nxf,nyf,nzf);
+        wingVertex(out,ix,iy,iz,color,u0,0,nxf,nyf,nzf);
+        wingVertex(out,ox,oy,oz,color,u1,1,-nxf,-nyf,-nzf);
+        wingVertex(out,tx,ty,tz,color,u1,0,-nxf,-nyf,-nzf);
+        wingVertex(out,rx,ry,rz,color,u0,1,-nxf,-nyf,-nzf);
+        wingVertex(out,ix,iy,iz,color,u0,0,-nxf,-nyf,-nzf);
     }
 
     private static void wingVertex(VertexConsumer out,double x,double y,double z,
