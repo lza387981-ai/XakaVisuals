@@ -216,7 +216,11 @@ public final class XakaVisualsScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) { close(); return true; }
+        // Right Shift toggles the menu closed, matching the key used to open it.
+        if (keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT || keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            close();
+            return true;
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
