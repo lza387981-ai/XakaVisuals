@@ -67,18 +67,23 @@ public final class XakaVisualsScreen extends Screen {
         context.fill(x + 25, y + 79, x + 151, y + 80, 0xFF2B3343);
 
         int navY = y + 96;
+        int navStep = Math.min(36, Math.max(22, (panelH - 150) / CATEGORIES.length));
+        int navRowHeight = Math.min(30, navStep - 2);
         for (int i = 0; i < CATEGORIES.length; i++) {
-            int rowY = navY + i * 36;
+            int rowY = navY + i * navStep;
+            int rowTop = rowY - 4;
+            int rowBottom = rowTop + navRowHeight;
             boolean active = selectedCategory == i;
-            boolean hover = inside(mouseX, mouseY, x + 20, rowY - 4, x + 155, rowY + 26);
+            boolean hover = inside(mouseX, mouseY, x + 20, rowTop, x + 155, rowBottom);
             if (active) {
-                context.fill(x + 21, rowY - 4, x + 155, rowY + 26, 0xFF28243B);
-                context.fill(x + 21, rowY - 4, x + 23, rowY + 26, accent);
+                context.fill(x + 21, rowTop, x + 155, rowBottom, 0xFF28243B);
+                context.fill(x + 21, rowTop, x + 23, rowBottom, accent);
             } else if (hover) {
-                context.fill(x + 21, rowY - 4, x + 155, rowY + 26, 0xFF1A2130);
+                context.fill(x + 21, rowTop, x + 155, rowBottom, 0xFF1A2130);
             }
-            context.drawTextWithShadow(textRenderer, categoryIcon(i), x + 32, rowY + 5, active ? accent : MUTED);
-            context.drawTextWithShadow(textRenderer, CATEGORIES[i], x + 51, rowY + 5, active ? TEXT : MUTED);
+            int textY = rowTop + Math.max(3, (navRowHeight - 9) / 2);
+            context.drawTextWithShadow(textRenderer, categoryIcon(i), x + 32, textY, active ? accent : MUTED);
+            context.drawTextWithShadow(textRenderer, CATEGORIES[i], x + 51, textY, active ? TEXT : MUTED);
         }
 
         context.drawTextWithShadow(textRenderer, "XAKAVISUALS  /  SETTINGS", x + 25, y + panelH - 43, MUTED);
@@ -89,7 +94,10 @@ public final class XakaVisualsScreen extends Screen {
         context.drawTextWithShadow(textRenderer, CATEGORIES[selectedCategory], contentX, y + 25, TEXT);
         context.drawTextWithShadow(textRenderer, CATEGORY_HINTS[selectedCategory], contentX, y + 40, MUTED);
         context.fill(contentX, y + 59, right, y + 60, 0xFF293142);
+        // Clip category cards to the panel so no control can spill outside on short mobile screens.
+        context.enableScissor(contentX, y + 68, right, y + panelH - 48);
         renderCategory(context, mouseX, mouseY, contentX, right, y + 74, accent);
+        context.disableScissor();
 
         if (selectedCategory != 2 && selectedCategory != 3) {
             context.drawTextWithShadow(textRenderer, "XakaVisuals  •  crafted for your game", contentX,
@@ -242,9 +250,12 @@ public final class XakaVisualsScreen extends Screen {
         int x = (width - panelW) / 2;
         int y = (height - panelH) / 2;
         int navY = y + 96;
+        int navStep = Math.min(36, Math.max(22, (panelH - 150) / CATEGORIES.length));
+        int navRowHeight = Math.min(30, navStep - 2);
         for (int i = 0; i < CATEGORIES.length; i++) {
-            int rowY = navY + i * 36;
-            if (inside(mouseX, mouseY, x + 20, rowY - 4, x + 155, rowY + 26)) {
+            int rowY = navY + i * navStep;
+            int rowTop = rowY - 4;
+            if (inside(mouseX, mouseY, x + 20, rowTop, x + 155, rowTop + navRowHeight)) {
                 selectedCategory = i;
                 return true;
             }
@@ -253,6 +264,7 @@ public final class XakaVisualsScreen extends Screen {
         int left = x + 188;
         int right = x + panelW - 18;
         int top = y + 74;
+        if (mouseY < y + 68 || mouseY > y + panelH - 48) return true;
         if (selectedCategory == 0) {
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.animations = !XakaVisualsClient.animations;
             if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;
@@ -281,11 +293,6 @@ public final class XakaVisualsScreen extends Screen {
                 } else {
                     XakaVisualsClient.bodyMarkerSize += 3;
                 }
-            }
-            if (hitRow(mouseX, mouseY, left, right, top + 317)) XakaVisualsClient.petEnabled = !XakaVisualsClient.petEnabled;
-            if (hitRow(mouseX, mouseY, left, right, top + 366)) {
-                if (mouseX > (left + right) / 2.0) XakaVisualsClient.petWither = !XakaVisualsClient.petWither;
-                else XakaVisualsClient.petSize = XakaVisualsClient.petSize >= 10 ? 3 : XakaVisualsClient.petSize + 2;
             }
         } else if (selectedCategory == 4) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) { activeSlider = 5; setSlider(5, mouseX, left, right); }
