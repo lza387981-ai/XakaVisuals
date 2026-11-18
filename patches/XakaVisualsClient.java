@@ -55,9 +55,24 @@ public final class XakaVisualsClient implements ClientModInitializer {
 
         // Decorative HUD marker only: it does not target, track, or select entities.
         HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
-            if (!markerEnabled) return;
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.options.hudHidden) return;
+
+            // Minimal XakaVisuals watermark: a custom X emblem and clean label.
+            if (watermark) {
+                int wx = 8;
+                int wy = 8;
+                int accent = accent();
+                drawContext.fill(wx, wy, wx + 22, wy + 22, 0xCC111622);
+                drawContext.fill(wx, wy, wx + 2, wy + 22, accent);
+                drawContext.fill(wx + 5, wy + 3, wx + 19, wy + 19, accent);
+                drawContext.drawCenteredTextWithShadow(client.textRenderer, "X", wx + 12, wy + 7, 0xFF10131C);
+                drawContext.fill(wx + 27, wy + 2, wx + 116, wy + 20, 0xAA111622);
+                drawContext.drawTextWithShadow(client.textRenderer, "XAKA", wx + 33, wy + 3, 0xFFF2F3F8);
+                drawContext.drawTextWithShadow(client.textRenderer, "VISUALS", wx + 67, wy + 3, accent);
+            }
+
+            if (!markerEnabled) return;
             int cx = client.getWindow().getScaledWidth() / 2;
             int cy = client.getWindow().getScaledHeight() / 2 + 38;
             int size = Math.max(2, Math.min(14, markerSize));
