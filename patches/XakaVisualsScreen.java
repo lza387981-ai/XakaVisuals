@@ -24,6 +24,7 @@ public final class XakaVisualsScreen extends Screen {
     private int selectedCategory;
     private float openProgress;
     private long lastFrame;
+    private int activeSlider = -1;
 
     public XakaVisualsScreen() {
         super(Text.literal("XakaVisuals"));
@@ -117,10 +118,10 @@ public final class XakaVisualsScreen extends Screen {
             case 2 -> {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
                 row(c, mx, my, left, right, top + 72, "Halo above head", "Toggle the decorative ring above your player", XakaVisualsClient.haloEnabled, accent, true);
-                row(c, mx, my, left, right, top + 121, "Halo size: " + XakaVisualsClient.haloSize, "Click to adjust the halo size", false, accent, false);
+                sliderRow(c, mx, my, left, right, top + 121, "Halo size", XakaVisualsClient.haloSize, 4, 18, accent, 0);
                 row(c, mx, my, left, right, top + 170, "Body marker", "Toggle a ring or square around your waist", XakaVisualsClient.bodyMarkerEnabled, accent, true);
                 row(c, mx, my, left, right, top + 219, XakaVisualsClient.bodyMarkerSquare ? "Marker: square" : "Marker: circle", "Click to switch shape", false, accent, false);
-                row(c, mx, my, left, right, top + 268, "Marker size: " + XakaVisualsClient.bodyMarkerSize, "Click to change size; height: " + String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetY), false, accent, false);
+                sliderRow(c, mx, my, left, right, top + 268, "Body marker size", XakaVisualsClient.bodyMarkerSize, 3, 15, accent, 1);
             }
             case 3 -> {
                 infoCard(c, left, top, right, "Accent color", "Choose a signature color for the XakaVisuals interface.");
@@ -129,10 +130,42 @@ public final class XakaVisualsScreen extends Screen {
                 button(c, mx, my, left, top + 78, 118, 31, "‹  Previous", false, accent);
                 button(c, mx, my, left + 126, top + 78, 118, 31, names[index] + "  ›", true, accent);
                 row(c, mx, my, left, right, top + 126, "Compact HUD", "Use smaller in-game HUD panels", XakaVisualsClient.compactHud, accent, true);
-                row(c, mx, my, left, right, top + 175, "Marker left / right", String.format(java.util.Locale.ROOT, "X offset: %.1f  (click to adjust)", XakaVisualsClient.bodyMarkerOffsetX), false, accent, false);
-                row(c, mx, my, left, right, top + 224, "Marker forward / back", String.format(java.util.Locale.ROOT, "Z offset: %.1f  (click to adjust)", XakaVisualsClient.bodyMarkerOffsetZ), false, accent, false);
-                row(c, mx, my, left, right, top + 273, "Marker height", String.format(java.util.Locale.ROOT, "Y offset: %.1f  (click to adjust)", XakaVisualsClient.bodyMarkerOffsetY), false, accent, false);
+                sliderRow(c, mx, my, left, right, top + 175, "Marker left / right", Math.round((XakaVisualsClient.bodyMarkerOffsetX + 0.5f) * 10), 0, 10, accent, 2);
+                sliderRow(c, mx, my, left, right, top + 224, "Marker forward / back", Math.round((XakaVisualsClient.bodyMarkerOffsetZ + 0.5f) * 10), 0, 10, accent, 3);
+                sliderRow(c, mx, my, left, right, top + 273, "Marker height", Math.round((XakaVisualsClient.bodyMarkerOffsetY + 0.5f) * 10), 0, 10, accent, 4);
             }
+        }
+    }
+
+
+    private void sliderRow(DrawContext c, int mx, int my, int left, int right, int y,
+                           String title, int value, int min, int max, int accent, int id) {
+        boolean hover = inside(mx, my, left, y, right, y + 42);
+        c.fill(left, y, right, y + 42, hover ? CARD_HOVER : CARD);
+        c.drawTextWithShadow(textRenderer, title, left + 12, y + 6, TEXT);
+        String shown = switch (id) {
+            case 2 -> String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetX);
+            case 3 -> String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetZ);
+            case 4 -> String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetY);
+            default -> Integer.toString(value);
+        };
+        c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
+        int sx = left + 12, ex = right - 12, sy = y + 29;
+        c.fill(sx, sy, ex, sy + 4, 0xFF414A5D);
+        int knob = sx + Math.round((ex - sx) * ((value - min) / (float)(max - min)));
+        c.fill(sx, sy, knob, sy + 4, accent);
+        c.fill(knob - 3, sy - 3, knob + 4, sy + 7, 0xFFFFFFFF);
+    }
+
+    private void setSlider(int id, double mouseX, int left, int right) {
+        int sx = left + 12, ex = right - 12;
+        float t = (float)Math.max(0, Math.min(1, (mouseX - sx) / (double)(ex - sx)));
+        switch (id) {
+            case 0 -> XakaVisualsClient.haloSize = 4 + Math.round(t * 14);
+            case 1 -> XakaVisualsClient.bodyMarkerSize = 3 + Math.round(t * 12);
+            case 2 -> XakaVisualsClient.bodyMarkerOffsetX = Math.round((-0.5f + t) * 10) / 10.0f;
+            case 3 -> XakaVisualsClient.bodyMarkerOffsetZ = Math.round((-0.5f + t) * 10) / 10.0f;
+            case 4 -> XakaVisualsClient.bodyMarkerOffsetY = Math.round((-0.5f + t) * 10) / 10.0f;
         }
     }
 
@@ -208,7 +241,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.fpsBoost = !XakaVisualsClient.fpsBoost;
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
-            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.haloSize = Math.max(4, Math.min(18, 4 + (int)((mouseX - left) / (right - left) * 14)));
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 0; setSlider(0, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.bodyMarkerEnabled = !XakaVisualsClient.bodyMarkerEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.bodyMarkerSquare = !XakaVisualsClient.bodyMarkerSquare;
             if (hitRow(mouseX, mouseY, left, right, top + 268)) {
@@ -230,9 +263,9 @@ public final class XakaVisualsScreen extends Screen {
             if (inside(mouseX, mouseY, left + 126, top + 78, left + 244, top + 109))
                 XakaVisualsClient.accentIndex = Math.floorMod(XakaVisualsClient.accentIndex + 1, 5);
             if (hitRow(mouseX, mouseY, left, right, top + 126)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;
-            if (hitRow(mouseX, mouseY, left, right, top + 175)) XakaVisualsClient.bodyMarkerOffsetX = Math.round((-0.5f + (float)(mouseX - left) / (right - left)) * 10) / 10.0f;
-            if (hitRow(mouseX, mouseY, left, right, top + 224)) XakaVisualsClient.bodyMarkerOffsetZ = Math.round((-0.5f + (float)(mouseX - left) / (right - left)) * 10) / 10.0f;
-            if (hitRow(mouseX, mouseY, left, right, top + 273)) XakaVisualsClient.bodyMarkerOffsetY = Math.round((-0.5f + (float)(mouseX - left) / (right - left)) * 10) / 10.0f;
+            if (hitRow(mouseX, mouseY, left, right, top + 175)) { activeSlider = 2; setSlider(2, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 224)) { activeSlider = 3; setSlider(3, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 273)) { activeSlider = 4; setSlider(4, mouseX, left, right); }
         }
         return true;
     }
@@ -258,6 +291,24 @@ public final class XakaVisualsScreen extends Screen {
 
     @Override
     public boolean shouldPause() { return false; }
+
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (activeSlider >= 0 && button == 0) {
+            int panelW = Math.min(620, width - 28);
+            int x = (width - panelW) / 2;
+            setSlider(activeSlider, mouseX, x + 188, x + panelW - 18);
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0) activeSlider = -1;
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
