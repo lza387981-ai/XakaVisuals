@@ -31,13 +31,14 @@ jobs:
       - name: Apply mobile rendering fix
         run: cp patches/XakaVisualsScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsScreen.java
 
-      - name: Inspect Java sources for feature work
+      - name: Inspect project configuration
         run: |
-          find source/XakaVisuals/src/main/java -type f -name '*.java' -print
-          while IFS= read -r file; do
-            echo "===== SOURCE: $file ====="
-            sed -n '1,320p' "$file"
-          done < <(find source/XakaVisuals/src/main/java -type f -name '*.java' | sort)
+          echo "===== BUILD FILE ====="
+          sed -n '1,260p' source/XakaVisuals/build.gradle
+          echo "===== MOD METADATA ====="
+          find source/XakaVisuals/src/main/resources -maxdepth 2 -type f -print -exec sed -n '1,220p' {} \\;
+          echo "===== MIXIN CONFIGS ====="
+          find source/XakaVisuals/src/main/resources -type f -iname '*mixin*' -print
 
       - name: Build Fabric mod
         working-directory: source/XakaVisuals
