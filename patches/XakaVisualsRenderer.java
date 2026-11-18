@@ -52,10 +52,11 @@ public final class XakaVisualsRenderer {
         }
 
         if (pet) {
-            // Camera-relative left: the companion stays on the screen's left as the view turns.
-            Vector3f left = context.camera().getRotation().transform(new Vector3f(-1, 0, 0));
-            left.y = 0;
-            if (left.lengthSquared() > 0.0001f) left.normalize();
+            // Anchor the companion to the player body, not the camera, so turning the view
+            // does not spin the pet around or make it orbit the screen.
+            float playerYawRad = (float) Math.toRadians(player.getYaw());
+            Vector3f left = new Vector3f((float) Math.cos(playerYawRad), 0.0f,
+                    (float) Math.sin(playerYawRad));
             double bob = Math.sin(client.world.getTime() * 0.12) * 0.045;
             // The Wither is larger, so keep it farther from the player.
             double petDistance = XakaVisualsClient.petWither ? 1.28 : 0.92;
@@ -66,9 +67,8 @@ public final class XakaVisualsRenderer {
                     ? new WitherEntity(EntityType.WITHER, client.world)
                     : new CreeperEntity(EntityType.CREEPER, client.world);
             companion.setPosition(px, py, pz);
-            // Face the same horizontal direction as the active camera, not the player's body yaw.
-            // Passing the yaw to the dispatcher is important: render() otherwise overrides entity yaw.
-            float facingYaw = context.camera().getYaw();
+            // Keep the pet facing the player's body direction. Camera yaw is intentionally ignored.
+            float facingYaw = player.getYaw();
             companion.setYaw(facingYaw);
             companion.setBodyYaw(facingYaw);
             companion.setHeadYaw(facingYaw);
