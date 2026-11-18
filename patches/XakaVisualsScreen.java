@@ -42,7 +42,7 @@ public final class XakaVisualsScreen extends Screen {
         context.fill(0, 0, width, height, 0x99060910);
 
         int panelW = Math.min(620, width - 28);
-        int panelH = Math.min(390, height - 28);
+        int panelH = Math.min(440, height - 28);
         int x = (width - panelW) / 2;
         int y = (height - panelH) / 2;
         int accent = XakaVisualsClient.accent();
@@ -104,6 +104,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 49, "Smooth animations", "Animated menu transitions", XakaVisualsClient.animations, accent, true);
                 row(c, mx, my, left, right, top + 98, "Compact HUD", "Reduce the height of HUD panels", XakaVisualsClient.compactHud, accent, true);
                 row(c, mx, my, left, right, top + 147, "Center marker", "Decorative circle or square on the HUD", XakaVisualsClient.markerEnabled, accent, true);
+                row(c, mx, my, left, right, top + 196, "FPS Boost", "Minimal particles; original setting is restored when disabled", XakaVisualsClient.fpsBoost, accent, true);
             }
             case 1 -> {
                 row(c, mx, my, left, right, top, "Watermark", "Show the XakaVisuals brand in-game", XakaVisualsClient.watermark, accent, true);
@@ -118,6 +119,8 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 170, "Body marker", "Toggle a ring or square around your waist", XakaVisualsClient.bodyMarkerEnabled, accent, true);
                 row(c, mx, my, left, right, top + 219, XakaVisualsClient.bodyMarkerSquare ? "Marker: square" : "Marker: circle", "Click to switch shape", false, accent, false);
                 row(c, mx, my, left, right, top + 268, "Marker size: " + XakaVisualsClient.bodyMarkerSize, "Click to change size; height: " + String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetY), false, accent, false);
+                row(c, mx, my, left, right, top + 317, "Floating pet", "Toggle your local decorative companion", XakaVisualsClient.petEnabled, accent, true);
+                row(c, mx, my, left, right, top + 366, XakaVisualsClient.petWither ? "Pet: Wither" : "Pet: Creeper", "Click to switch companion; size " + XakaVisualsClient.petSize, false, accent, false);
             }
             case 3 -> {
                 infoCard(c, left, top, right, "Accent color", "Choose a signature color for the XakaVisuals interface.");
@@ -192,6 +195,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.animations = !XakaVisualsClient.animations;
             if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerEnabled = !XakaVisualsClient.markerEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.fpsBoost = !XakaVisualsClient.fpsBoost;
         } else if (selectedCategory == 1) {
             if (hitRow(mouseX, mouseY, left, right, top)) XakaVisualsClient.watermark = !XakaVisualsClient.watermark;
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.fps = !XakaVisualsClient.fps;
@@ -209,6 +213,11 @@ public final class XakaVisualsScreen extends Screen {
                 } else {
                     XakaVisualsClient.bodyMarkerSize += 3;
                 }
+            }
+            if (hitRow(mouseX, mouseY, left, right, top + 317)) XakaVisualsClient.petEnabled = !XakaVisualsClient.petEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 366)) {
+                if (mouseX > (left + right) / 2.0) XakaVisualsClient.petWither = !XakaVisualsClient.petWither;
+                else XakaVisualsClient.petSize = XakaVisualsClient.petSize >= 10 ? 3 : XakaVisualsClient.petSize + 2;
             }
         } else if (selectedCategory == 3) {
             if (inside(mouseX, mouseY, left, top + 78, left + 118, top + 109))
