@@ -137,7 +137,8 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 98, "Coordinates", "Show your current block position", XakaVisualsClient.coordinates, accent, true);
                 row(c, mx, my, left, right, top + 147, "Marker shape", XakaVisualsClient.markerSquare ? "Square — click to use circle" : "Circle — click to use square", XakaVisualsClient.markerSquare, accent, false);
                 row(c, mx, my, left, right, top + 196, "FPS Boost", "Minimal particles; restores your previous setting", XakaVisualsClient.fpsBoost, accent, true);
-                row(c, mx, my, left, right, top + 245, "Enemy HP", "Show the targeted player's health, including invisible players", XakaVisualsClient.enemyHpEnabled, accent, true);
+                row(c, mx, my, left, right, top + 245, "Enemy HP", "Show the targeted player's health", XakaVisualsClient.enemyHpEnabled, accent, true);
+                row(c, mx, my, left, right, top + 294, "Move HP HUD", "Drag the health panel anywhere on screen", false, accent, false);
             }
             case 2 -> {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
@@ -326,6 +327,8 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerSquare = !XakaVisualsClient.markerSquare;
             if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.fpsBoost = !XakaVisualsClient.fpsBoost;
             if (hitRow(mouseX, mouseY, left, right, top + 245)) XakaVisualsClient.enemyHpEnabled = !XakaVisualsClient.enemyHpEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 294))
+                net.minecraft.client.MinecraftClient.getInstance().setScreen(new XakaHudPositionScreen());
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 0; setSlider(0, mouseX, left, right); }
@@ -368,7 +371,7 @@ public final class XakaVisualsScreen extends Screen {
     private int categoryContentHeight() {
         return switch (selectedCategory) {
             case 0 -> 310;
-            case 1 -> 359;
+            case 1 -> 408;
             case 2, 3 -> 333;
             case 4, 5 -> 284;
             default -> 310;
