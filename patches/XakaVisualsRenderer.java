@@ -45,10 +45,12 @@ public final class XakaVisualsRenderer {
         if (marker) {
             float radius = 0.18f + XakaVisualsClient.bodyMarkerSize * 0.025f;
             float y = player.getHeight() * 0.55f + XakaVisualsClient.bodyMarkerOffsetY;
+            double markerX = baseX + XakaVisualsClient.bodyMarkerOffsetX;
+            double markerZ = baseZ + XakaVisualsClient.bodyMarkerOffsetZ;
             if (XakaVisualsClient.bodyMarkerSquare) {
-                drawSquare(lines, baseX, baseY, baseZ, radius, y, argb);
+                drawSquare(lines, markerX, baseY, markerZ, radius, y, argb);
             } else {
-                drawCircle(lines, baseX, baseY, baseZ, radius, y, argb, 40);
+                drawCircle(lines, markerX, baseY, markerZ, radius, y, argb, 40);
             }
         }
     }
