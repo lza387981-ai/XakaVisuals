@@ -26,6 +26,12 @@ jobs:
       - name: Extract project
         run: unzip -q XakaVisuals-phone-build.zip -d source
 
+      - name: Apply latest source patches
+        run: |
+          cp patches/XakaVisualsClient.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsClient.java
+          cp patches/XakaVisualsRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsRenderer.java
+          cp patches/XakaVisualsScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsScreen.java
+
       - name: Build mod
         working-directory: source/XakaVisuals
         run: gradle build --no-daemon
