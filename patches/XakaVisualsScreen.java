@@ -71,7 +71,7 @@ public final class XakaVisualsScreen extends Screen {
 
         int navViewportTop = y + 85;
         int navViewportBottom = y + panelH - 55;
-        int navStep = 52;
+        int navStep = 64;
         int navRowHeight = Math.min(30, navStep - 2);
         int navY = navViewportTop + 4;
         int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
@@ -263,11 +263,16 @@ public final class XakaVisualsScreen extends Screen {
         if (mouseX < x || mouseX > x + panelW || mouseY < y || mouseY > y + panelH)
             return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
         int navTop = y + 85, navBottom = y + panelH - 55;
-        if (mouseX <= x + 166 && mouseY >= navTop && mouseY <= navBottom) {
-            int max = Math.max(0, CATEGORIES.length * 52 - (navBottom - navTop));
-            navScrollOffset = Math.max(0, Math.min(max, navScrollOffset - (int)Math.round(verticalAmount * 28)));
-        } else if (mouseX >= x + 176 && mouseY >= y + 68 && mouseY <= y + panelH - 48) {
-            contentScrollOffset = Math.max(0, Math.min(180, contentScrollOffset - (int)Math.round(verticalAmount * 32)));
+        // Wheel input anywhere over the panel scrolls the relevant pane.
+        if (mouseX <= x + 176) {
+            int max = Math.max(0, CATEGORIES.length * 64 - (navBottom - navTop));
+            navScrollOffset = Math.max(0, Math.min(max,
+                    navScrollOffset - (int)Math.round(verticalAmount * 36)));
+        } else {
+            int viewportHeight = Math.max(1, panelH - 116);
+            int max = Math.max(0, categoryContentHeight() - viewportHeight);
+            contentScrollOffset = Math.max(0, Math.min(max,
+                    contentScrollOffset - (int)Math.round(verticalAmount * 36)));
         }
         return true;
     }
@@ -281,7 +286,7 @@ public final class XakaVisualsScreen extends Screen {
         int y = (height - panelH) / 2;
         int navViewportTop = y + 85;
         int navViewportBottom = y + panelH - 55;
-        int navStep = 52;
+        int navStep = 64;
         int navRowHeight = Math.min(30, navStep - 2);
         int navY = navViewportTop + 4;
         int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
@@ -399,7 +404,7 @@ public final class XakaVisualsScreen extends Screen {
             int top = y + 85;
             int bottom = y + panelH - 55;
             if (mouseY >= top && mouseY <= bottom) {
-                int step = 52;
+                int step = 64;
                 int max = Math.max(0, CATEGORIES.length * step - (bottom - top));
                 navScrollOffset = Math.max(0, Math.min(max, navScrollOffset - (int)Math.round(deltaY)));
             }
