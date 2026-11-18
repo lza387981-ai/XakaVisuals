@@ -2,6 +2,7 @@ package dev.xaka.visuals.mixin;
 
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.model.ModelPart;
 import dev.xaka.visuals.XakaVisualsClient;
 import org.spongepowered.asm.mixin.Final;
@@ -23,7 +24,8 @@ public abstract class PlayerEntityModelMixin {
 
     @Inject(method = "setAngles", at = @At("TAIL"))
     private void xakavisuals$applyDance(BipedEntityRenderState state, CallbackInfo ci) {
-        if (!XakaVisualsClient.dancePlaying || state.id != XakaVisualsClient.danceEntityId) return;
+        if (!XakaVisualsClient.dancePlaying || !(state instanceof PlayerEntityRenderState playerState)
+                || playerState.id != XakaVisualsClient.danceEntityId) return;
 
         float t = state.age * 0.22f * XakaVisualsClient.danceSpeed;
         float wave = (float) Math.sin(t);
