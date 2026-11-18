@@ -45,8 +45,13 @@ public final class XakaVisualsRenderer {
         if (marker) {
             float radius = 0.18f + XakaVisualsClient.bodyMarkerSize * 0.025f;
             float y = player.getHeight() * 0.55f + XakaVisualsClient.bodyMarkerOffsetY;
-            double markerX = baseX + XakaVisualsClient.bodyMarkerOffsetX;
-            double markerZ = baseZ + XakaVisualsClient.bodyMarkerOffsetZ;
+            // Rotate horizontal offsets with the player's facing direction so
+            // left/right and forward/back stay intuitive while the player turns.
+            double yaw = Math.toRadians(player.getYaw());
+            double localX = XakaVisualsClient.bodyMarkerOffsetX;
+            double localZ = XakaVisualsClient.bodyMarkerOffsetZ;
+            double markerX = baseX + localX * Math.cos(yaw) - localZ * Math.sin(yaw);
+            double markerZ = baseZ + localX * Math.sin(yaw) + localZ * Math.cos(yaw);
             if (XakaVisualsClient.bodyMarkerSquare) {
                 drawSquare(lines, markerX, baseY, markerZ, radius, y, argb);
             } else {
