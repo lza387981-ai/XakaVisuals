@@ -18,6 +18,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean fps = true;
     public static boolean coordinates = false;
     public static boolean enemyHpEnabled = true;
+    public static int enemyHpX = -1;
+    public static int enemyHpY = -1;
     public static boolean markerEnabled = false;
     public static boolean markerSquare = false;
     public static int markerSize = 5;
@@ -141,8 +143,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 int sw = client.getWindow().getScaledWidth();
                 int cardW = 136;
                 int cardH = 32;
-                int cardX = (sw - cardW) / 2;
-                int cardY = Math.max(8, client.getWindow().getScaledHeight() / 2 - 112);
+                int sh = client.getWindow().getScaledHeight();
+                int cardX = enemyHpX < 0 ? (sw - cardW) / 2 : Math.max(0, Math.min(sw - cardW, enemyHpX));
+                int cardY = enemyHpY < 0 ? Math.max(8, sh / 2 - 112) : Math.max(0, Math.min(sh - cardH, enemyHpY));
                 int hpColor = health / maxHealth > 0.5f ? 0xFF55D68B
                         : health / maxHealth > 0.25f ? 0xFFFFC15A : 0xFFFF626F;
                 drawContext.fill(cardX, cardY, cardX + cardW, cardY + cardH, 0xD9101420);
