@@ -30,6 +30,10 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean petEnabled = false;
     public static boolean petWither = false;
     public static int petSize = 5;
+    // First-person hand/item offsets, in camera-local blocks.
+    public static float handOffsetX = 0.0f;
+    public static float handOffsetY = 0.0f;
+    public static float handOffsetZ = 0.0f;
     public static boolean fpsBoost = false;
     private static Object previousParticles = null;
 
