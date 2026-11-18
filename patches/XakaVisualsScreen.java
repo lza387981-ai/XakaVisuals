@@ -71,7 +71,7 @@ public final class XakaVisualsScreen extends Screen {
 
         int navViewportTop = y + 85;
         int navViewportBottom = y + panelH - 55;
-        int navStep = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
+        int navStep = 52;
         int navRowHeight = Math.min(30, navStep - 2);
         int navY = navViewportTop + 4;
         int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
@@ -260,27 +260,16 @@ public final class XakaVisualsScreen extends Screen {
         int panelH = Math.min(440, height - 28);
         int x = (width - panelW) / 2;
         int y = (height - panelH) / 2;
-        int navViewportTop = y + 85;
-        int navViewportBottom = y + panelH - 55;
-        if (mouseX >= x + 12 && mouseX <= x + 166
-                && mouseY >= navViewportTop && mouseY <= navViewportBottom) {
-            int navStep = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
-            int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
-            navScrollOffset = Math.max(0, Math.min(navMaxScroll, navScrollOffset - (int) Math.round(verticalAmount * 30)));
-            return true;
+        if (mouseX < x || mouseX > x + panelW || mouseY < y || mouseY > y + panelH)
+            return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+        int navTop = y + 85, navBottom = y + panelH - 55;
+        if (mouseX <= x + 166 && mouseY >= navTop && mouseY <= navBottom) {
+            int max = Math.max(0, CATEGORIES.length * 52 - (navBottom - navTop));
+            navScrollOffset = Math.max(0, Math.min(max, navScrollOffset - (int)Math.round(verticalAmount * 28)));
+        } else if (mouseX >= x + 176 && mouseY >= y + 68 && mouseY <= y + panelH - 48) {
+            contentScrollOffset = Math.max(0, Math.min(180, contentScrollOffset - (int)Math.round(verticalAmount * 32)));
         }
-        int contentLeft = x + 188;
-        int contentRight = x + panelW - 18;
-        int contentTop = y + 68;
-        int contentBottom = y + panelH - 48;
-        if (mouseX >= contentLeft && mouseX <= contentRight
-                && mouseY >= contentTop && mouseY <= contentBottom) {
-            int max = Math.max(0, categoryContentHeight() - (contentBottom - contentTop));
-            contentScrollOffset = Math.max(0, Math.min(max,
-                    contentScrollOffset - (int)Math.round(verticalAmount * 32)));
-            return true;
-        }
-        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+        return true;
     }
 
     @Override
@@ -292,7 +281,7 @@ public final class XakaVisualsScreen extends Screen {
         int y = (height - panelH) / 2;
         int navViewportTop = y + 85;
         int navViewportBottom = y + panelH - 55;
-        int navStep = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
+        int navStep = 52;
         int navRowHeight = Math.min(30, navStep - 2);
         int navY = navViewportTop + 4;
         int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
@@ -410,7 +399,7 @@ public final class XakaVisualsScreen extends Screen {
             int top = y + 85;
             int bottom = y + panelH - 55;
             if (mouseY >= top && mouseY <= bottom) {
-                int step = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
+                int step = 52;
                 int max = Math.max(0, CATEGORIES.length * step - (bottom - top));
                 navScrollOffset = Math.max(0, Math.min(max, navScrollOffset - (int)Math.round(deltaY)));
             }
