@@ -88,7 +88,7 @@ public final class XakaVisualsScreen extends Screen {
         context.fill(contentX, y + 59, right, y + 60, 0xFF293142);
         renderCategory(context, mouseX, mouseY, contentX, right, y + 74, accent);
 
-        if (selectedCategory != 2) {
+        if (selectedCategory != 2 && selectedCategory != 3) {
             context.drawTextWithShadow(textRenderer, "XakaVisuals  •  crafted for your game", contentX,
                     y + panelH - 27, MUTED);
             context.drawTextWithShadow(textRenderer, "v1.0.0", right - 35, y + panelH - 27, MUTED);
@@ -126,7 +126,9 @@ public final class XakaVisualsScreen extends Screen {
                 button(c, mx, my, left, top + 78, 118, 31, "‹  Previous", false, accent);
                 button(c, mx, my, left + 126, top + 78, 118, 31, names[index] + "  ›", true, accent);
                 row(c, mx, my, left, right, top + 126, "Compact HUD", "Use smaller in-game HUD panels", XakaVisualsClient.compactHud, accent, true);
-                contextText(c, left, top + 188, "Changes apply instantly. No restart needed.");
+                row(c, mx, my, left, right, top + 175, "Marker left / right", String.format(java.util.Locale.ROOT, "X offset: %.1f  (click to adjust)", XakaVisualsClient.bodyMarkerOffsetX), false, accent, false);
+                row(c, mx, my, left, right, top + 224, "Marker forward / back", String.format(java.util.Locale.ROOT, "Z offset: %.1f  (click to adjust)", XakaVisualsClient.bodyMarkerOffsetZ), false, accent, false);
+                row(c, mx, my, left, right, top + 273, "Marker height", String.format(java.util.Locale.ROOT, "Y offset: %.1f  (click to adjust)", XakaVisualsClient.bodyMarkerOffsetY), false, accent, false);
             }
         }
     }
@@ -214,8 +216,16 @@ public final class XakaVisualsScreen extends Screen {
             if (inside(mouseX, mouseY, left + 126, top + 78, left + 244, top + 109))
                 XakaVisualsClient.accentIndex = Math.floorMod(XakaVisualsClient.accentIndex + 1, 5);
             if (hitRow(mouseX, mouseY, left, right, top + 126)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;
+            if (hitRow(mouseX, mouseY, left, right, top + 175)) XakaVisualsClient.bodyMarkerOffsetX = stepOffset(XakaVisualsClient.bodyMarkerOffsetX);
+            if (hitRow(mouseX, mouseY, left, right, top + 224)) XakaVisualsClient.bodyMarkerOffsetZ = stepOffset(XakaVisualsClient.bodyMarkerOffsetZ);
+            if (hitRow(mouseX, mouseY, left, right, top + 273)) XakaVisualsClient.bodyMarkerOffsetY = stepOffset(XakaVisualsClient.bodyMarkerOffsetY);
         }
         return true;
+    }
+
+    private float stepOffset(float value) {
+        float next = value + 0.1f;
+        return next > 0.5f ? -0.5f : Math.round(next * 10.0f) / 10.0f;
     }
 
     private boolean hitRow(double mx, double my, int left, int right, int y) {
