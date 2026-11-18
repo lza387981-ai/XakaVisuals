@@ -43,11 +43,11 @@ public final class XakaVisualsRenderer {
         if (halo) {
             float radius = 0.34f + XakaVisualsClient.haloSize * 0.035f;
             float y = player.getHeight() + 0.20f;
-            // Several tightly spaced rings create a clearly visible, thick luminous band.
-            for (int band = -3; band <= 3; band++) {
-                float bandRadius = radius + band * 0.012f;
+            // Stack rings vertically: increase halo thickness without widening its radius.
+            for (int band = -5; band <= 5; band++) {
+                float bandY = y + band * 0.022f;
                 drawCircle(consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines()),
-                        bx, by, bz, bandRadius, y, color, 64);
+                        bx, by, bz, radius, bandY, color, 64);
             }
         }
 
@@ -57,9 +57,11 @@ public final class XakaVisualsRenderer {
             left.y = 0;
             if (left.lengthSquared() > 0.0001f) left.normalize();
             double bob = Math.sin(client.world.getTime() * 0.12) * 0.045;
-            double px = playerPos.x + left.x * 0.78;
+            // The Wither is larger, so keep it farther from the player.
+            double petDistance = XakaVisualsClient.petWither ? 1.28 : 0.92;
+            double px = playerPos.x + left.x * petDistance;
             double py = playerPos.y + 0.55 + bob;
-            double pz = playerPos.z + left.z * 0.78;
+            double pz = playerPos.z + left.z * petDistance;
             Entity companion = XakaVisualsClient.petWither
                     ? new WitherEntity(EntityType.WITHER, client.world)
                     : new CreeperEntity(EntityType.CREEPER, client.world);
@@ -76,16 +78,60 @@ public final class XakaVisualsRenderer {
             matrices.pop();
         }
 
-        if (marker && client.targetedEntity instanceof PlayerEntity target && target != player) {
+        if (marker && client.crosshairTarget instanceof net.minecraft.util.hit.EntityHitResult hit
+                && hit.getEntity() instanceof PlayerEntity target && target != player) {
             Vec3d targetPos = target.getLerpedPos(context.tickCounter().getTickDelta(false));
-            double tx = targetPos.x - camera.x;
-            double ty = targetPos.y - camera.y;
-            double tz = targetPos.z - camera.z;
+            // Camera-facing ring, slightly toward the camera so the target model cannot hide it.
+            Vector3f right = context.camera().getRotation().transform(new Vector3f(1, 0, 0));
+            Vector3f up = context.camera().getRotation().transform(new Vector3f(0, 1, 0));
+            Vector3f towardCamera = context.camera().getRotation().transform(new Vector3f(0, 0, 1));
+            double centerX = targetPos.x - camera.x + towardCamera.x * 0.16
+                    + right.x * XakaVisualsClient.bodyMarkerOffsetX;
+            double centerY = targetPos.y - camera.y + target.getHeight() * 0.53
+                    + up.y * XakaVisualsClient.bodyMarkerOffsetY;
+            double centerZ = targetPos.z - camera.z + towardCamera.z * 0.16
+                    + right.z * XakaVisualsClient.bodyMarkerOffsetX
+                    + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
             float radius = 0.30f + XakaVisualsClient.bodyMarkerSize * 0.035f;
-            float y = target.getHeight() * 0.53f + XakaVisualsClient.bodyMarkerOffsetY;
             var out = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
-            if (XakaVisualsClient.bodyMarkerSquare) drawSquare(out, tx, ty, tz, radius, y, color);
-            else drawCircle(out, tx, ty, tz, radius, y, color, 48);
+            if (XakaVisualsClient.bodyMarkerSquare) {
+                drawBillboardSquare(out, centerX, centerY, centerZ, right, up, radius, color);
+            } else {
+                drawBillboardCircle(out, centerX, centerY, centerZ, right, up, radius, color, 64);
+            }
+        }
+    }
+
+
+    private static void drawBillboardCircle(net.minecraft.client.render.VertexConsumer out,
+                                            double x, double y, double z, Vector3f right, Vector3f up,
+                                            float radius, int color, int segments) {
+        for (int i = 0; i < segments; i++) {
+            double a0 = Math.PI * 2.0 * i / segments;
+            double a1 = Math.PI * 2.0 * (i + 1) / segments;
+            double x0 = x + (right.x * Math.cos(a0) + up.x * Math.sin(a0)) * radius;
+            double y0 = y + (right.y * Math.cos(a0) + up.y * Math.sin(a0)) * radius;
+            double z0 = z + (right.z * Math.cos(a0) + up.z * Math.sin(a0)) * radius;
+            double x1 = x + (right.x * Math.cos(a1) + up.x * Math.sin(a1)) * radius;
+            double y1 = y + (right.y * Math.cos(a1) + up.y * Math.sin(a1)) * radius;
+            double z1 = z + (right.z * Math.cos(a1) + up.z * Math.sin(a1)) * radius;
+            line(out, x0, y0, z0, x1, y1, z1, color);
+        }
+    }
+
+    private static void drawBillboardSquare(net.minecraft.client.render.VertexConsumer out,
+                                            double x, double y, double z, Vector3f right, Vector3f up,
+                                            float radius, int color) {
+        double[][] corners = {{-1,-1},{1,-1},{1,1},{-1,1},{-1,-1}};
+        for (int i = 0; i < 4; i++) {
+            double[] a = corners[i], b = corners[i + 1];
+            double x1 = x + (right.x * a[0] + up.x * a[1]) * radius;
+            double y1 = y + (right.y * a[0] + up.y * a[1]) * radius;
+            double z1 = z + (right.z * a[0] + up.z * a[1]) * radius;
+            double x2 = x + (right.x * b[0] + up.x * b[1]) * radius;
+            double y2 = y + (right.y * b[0] + up.y * b[1]) * radius;
+            double z2 = z + (right.z * b[0] + up.z * b[1]) * radius;
+            line(out, x1, y1, z1, x2, y2, z2, color);
         }
     }
 
