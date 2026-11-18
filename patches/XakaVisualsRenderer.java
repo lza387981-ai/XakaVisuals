@@ -70,6 +70,9 @@ public final class XakaVisualsRenderer {
             // Passing the yaw to the dispatcher is important: render() otherwise overrides entity yaw.
             float facingYaw = context.camera().getYaw();
             companion.setYaw(facingYaw);
+            companion.setBodyYaw(facingYaw);
+            companion.setHeadYaw(facingYaw);
+            companion.setPitch(0.0f);
             matrices.push();
             matrices.translate(px - camera.x, py - camera.y, pz - camera.z);
             float scale = XakaVisualsClient.petSize <= 0 ? 0.32f
