@@ -127,8 +127,11 @@ public final class XakaVisualsRenderer {
                     : XakaVisualsClient.wingStyle == 1 ? 0.82f : 0.74f;
             Identifier wingTexture = Identifier.of("xakavisuals", "textures/entity/cosmetic_wing.png");
             var wingLayer = net.minecraft.client.render.RenderLayer.getEntityTranslucent(wingTexture);
+            // IMPORTANT: Immediate VertexConsumerProvider may flush the previous layer
+            // when getBuffer() is called for a different RenderLayer. Finish all textured
+            // wing vertices before requesting the line layer; otherwise wingMesh points
+            // at a BufferBuilder that is no longer building ("Not building!" crash).
             var wingMesh = consumers.getBuffer(wingLayer);
-            var wingOutline = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
             for (int side : new int[]{-1, 1}) {
                 double rootX = bx - backX * 0.17;
                 double rootY = by + 1.02;
@@ -145,7 +148,23 @@ public final class XakaVisualsRenderer {
                 drawWingMesh(wingMesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
                         outerX,outerY,outerZ, innerX,innerY,innerZ,
                         color, side == 1);
-                int outlineColor = (color & 0x00FFFFFF) | 0xD0000000;
+            }
+            // Request the line layer only after all textured vertices have been emitted.
+            var wingOutline = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
+            int outlineColor = (color & 0x00FFFFFF) | 0xD0000000;
+            for (int side : new int[]{-1, 1}) {
+                double rootX = bx - backX * 0.17;
+                double rootY = by + 1.02;
+                double rootZ = bz - backZ * 0.17;
+                double tipX = rootX + sideX * span * side + backX * 0.12;
+                double tipY = by + 1.28 + flap * side;
+                double tipZ = rootZ + sideZ * span * side + backZ * 0.12;
+                double outerX = rootX + sideX * span * 0.86 * side + backX * 0.48;
+                double outerY = by + 1.48 + flap * side * 0.70;
+                double outerZ = rootZ + sideZ * span * 0.86 * side + backZ * 0.48;
+                double innerX = rootX + sideX * span * 0.24 * side + backX * 0.40;
+                double innerY = by + 1.30 + flap * side * 0.30;
+                double innerZ = rootZ + sideZ * span * 0.24 * side + backZ * 0.40;
                 line(wingOutline, rootX,rootY,rootZ, tipX,tipY,tipZ, outlineColor);
                 line(wingOutline, tipX,tipY,tipZ, outerX,outerY,outerZ, outlineColor);
                 line(wingOutline, outerX,outerY,outerZ, innerX,innerY,innerZ, outlineColor);
