@@ -33,6 +33,25 @@ jobs:
           cp patches/XakaVisualsScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsScreen.java
           cp patches/XakaVisualsClient.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsClient.java
           cp patches/XakaVisualsRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsRenderer.java
+          mkdir -p source/XakaVisuals/src/main/java/dev/xaka/visuals/mixin
+          cp patches/HeldItemRendererMixin.java source/XakaVisuals/src/main/java/dev/xaka/visuals/mixin/HeldItemRendererMixin.java
+          cat > source/XakaVisuals/src/main/resources/xakavisuals.mixins.json <<'EOF'
+          {
+            "required": true,
+            "package": "dev.xaka.visuals.mixin",
+            "compatibilityLevel": "JAVA_21",
+            "client": ["HeldItemRendererMixin"],
+            "injectors": { "defaultRequire": 1 }
+          }
+          EOF
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("source/XakaVisuals/src/main/resources/fabric.mod.json")
+          data = json.loads(p.read_text())
+          data["mixins"] = ["xakavisuals.mixins.json"]
+          p.write_text(json.dumps(data, indent=2) + "\\n")
+          PY
 
       - name: Inspect project configuration
         run: |
