@@ -159,7 +159,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
             }
             case 5 -> {
-                infoCard(c, left, top, right, "Character emotes", "Local-only dance animations; other players do not see them yet.");
+                infoCard(c, left, top, right, "Character emotes", "Local-only emotes. Moving cancels the current emote; play it again to restart.");
                 row(c, mx, my, left, right, top + 72, "Dance: " + XakaVisualsClient.danceName(), "Tap to choose the next animation", false, accent, false);
                 row(c, mx, my, left, right, top + 121, XakaVisualsClient.dancePlaying ? "Stop dance" : "Play dance",
                         XakaVisualsClient.dancePlaying ? "Your character is currently dancing" : "Start the selected dance", XakaVisualsClient.dancePlaying, accent, true);
@@ -352,7 +352,7 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetZ = 0.0f;
             }
         } else if (selectedCategory == 5) {
-            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.activeDance = (XakaVisualsClient.activeDance + 1) % 4;
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.activeDance = (XakaVisualsClient.activeDance + 1) % 5;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.dancePlaying = !XakaVisualsClient.dancePlaying;
             if (hitRow(mouseX, mouseY, left, right, top + 170)) { activeSlider = 8; setSlider(8, mouseX, left, right); }
         } else if (selectedCategory == 3) {
