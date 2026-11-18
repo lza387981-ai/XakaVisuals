@@ -112,6 +112,50 @@ public final class XakaVisualsRenderer {
             matrices.pop();
         }
 
+        if (wings) {
+            // Cosmetic wing geometry is anchored behind the player's body and flaps locally.
+            float yaw = (float) Math.toRadians(bodyYaw);
+            float sideX = (float) Math.cos(yaw);
+            float sideZ = (float) Math.sin(yaw);
+            float backX = (float) Math.sin(yaw);
+            float backZ = (float) -Math.cos(yaw);
+            float phase = (float) (client.world.getTime() + context.tickCounter().getTickDelta(false))
+                    * 0.22f * XakaVisualsClient.wingSpeed;
+            float flap = (float) Math.sin(phase) * 0.30f;
+            int wingColor = color;
+            var wingLines = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
+            float span = XakaVisualsClient.wingStyle == 2 ? 0.82f : 0.72f;
+            for (int side : new int[]{-1, 1}) {
+                float tipY = 1.18f + flap * side;
+                double rootX = bx - backX * 0.12;
+                double rootY = by + 1.05;
+                double rootZ = bz - backZ * 0.12;
+                double tipX = rootX + sideX * span * side + backX * 0.12;
+                double tipZ = rootZ + sideZ * span * side + backZ * 0.12;
+                double outerX = rootX + sideX * span * 0.72 * side + backX * 0.38;
+                double outerZ = rootZ + sideZ * span * 0.72 * side + backZ * 0.38;
+                double innerX = rootX + sideX * span * 0.22 * side + backX * 0.34;
+                double innerZ = rootZ + sideZ * span * 0.22 * side + backZ * 0.34;
+                double outerY = by + (XakaVisualsClient.wingStyle == 2 ? 1.30f : 1.48f) + flap * side * 0.75f;
+                double innerY = by + 1.32f + flap * side * 0.35f;
+                line(wingLines, rootX, rootY, rootZ, tipX, by + tipY, tipZ, wingColor);
+                line(wingLines, tipX, by + tipY, tipZ, outerX, outerY, outerZ, wingColor);
+                line(wingLines, outerX, outerY, outerZ, innerX, innerY, innerZ, wingColor);
+                line(wingLines, innerX, innerY, innerZ, rootX, rootY, rootZ, wingColor);
+                // Feather ribs / bat-like struts make the selected silhouette readable.
+                for (int feather = 1; feather <= 3; feather++) {
+                    double f = feather / 4.0;
+                    double fx = rootX + (tipX - rootX) * f;
+                    double fz = rootZ + (tipZ - rootZ) * f;
+                    double fy = rootY + (by + tipY - rootY) * f;
+                    double ex = rootX + (outerX - rootX) * f;
+                    double ez = rootZ + (outerZ - rootZ) * f;
+                    double ey = rootY + (outerY - rootY) * f;
+                    line(wingLines, fx, fy, fz, ex, ey, ez, wingColor);
+                }
+            }
+        }
+
         if (marker && client.crosshairTarget instanceof net.minecraft.util.hit.EntityHitResult hit
                 && hit.getEntity() instanceof PlayerEntity target && target != player) {
             Vec3d targetPos = target.getLerpedPos(context.tickCounter().getTickDelta(false));
