@@ -107,7 +107,7 @@ public final class XakaVisualsRenderer {
                     + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
             // Four corner brackets rotate slowly clockwise around the targeted player.
             float radius = 0.43f + XakaVisualsClient.markerSize * 0.035f;
-            float rotation = (float) ((client.world.getTime() + context.tickCounter().getTickDelta(false)) * 0.0105);
+            float rotation = (float) ((client.world.getTime() + context.tickCounter().getTickDelta(false)) * -0.0105);
             var out = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
             drawRotatingTargetFrame(out, centerX, centerY, centerZ, right, up, radius, rotation,
                     withAlpha(targetFrameColor, 0x35));
