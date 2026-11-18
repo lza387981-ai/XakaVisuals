@@ -13,13 +13,14 @@ public final class XakaVisualsScreen extends Screen {
     private static final int TEXT = 0xFFF1F2F8;
     private static final int MUTED = 0xFF929BAF;
 
-    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand"};
+    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations"};
     private static final String[] CATEGORY_HINTS = {
             "Small details. A cleaner game.",
             "Your information, your layout.",
             "Make every transition feel smooth.",
             "Tune XakaVisuals to your taste.",
-            "Adjust your first-person hand and held item."
+            "Adjust your first-person hand and held item.",
+            "Play a local character emote."
     };
 
     private int selectedCategory;
@@ -135,6 +136,14 @@ public final class XakaVisualsScreen extends Screen {
                         Math.round((XakaVisualsClient.handOffsetZ + 0.5f) * 20), 0, 20, accent, 7);
                 row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
             }
+            case 5 -> {
+                infoCard(c, left, top, right, "Character emotes", "Local-only dance animations; other players do not see them yet.");
+                row(c, mx, my, left, right, top + 72, "Dance: " + XakaVisualsClient.danceName(), "Tap to choose the next animation", false, accent, false);
+                row(c, mx, my, left, right, top + 121, XakaVisualsClient.dancePlaying ? "Stop dance" : "Play dance",
+                        XakaVisualsClient.dancePlaying ? "Your character is currently dancing" : "Start the selected dance", XakaVisualsClient.dancePlaying, accent, true);
+                sliderRow(c, mx, my, left, right, top + 170, "Animation speed",
+                        Math.round(XakaVisualsClient.danceSpeed * 10), 5, 20, accent, 8);
+            }
             case 3 -> {
                 infoCard(c, left, top, right, "Accent color", "Choose a signature color for the XakaVisuals interface.");
                 String[] names = {"Violet", "Mint", "Rose", "Amber", "Blue"};
@@ -162,6 +171,7 @@ public final class XakaVisualsScreen extends Screen {
             case 5 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetX);
             case 6 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetY);
             case 7 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetZ);
+            case 8 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.danceSpeed);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -184,6 +194,7 @@ public final class XakaVisualsScreen extends Screen {
             case 5 -> XakaVisualsClient.handOffsetX = Math.round((-0.5f + t) * 100) / 100.0f;
             case 6 -> XakaVisualsClient.handOffsetY = Math.round((-0.5f + t) * 100) / 100.0f;
             case 7 -> XakaVisualsClient.handOffsetZ = Math.round((-0.5f + t) * 100) / 100.0f;
+            case 8 -> XakaVisualsClient.danceSpeed = 0.5f + t * 1.5f;
         }
     }
 
@@ -285,6 +296,10 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetY = 0.0f;
                 XakaVisualsClient.handOffsetZ = 0.0f;
             }
+        } else if (selectedCategory == 5) {
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.activeDance = (XakaVisualsClient.activeDance + 1) % 4;
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.dancePlaying = !XakaVisualsClient.dancePlaying;
+            if (hitRow(mouseX, mouseY, left, right, top + 170)) { activeSlider = 8; setSlider(8, mouseX, left, right); }
         } else if (selectedCategory == 3) {
             if (inside(mouseX, mouseY, left, top + 78, left + 118, top + 109))
                 XakaVisualsClient.accentIndex = Math.floorMod(XakaVisualsClient.accentIndex - 1, 5);
@@ -312,7 +327,7 @@ public final class XakaVisualsScreen extends Screen {
     }
 
     private String categoryIcon(int index) {
-        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; default -> "⚙"; };
+        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; default -> "⚙"; };
     }
 
     private float easeOut(float t) { return 1f - (float) Math.pow(1f - t, 3); }
