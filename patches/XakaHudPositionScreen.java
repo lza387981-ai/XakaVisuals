@@ -51,10 +51,17 @@ public final class XakaHudPositionScreen extends Screen {
         }
         int x = panelX(), y = panelY();
         if (mx >= x && mx <= x + CARD_W && my >= y && my <= y + CARD_H) {
-            dragging = true;
+            // Grab the card naturally when touching/clicking it.
             offsetX = (int) mx - x;
             offsetY = (int) my - y;
+        } else {
+            // Also support touchscreens: tap an empty spot to place the HUD there.
+            offsetX = CARD_W / 2;
+            offsetY = CARD_H / 2;
+            XakaVisualsClient.enemyHpX = Math.max(0, Math.min(width - CARD_W, (int) mx - offsetX));
+            XakaVisualsClient.enemyHpY = Math.max(0, Math.min(height - CARD_H, (int) my - offsetY));
         }
+        dragging = true;
         return true;
     }
 
