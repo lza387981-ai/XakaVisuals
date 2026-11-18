@@ -99,13 +99,16 @@ public final class XakaVisualsRenderer {
             Vector3f right = context.camera().getRotation().transform(new Vector3f(1, 0, 0));
             Vector3f up = context.camera().getRotation().transform(new Vector3f(0, 1, 0));
             Vector3f towardCamera = context.camera().getRotation().transform(new Vector3f(0, 0, 1));
+            // Raise the whole marker slightly along the camera's up direction,
+            // without changing its width or height.
+            double markerLift = 0.12;
             double centerX = targetPos.x - camera.x + towardCamera.x * 0.48
-                    + right.x * XakaVisualsClient.bodyMarkerOffsetX;
+                    + right.x * XakaVisualsClient.bodyMarkerOffsetX + up.x * markerLift;
             double centerY = targetPos.y - camera.y + target.getHeight() * 0.53
-                    + up.y * XakaVisualsClient.bodyMarkerOffsetY;
+                    + up.y * (XakaVisualsClient.bodyMarkerOffsetY + markerLift);
             double centerZ = targetPos.z - camera.z + towardCamera.z * 0.48
                     + right.z * XakaVisualsClient.bodyMarkerOffsetX
-                    + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
+                    + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ + up.z * markerLift;
             // Render the PNG frame as a camera-facing textured quad; tint changes its color.
             float frameSize = 0.78f + XakaVisualsClient.markerSize * 0.015f;
             float frameWidth = frameSize;
