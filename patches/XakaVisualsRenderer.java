@@ -7,6 +7,8 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.CreeperEntity;
+import net.minecraft.entity.mob.WardenEntity;
+import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -65,14 +67,24 @@ public final class XakaVisualsRenderer {
             Vector3f left = new Vector3f((float) Math.cos(playerYawRad), 0.0f,
                     (float) Math.sin(playerYawRad));
             double bob = Math.sin(client.world.getTime() * 0.12) * 0.045;
-            // The Wither is larger, so keep it farther from the player.
-            double petDistance = XakaVisualsClient.petWither ? 1.28 : 0.92;
+            int petType = Math.floorMod(XakaVisualsClient.petType, 4);
+            // Keep the larger Warden and Wither a little farther from the player.
+            double petDistance = switch (petType) {
+                case 1, 2 -> 1.22;
+                default -> 0.92;
+            };
             double px = playerPos.x + left.x * petDistance;
-            double py = playerPos.y + 0.55 + bob;
+            double petBob = petType == 3
+                    ? Math.sin(client.world.getTime() * 0.16) * 0.075
+                    : bob;
+            double py = playerPos.y + 0.55 + petBob;
             double pz = playerPos.z + left.z * petDistance;
-            Entity companion = XakaVisualsClient.petWither
-                    ? new WitherEntity(EntityType.WITHER, client.world)
-                    : new CreeperEntity(EntityType.CREEPER, client.world);
+            Entity companion = switch (petType) {
+                case 1 -> new WitherEntity(EntityType.WITHER, client.world);
+                case 2 -> new WardenEntity(EntityType.WARDEN, client.world);
+                case 3 -> new AllayEntity(EntityType.ALLAY, client.world);
+                default -> new CreeperEntity(EntityType.CREEPER, client.world);
+            };
             companion.setPosition(px, py, pz);
             // Keep the pet facing the player's body direction. Camera yaw is intentionally ignored.
             companion.setYaw(0.0f);
@@ -83,8 +95,15 @@ public final class XakaVisualsRenderer {
             matrices.translate(px - camera.x, py - camera.y, pz - camera.z);
             // Rotate the rendered model once; do not also pass player yaw to the dispatcher.
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-bodyYaw));
+            if (petType == 3) {
+                // Give the Allay a gentle hovering tilt while it follows the player.
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(
+                        (float) Math.sin(client.world.getTime() * 0.10) * 5.0f));
+            }
             float scale = XakaVisualsClient.petSize <= 0 ? 0.32f
                     : Math.min(0.62f, 0.25f + XakaVisualsClient.petSize * 0.035f);
+            if (petType == 2) scale *= 0.72f;
+            if (petType == 3) scale *= 0.88f;
             matrices.scale(scale, scale, scale);
             EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
             dispatcher.render(companion, 0.0, 0.0, 0.0, 0.0f,
