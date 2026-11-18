@@ -160,7 +160,7 @@ public final class XakaVisualsScreen extends Screen {
             }
             case 5 -> {
                 infoCard(c, left, top, right, "Character emotes", "Local-only emotes. Moving cancels the current emote; play it again to restart.");
-                row(c, mx, my, left, right, top + 72, "Dance: " + XakaVisualsClient.danceName(), "Tap to choose the next animation", false, accent, false);
+                row(c, mx, my, left, right, top + 72, "Dance: " + XakaVisualsClient.danceName(), "Tap to choose; HohoDance plays a full short sequence", false, accent, false);
                 row(c, mx, my, left, right, top + 121, XakaVisualsClient.dancePlaying ? "Stop dance" : "Play dance",
                         XakaVisualsClient.dancePlaying ? "Your character is currently dancing" : "Start the selected dance", XakaVisualsClient.dancePlaying, accent, true);
                 sliderRow(c, mx, my, left, right, top + 170, "Animation speed",
