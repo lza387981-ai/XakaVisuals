@@ -1,7 +1,7 @@
 package dev.xaka.visuals.mixin;
 
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.model.ModelPart;
 import dev.xaka.visuals.XakaVisualsClient;
 import org.spongepowered.asm.mixin.Final;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /** Applies a cosmetic dance to the local player's third-person model only. */
-@Mixin(PlayerEntityModel.class)
+@Mixin(BipedEntityModel.class)
 public abstract class PlayerEntityModelMixin {
     @Shadow @Final protected ModelPart head;
     @Shadow @Final protected ModelPart body;
@@ -22,7 +22,7 @@ public abstract class PlayerEntityModelMixin {
     @Shadow @Final protected ModelPart leftLeg;
 
     @Inject(method = "setAngles", at = @At("TAIL"))
-    private void xakavisuals$applyDance(PlayerEntityRenderState state, CallbackInfo ci) {
+    private void xakavisuals$applyDance(BipedEntityRenderState state, CallbackInfo ci) {
         if (!XakaVisualsClient.dancePlaying || state.id != XakaVisualsClient.danceEntityId) return;
 
         float t = state.age * 0.22f * XakaVisualsClient.danceSpeed;
