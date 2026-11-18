@@ -13,6 +13,7 @@ import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Identifier;
 
 /** Local-only cosmetics: a thick halo, camera-relative companion and crosshair player marker. */
 public final class XakaVisualsRenderer {
@@ -105,19 +106,48 @@ public final class XakaVisualsRenderer {
             double centerZ = targetPos.z - camera.z + towardCamera.z * 0.16
                     + right.z * XakaVisualsClient.bodyMarkerOffsetX
                     + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
-            // Four corner brackets rotate slowly clockwise around the targeted player.
-            float radius = 0.43f + XakaVisualsClient.markerSize * 0.035f;
-            float rotation = (float) ((client.world.getTime() + context.tickCounter().getTickDelta(false)) * -0.0105);
-            var out = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
-            drawRotatingTargetFrame(out, centerX, centerY, centerZ, right, up, radius, rotation,
-                    withAlpha(targetFrameColor, 0x35));
-            drawRotatingTargetFrame(out, centerX, centerY, centerZ, right, up, radius, rotation,
-                    withAlpha(targetFrameColor, 0x90));
-            drawRotatingTargetFrame(out, centerX, centerY, centerZ, right, up, radius, rotation, targetFrameColor);
+            // Render the PNG frame as a camera-facing textured quad; tint changes its color.
+            float frameWidth = 1.12f + XakaVisualsClient.markerSize * 0.055f;
+            float frameHeight = Math.max(1.35f, target.getHeight() * 1.02f);
+            float rotation = (float) ((client.world.getTime()
+                    + context.tickCounter().getTickDelta(false)) * -0.0065);
+            drawTexturedTargetFrame(consumers, centerX, centerY, centerZ, right, up,
+                    frameWidth, frameHeight, rotation, targetFrameColor);
         }
     }
 
 
+
+
+    private static void drawTexturedTargetFrame(net.minecraft.client.render.VertexConsumerProvider consumers,
+            double x, double y, double z, Vector3f right, Vector3f up,
+            float width, float height, float rotation, int tint) {
+        Identifier texture = Identifier.of("xakavisuals", "textures/gui/target_frame.png");
+        var layer = net.minecraft.client.render.RenderLayer.getEntityTranslucent(texture);
+        var out = consumers.getBuffer(layer);
+        float c = (float) Math.cos(rotation), s = (float) Math.sin(rotation);
+        float hw = width * 0.5f, hh = height * 0.5f;
+        // Clockwise texture coordinates, camera-facing plane.
+        texturedVertex(out, x,y,z,right,up,-hw,-hh,c,s,tint,0,1);
+        texturedVertex(out, x,y,z,right,up, hw,-hh,c,s,tint,1,1);
+        texturedVertex(out, x,y,z,right,up, hw, hh,c,s,tint,1,0);
+        texturedVertex(out, x,y,z,right,up,-hw,-hh,c,s,tint,0,1);
+        texturedVertex(out, x,y,z,right,up, hw, hh,c,s,tint,1,0);
+        texturedVertex(out, x,y,z,right,up,-hw, hh,c,s,tint,0,0);
+    }
+
+    private static void texturedVertex(net.minecraft.client.render.VertexConsumer out,
+            double x,double y,double z,Vector3f right,Vector3f up,
+            float px,float py,float c,float s,int color,float u,float v) {
+        float rx = px*c - py*s, ry = px*s + py*c;
+        float nx = -right.z*up.y + right.y*up.z;
+        float ny = -right.x*up.z + right.z*up.x;
+        float nz = -right.y*up.x + right.x*up.y;
+        out.vertex((float)(x + right.x*rx + up.x*ry),
+                (float)(y + right.y*rx + up.y*ry),
+                (float)(z + right.z*rx + up.z*ry),
+                color,u,v,0,0x00F000F0,nx,ny,nz);
+    }
 
     private static int withAlpha(int color, int alpha) {
         return (color & 0x00FFFFFF) | ((alpha & 0xFF) << 24);
