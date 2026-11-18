@@ -32,6 +32,7 @@ jobs:
         run: |
           cp patches/XakaVisualsScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsScreen.java
           cp patches/XakaVisualsClient.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsClient.java
+          cp patches/XakaVisualsRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsRenderer.java
 
       - name: Inspect project configuration
         run: |
@@ -45,17 +46,6 @@ jobs:
           done
           echo "===== MIXIN CONFIG FILE LIST ====="
           find source/XakaVisuals/src/main/resources -type f -iname '*mixin*' -print
-      - name: Package extracted source for inspection
-        run: |
-          cd source
-          zip -qr ../XakaVisuals-source-inspection.zip XakaVisuals
-      - name: Upload extracted source
-        uses: actions/upload-artifact@v4
-        with:
-          name: XakaVisuals-source-inspection
-          path: XakaVisuals-source-inspection.zip
-          retention-days: 2
-
       - name: Build Fabric mod
         working-directory: source/XakaVisuals
         run: gradle build --no-daemon
