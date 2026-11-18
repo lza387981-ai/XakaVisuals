@@ -42,9 +42,9 @@ public abstract class PlayerEntityModelMixin {
                 : synced != null && synced.dancePlaying();
         if (!playing) return;
 
-        int activeDance = localPlayer ? activeDance : synced.activeDance();
+        int activeDance = localPlayer ? XakaVisualsClient.activeDance : synced.activeDance();
         float danceSpeed = localPlayer ? XakaVisualsClient.danceSpeed : synced.danceSpeed();
-        float danceStartAge = localPlayer ? danceStartAge : synced.danceStartAge();
+        float danceStartAge = localPlayer ? XakaVisualsClient.danceStartAge : synced.danceStartAge();
         float t = state.age * 0.22f * danceSpeed;
         float wave = (float) Math.sin(t);
         float wave2 = (float) Math.sin(t * 2.0f);
