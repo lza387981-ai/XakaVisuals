@@ -18,6 +18,12 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean markerEnabled = false;
     public static boolean markerSquare = false;
     public static int markerSize = 5;
+    public static boolean haloEnabled = false;
+    public static int haloSize = 8;
+    public static boolean bodyMarkerEnabled = false;
+    public static boolean bodyMarkerSquare = false;
+    public static int bodyMarkerSize = 5;
+    public static float bodyMarkerOffsetY = 0.0f;
     public static int accentIndex = 0;
 
     private static final int[] ACCENTS = {
@@ -42,6 +48,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 MinecraftClient.getInstance().setScreen(new XakaVisualsScreen());
             }
         });
+
+        XakaVisualsRenderer.register();
 
         // Decorative HUD marker only: it does not target, track, or select entities.
         HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
