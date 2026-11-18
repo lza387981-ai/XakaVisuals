@@ -27,6 +27,11 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static float bodyMarkerOffsetY = 0.0f;
     public static float bodyMarkerOffsetZ = 0.0f;
     public static int accentIndex = 0;
+    public static boolean petEnabled = false;
+    public static boolean petWither = false;
+    public static int petSize = 5;
+    public static boolean fpsBoost = false;
+    private static net.minecraft.particle.ParticleStatus previousParticles = null;
 
     private static final int[] ACCENTS = {
             0xFF9B78FF, 0xFF69D6B0, 0xFFFF7EAA, 0xFFFFB45E, 0xFF69A9FF
@@ -53,6 +58,16 @@ public final class XakaVisualsClient implements ClientModInitializer {
 
         XakaVisualsRenderer.register();
 
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (fpsBoost && previousParticles == null) {
+                previousParticles = client.options.getParticles().getValue();
+                client.options.getParticles().setValue(net.minecraft.particle.ParticleStatus.MINIMAL);
+            } else if (!fpsBoost && previousParticles != null) {
+                client.options.getParticles().setValue(previousParticles);
+                previousParticles = null;
+            }
+        });
+
         // Decorative HUD marker only: it does not target, track, or select entities.
         HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
             MinecraftClient client = MinecraftClient.getInstance();
@@ -65,8 +80,11 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 int accent = accent();
                 drawContext.fill(wx, wy, wx + 22, wy + 22, 0xCC111622);
                 drawContext.fill(wx, wy, wx + 2, wy + 22, accent);
-                drawContext.fill(wx + 5, wy + 3, wx + 19, wy + 19, accent);
-                drawContext.drawCenteredTextWithShadow(client.textRenderer, "X", wx + 12, wy + 7, 0xFF10131C);
+                drawContext.fill(wx + 4, wy + 3, wx + 20, wy + 19, 0xFF171326);
+                drawContext.fill(wx + 6, wy + 8, wx + 18, wy + 10, accent);
+                drawContext.fill(wx + 8, wy + 5, wx + 10, wy + 17, accent);
+                drawContext.fill(wx + 14, wy + 5, wx + 16, wy + 17, accent);
+                drawContext.fill(wx + 11, wy + 6, wx + 13, wy + 16, accent);
                 drawContext.fill(wx + 27, wy + 2, wx + 116, wy + 20, 0xAA111622);
                 drawContext.drawTextWithShadow(client.textRenderer, "XAKA", wx + 33, wy + 3, 0xFFF2F3F8);
                 drawContext.drawTextWithShadow(client.textRenderer, "VISUALS", wx + 67, wy + 3, accent);
