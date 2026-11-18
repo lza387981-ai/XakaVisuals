@@ -88,9 +88,11 @@ public final class XakaVisualsScreen extends Screen {
         context.fill(contentX, y + 59, right, y + 60, 0xFF293142);
         renderCategory(context, mouseX, mouseY, contentX, right, y + 74, accent);
 
-        context.drawTextWithShadow(textRenderer, "XakaVisuals  •  crafted for your game", contentX,
-                y + panelH - 27, MUTED);
-        context.drawTextWithShadow(textRenderer, "v1.0.0", right - 35, y + panelH - 27, MUTED);
+        if (selectedCategory != 2) {
+            context.drawTextWithShadow(textRenderer, "XakaVisuals  •  crafted for your game", contentX,
+                    y + panelH - 27, MUTED);
+            context.drawTextWithShadow(textRenderer, "v1.0.0", right - 35, y + panelH - 27, MUTED);
+        }
         // Do not call super.render() here: it renders the screen background after our UI,
         // which can apply the blur shader over the entire frame on some Minecraft versions.
     }
@@ -110,9 +112,12 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 147, "Marker shape", XakaVisualsClient.markerSquare ? "Square — click to use circle" : "Circle — click to use square", XakaVisualsClient.markerSquare, accent, false);
             }
             case 2 -> {
-                infoCard(c, left, top, right, "Visual polish", "The interface uses subtle motion and a restrained accent palette.");
-                row(c, mx, my, left, right, top + 72, "Menu animations", "Enable or disable interface motion", XakaVisualsClient.animations, accent, true);
-                row(c, mx, my, left, right, top + 121, "Marker size: " + XakaVisualsClient.markerSize, "Click to cycle through marker sizes", false, accent, false);
+                infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
+                row(c, mx, my, left, right, top + 72, "Halo above head", "Toggle the decorative ring above your player", XakaVisualsClient.haloEnabled, accent, true);
+                row(c, mx, my, left, right, top + 121, "Halo size: " + XakaVisualsClient.haloSize, "Click to adjust the halo size", false, accent, false);
+                row(c, mx, my, left, right, top + 170, "Body marker", "Toggle a ring or square around your waist", XakaVisualsClient.bodyMarkerEnabled, accent, true);
+                row(c, mx, my, left, right, top + 219, XakaVisualsClient.bodyMarkerSquare ? "Marker: square" : "Marker: circle", "Click to switch shape", false, accent, false);
+                row(c, mx, my, left, right, top + 268, "Marker size: " + XakaVisualsClient.bodyMarkerSize, "Click to change size; height: " + String.format(java.util.Locale.ROOT, "%.1f", XakaVisualsClient.bodyMarkerOffsetY), false, accent, false);
             }
             case 3 -> {
                 infoCard(c, left, top, right, "Accent color", "Choose a signature color for the XakaVisuals interface.");
@@ -191,8 +196,18 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.coordinates = !XakaVisualsClient.coordinates;
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerSquare = !XakaVisualsClient.markerSquare;
         } else if (selectedCategory == 2) {
-            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.animations = !XakaVisualsClient.animations;
-            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.markerSize = XakaVisualsClient.markerSize >= 12 ? 3 : XakaVisualsClient.markerSize + 3;
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.haloSize = XakaVisualsClient.haloSize >= 14 ? 4 : XakaVisualsClient.haloSize + 2;
+            if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.bodyMarkerEnabled = !XakaVisualsClient.bodyMarkerEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.bodyMarkerSquare = !XakaVisualsClient.bodyMarkerSquare;
+            if (hitRow(mouseX, mouseY, left, right, top + 268)) {
+                if (XakaVisualsClient.bodyMarkerSize >= 12) {
+                    XakaVisualsClient.bodyMarkerSize = 3;
+                    XakaVisualsClient.bodyMarkerOffsetY = XakaVisualsClient.bodyMarkerOffsetY >= 0.3f ? -0.3f : XakaVisualsClient.bodyMarkerOffsetY + 0.1f;
+                } else {
+                    XakaVisualsClient.bodyMarkerSize += 3;
+                }
+            }
         } else if (selectedCategory == 3) {
             if (inside(mouseX, mouseY, left, top + 78, left + 118, top + 109))
                 XakaVisualsClient.accentIndex = Math.floorMod(XakaVisualsClient.accentIndex - 1, 5);
