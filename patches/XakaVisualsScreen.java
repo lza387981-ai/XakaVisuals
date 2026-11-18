@@ -160,6 +160,12 @@ public final class XakaVisualsScreen extends Screen {
                         Math.round((XakaVisualsClient.handOffsetZ + 0.5f) * 20), 0, 20, accent, 7);
                 row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
             }
+            case 7 -> {
+                infoCard(c, left, top, right, "Animated wings", "Cosmetic wings follow your character and flap while you move.");
+                row(c, mx, my, left, right, top + 72, "Wings", "Toggle animated wings on your character", XakaVisualsClient.wingsEnabled, accent, true);
+                row(c, mx, my, left, right, top + 121, "Style: " + new String[]{"Fairy", "Angel", "Bat"}[Math.floorMod(XakaVisualsClient.wingStyle, 3)], "Tap to cycle wing designs", false, accent, false);
+                sliderRow(c, mx, my, left, right, top + 170, "Flap speed", Math.round(XakaVisualsClient.wingSpeed * 10), 5, 20, accent, 10);
+            }
             case 6 -> {
                 infoCard(c, left, top, right, "Local MP3 player", "Choose MP3 files from your computer. The mini-player stays on the HUD.");
                 row(c, mx, my, left, right, top + 72, "Add MP3 track", "Open a file picker and add a song", false, accent, false);
@@ -205,7 +211,8 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetY);
             case 7 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetZ);
             case 8 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.danceSpeed);
-            case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";\n            case 10 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.wingSpeed);
+            case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";
+            case 10 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.wingSpeed);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -229,7 +236,8 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> XakaVisualsClient.handOffsetY = Math.round((-0.5f + t) * 100) / 100.0f;
             case 7 -> XakaVisualsClient.handOffsetZ = Math.round((-0.5f + t) * 100) / 100.0f;
             case 8 -> XakaVisualsClient.danceSpeed = 0.5f + t * 1.5f;
-            case 9 -> XakaVisualsMusic.setVolume(t);\n            case 10 -> XakaVisualsClient.wingSpeed = 0.5f + t * 1.5f;
+            case 9 -> XakaVisualsMusic.setVolume(t);
+            case 10 -> XakaVisualsClient.wingSpeed = 0.5f + t * 1.5f;
         }
     }
 
@@ -364,6 +372,10 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetY = 0.0f;
                 XakaVisualsClient.handOffsetZ = 0.0f;
             }
+        } else if (selectedCategory == 7) {
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
+            if (hitRow(mouseX, mouseY, left, right, top + 170)) { activeSlider = 10; setSlider(10, mouseX, left, right); }
         } else if (selectedCategory == 6) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsMusic.chooseTrack();
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsMusic.previous();
@@ -393,7 +405,8 @@ public final class XakaVisualsScreen extends Screen {
             case 1 -> 408;
             case 2, 3 -> 333;
             case 4, 5 -> 284;
-            case 6 -> 370;\n            case 7 -> 284;
+            case 6 -> 370;
+            case 7 -> 284;
             default -> 310;
         };
     }
