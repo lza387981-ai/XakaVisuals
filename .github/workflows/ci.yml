@@ -35,6 +35,10 @@ jobs:
           cp patches/XakaVisualsMusic.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsMusic.java
           sed -i '/dependencies {/a\    include(implementation("com.googlecode.soundlibs:mp3spi:1.9.5.4"))\n    include(implementation("com.googlecode.soundlibs:jlayer:1.0.1.4"))\n    include(implementation("com.googlecode.soundlibs:tritonus-share:0.3.7.4"))' source/XakaVisuals/build.gradle
           cp patches/XakaVisualsRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsRenderer.java
+          cp patches/XakaVisualsSyncPayload.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsSyncPayload.java
+          cp patches/XakaVisualsSync.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsSync.java
+          cp patches/XakaVisualsSyncClient.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsSyncClient.java
+          cp patches/XakaVisualsRemoteRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsRemoteRenderer.java
           cp patches/XakaHudPositionScreen.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaHudPositionScreen.java
           mkdir -p source/XakaVisuals/src/main/java/dev/xaka/visuals/mixin
           cp patches/HeldItemRendererMixin.java source/XakaVisuals/src/main/java/dev/xaka/visuals/mixin/HeldItemRendererMixin.java
@@ -55,6 +59,8 @@ jobs:
           p = Path("source/XakaVisuals/src/main/resources/fabric.mod.json")
           data = json.loads(p.read_text())
           data["mixins"] = ["xakavisuals.mixins.json"]
+          data["environment"] = "*"
+          data.setdefault("entrypoints", {})["main"] = ["dev.xaka.visuals.XakaVisualsSync"]
           p.write_text(json.dumps(data, indent=2) + chr(10))
           PY
 
