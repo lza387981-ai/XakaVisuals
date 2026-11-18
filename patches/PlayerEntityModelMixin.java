@@ -5,6 +5,11 @@ import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.model.ModelPart;
 import dev.xaka.visuals.XakaVisualsClient;
+import dev.xaka.visuals.XakaVisualsSyncClient;
+import dev.xaka.visuals.XakaVisualsSyncPayload;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Applies a cosmetic dance to the local player's third-person model only. */
+/** Applies local or server-synchronized cosmetic dances to third-person player models. */
 @Mixin(BipedEntityModel.class)
 public abstract class PlayerEntityModelMixin {
     @Shadow @Final protected ModelPart head;
@@ -24,10 +29,23 @@ public abstract class PlayerEntityModelMixin {
 
     @Inject(method = "setAngles", at = @At("TAIL"))
     private void xakavisuals$applyDance(BipedEntityRenderState state, CallbackInfo ci) {
-        if (!XakaVisualsClient.dancePlaying || !(state instanceof PlayerEntityRenderState playerState)
-                || playerState.id != XakaVisualsClient.danceEntityId) return;
+        if (!(state instanceof PlayerEntityRenderState playerState)) return;
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.world == null) return;
+        Entity rendered = client.world.getEntityById(playerState.id);
+        if (!(rendered instanceof PlayerEntity player)) return;
 
-        float t = state.age * 0.22f * XakaVisualsClient.danceSpeed;
+        boolean localPlayer = player == client.player;
+        XakaVisualsSyncPayload synced = localPlayer ? null
+                : XakaVisualsSyncClient.getState(player.getUuid());
+        boolean playing = localPlayer ? XakaVisualsClient.dancePlaying
+                : synced != null && synced.dancePlaying();
+        if (!playing) return;
+
+        int activeDance = localPlayer ? activeDance : synced.activeDance();
+        float danceSpeed = localPlayer ? XakaVisualsClient.danceSpeed : synced.danceSpeed();
+        float danceStartAge = localPlayer ? danceStartAge : synced.danceStartAge();
+        float t = state.age * 0.22f * danceSpeed;
         float wave = (float) Math.sin(t);
         float wave2 = (float) Math.sin(t * 2.0f);
 
