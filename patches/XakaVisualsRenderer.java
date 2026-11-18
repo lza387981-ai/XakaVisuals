@@ -103,7 +103,7 @@ public final class XakaVisualsRenderer {
             float scale = XakaVisualsClient.petSize <= 0 ? 0.32f
                     : Math.min(0.62f, 0.25f + XakaVisualsClient.petSize * 0.035f);
             if (petType == 2) scale *= 0.72f;
-            if (petType == 3) scale *= 0.88f;
+            if (petType == 3) scale *= 1.22f;
             matrices.scale(scale, scale, scale);
             EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
             dispatcher.render(companion, 0.0, 0.0, 0.0, 0.0f,
