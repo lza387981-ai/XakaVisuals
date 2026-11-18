@@ -54,7 +54,8 @@ public final class XakaVisualsRenderer {
         if (pet) {
             // Anchor the companion to the player body, not the camera, so turning the view
             // does not spin the pet around or make it orbit the screen.
-            float playerYawRad = (float) Math.toRadians(player.getYaw());
+            float bodyYaw = player.getBodyYaw();
+            float playerYawRad = (float) Math.toRadians(bodyYaw);
             Vector3f left = new Vector3f((float) Math.cos(playerYawRad), 0.0f,
                     (float) Math.sin(playerYawRad));
             double bob = Math.sin(client.world.getTime() * 0.12) * 0.045;
@@ -68,7 +69,7 @@ public final class XakaVisualsRenderer {
                     : new CreeperEntity(EntityType.CREEPER, client.world);
             companion.setPosition(px, py, pz);
             // Keep the pet facing the player's body direction. Camera yaw is intentionally ignored.
-            float facingYaw = player.getYaw();
+            float facingYaw = bodyYaw;
             companion.setYaw(facingYaw);
             companion.setBodyYaw(facingYaw);
             companion.setHeadYaw(facingYaw);
