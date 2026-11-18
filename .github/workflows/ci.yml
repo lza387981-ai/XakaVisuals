@@ -3,9 +3,6 @@ name: Build XakaVisuals
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "XakaVisuals-phone-build.zip"
-      - ".github/workflows/ci.yml"
 
 permissions:
   contents: read
