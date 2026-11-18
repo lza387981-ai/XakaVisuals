@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Screen.class)
 public abstract class MainMenuBackgroundMixin {
     @Inject(method = "renderBackground(Lnet/minecraft/client/gui/DrawContext;IIF)V",
-            at = @At("HEAD"), cancellable = true)
+            at = @At("TAIL"), require = 0)
     private void xakavisuals$drawMainMenuBackground(DrawContext context, int mouseX,
                                                    int mouseY, float delta, CallbackInfo ci) {
         if ((Object) this instanceof TitleScreen) {
@@ -24,7 +24,6 @@ public abstract class MainMenuBackgroundMixin {
             int height = client.getWindow().getScaledHeight();
             context.drawTexture(RenderLayer::getGuiTextured, texture,
                     0, 0, 0.0f, 0.0f, width, height, 1280, 720);
-            ci.cancel();
         }
     }
 }
