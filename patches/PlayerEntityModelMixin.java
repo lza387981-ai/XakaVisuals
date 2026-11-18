@@ -30,6 +30,20 @@ public abstract class PlayerEntityModelMixin {
         float t = state.age * 0.22f * XakaVisualsClient.danceSpeed;
         float wave = (float) Math.sin(t);
         float wave2 = (float) Math.sin(t * 2.0f);
+
+        // Animate the complete player model as one unit as well as its limbs.
+        // The entity itself remains stationary; only the rendered model bobs and sways.
+        net.minecraft.client.model.ModelPart root =
+                ((net.minecraft.client.model.Model) (Object) this).getRootPart();
+        root.pivotY -= Math.abs(wave2) * 1.35f;
+        root.yaw += wave * 0.14f;
+        root.roll += (float) Math.sin(t * 0.5f) * 0.045f;
+        if (XakaVisualsClient.activeDance == 1 || XakaVisualsClient.activeDance == 4) {
+            root.roll += wave * 0.10f;
+        } else if (XakaVisualsClient.activeDance == 5) {
+            root.yaw += wave2 * 0.08f;
+        }
+
         switch (XakaVisualsClient.activeDance) {
             case 0 -> {
                 body.yaw += wave * 0.10f;
