@@ -27,6 +27,7 @@ public final class XakaVisualsScreen extends Screen {
     private float openProgress;
     private long lastFrame;
     private int activeSlider = -1;
+    private int navScrollOffset = 0;
 
     public XakaVisualsScreen() {
         super(Text.literal("XakaVisuals"));
@@ -66,12 +67,16 @@ public final class XakaVisualsScreen extends Screen {
         context.drawTextWithShadow(textRenderer, "CLIENT  /  1.21.4", x + 25, y + 61, MUTED);
         context.fill(x + 25, y + 79, x + 151, y + 80, 0xFF2B3343);
 
-        int navY = y + 96;
-        int navStep = Math.min(36, Math.max(22, (panelH - 150) / CATEGORIES.length));
+        int navViewportTop = y + 85;
+        int navViewportBottom = y + panelH - 55;
+        int navStep = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
         int navRowHeight = Math.min(30, navStep - 2);
+        int navY = navViewportTop + 4;
+        int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
+        navScrollOffset = Math.max(0, Math.min(navScrollOffset, navMaxScroll));
+        context.enableScissor(x + 20, navViewportTop, x + 155, navViewportBottom);
         for (int i = 0; i < CATEGORIES.length; i++) {
-            int rowY = navY + i * navStep;
-            int rowTop = rowY - 4;
+            int rowTop = navY + i * navStep - navScrollOffset;
             int rowBottom = rowTop + navRowHeight;
             boolean active = selectedCategory == i;
             boolean hover = inside(mouseX, mouseY, x + 20, rowTop, x + 155, rowBottom);
@@ -85,6 +90,7 @@ public final class XakaVisualsScreen extends Screen {
             context.drawTextWithShadow(textRenderer, categoryIcon(i), x + 32, textY, active ? accent : MUTED);
             context.drawTextWithShadow(textRenderer, CATEGORIES[i], x + 51, textY, active ? TEXT : MUTED);
         }
+        context.disableScissor();
 
         context.drawTextWithShadow(textRenderer, "XAKAVISUALS  /  SETTINGS", x + 25, y + panelH - 43, MUTED);
         context.drawTextWithShadow(textRenderer, "RIGHT SHIFT", x + 25, y + panelH - 29, accent);
@@ -243,21 +249,44 @@ public final class XakaVisualsScreen extends Screen {
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        int panelW = Math.min(620, width - 28);
+        int panelH = Math.min(440, height - 28);
+        int x = (width - panelW) / 2;
+        int y = (height - panelH) / 2;
+        int navViewportTop = y + 85;
+        int navViewportBottom = y + panelH - 55;
+        if (mouseX >= x + 12 && mouseX <= x + 166
+                && mouseY >= navViewportTop && mouseY <= navViewportBottom) {
+            int navStep = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
+            int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
+            navScrollOffset = Math.max(0, Math.min(navMaxScroll, navScrollOffset - (int) Math.round(verticalAmount * 24)));
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
         int panelW = Math.min(620, width - 28);
         int panelH = Math.min(440, height - 28);
         int x = (width - panelW) / 2;
         int y = (height - panelH) / 2;
-        int navY = y + 96;
-        int navStep = Math.min(36, Math.max(22, (panelH - 150) / CATEGORIES.length));
+        int navViewportTop = y + 85;
+        int navViewportBottom = y + panelH - 55;
+        int navStep = Math.min(36, Math.max(20, (panelH - 145) / CATEGORIES.length));
         int navRowHeight = Math.min(30, navStep - 2);
-        for (int i = 0; i < CATEGORIES.length; i++) {
-            int rowY = navY + i * navStep;
-            int rowTop = rowY - 4;
-            if (inside(mouseX, mouseY, x + 20, rowTop, x + 155, rowTop + navRowHeight)) {
-                selectedCategory = i;
-                return true;
+        int navY = navViewportTop + 4;
+        int navMaxScroll = Math.max(0, CATEGORIES.length * navStep - (navViewportBottom - navViewportTop));
+        navScrollOffset = Math.max(0, Math.min(navScrollOffset, navMaxScroll));
+        if (mouseY >= navViewportTop && mouseY <= navViewportBottom) {
+            for (int i = 0; i < CATEGORIES.length; i++) {
+                int rowTop = navY + i * navStep - navScrollOffset;
+                if (inside(mouseX, mouseY, x + 20, rowTop, x + 155, rowTop + navRowHeight)) {
+                    selectedCategory = i;
+                    return true;
+                }
             }
         }
 
