@@ -34,7 +34,8 @@ public final class XakaVisualsRenderer {
         boolean halo = XakaVisualsClient.haloEnabled;
         boolean marker = XakaVisualsClient.bodyMarkerEnabled;
         boolean pet = XakaVisualsClient.petEnabled;
-        if (!halo && !marker && !pet) return;
+        boolean wings = XakaVisualsClient.wingsEnabled;
+        if (!halo && !marker && !pet && !wings) return;
 
         Vec3d camera = context.camera().getPos();
         Vec3d playerPos = player.getLerpedPos(context.tickCounter().getTickDelta(false));
@@ -45,6 +46,8 @@ public final class XakaVisualsRenderer {
         var consumers = context.consumers();
         int color = XakaVisualsClient.accent();
         int targetFrameColor = XakaVisualsClient.targetFrameColor();
+        float tickDelta = context.tickCounter().getTickDelta(false);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, player.prevBodyYaw, player.bodyYaw);
 
         if (halo) {
             float radius = 0.34f + XakaVisualsClient.haloSize * 0.035f;
@@ -60,9 +63,7 @@ public final class XakaVisualsRenderer {
         if (pet) {
             // Anchor the companion to the player body, not the camera, so turning the view
             // does not spin the pet around or make it orbit the screen.
-            float tickDelta = context.tickCounter().getTickDelta(false);
             // Interpolate across the shortest angular path to avoid 360-degree snapping.
-            float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, player.prevBodyYaw, player.bodyYaw);
             float playerYawRad = (float) Math.toRadians(bodyYaw);
             Vector3f left = new Vector3f((float) Math.cos(playerYawRad), 0.0f,
                     (float) Math.sin(playerYawRad));
