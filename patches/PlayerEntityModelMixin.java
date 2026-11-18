@@ -66,7 +66,7 @@ public abstract class PlayerEntityModelMixin {
                 leftLeg.pitch -= wave * 0.48f;
                 head.yaw += wave * 0.08f;
             }
-            default -> {
+            case 4 -> {
                 // XakaDance: energetic breakdance-inspired low spin with alternating
                 // floor-support arms and wide scissoring legs.
                 float spin = t * 1.65f;
@@ -84,6 +84,39 @@ public abstract class PlayerEntityModelMixin {
                 leftLeg.pitch += 0.72f - spinWave * 0.92f;
                 rightLeg.yaw += 0.34f + spinWave2 * 0.24f;
                 leftLeg.yaw -= 0.34f + spinWave2 * 0.24f;
+            }
+            default -> {
+                // HohoDance: headspin, one forward somersault, then a held kneeling finish.
+                float elapsed = Math.max(0.0f, state.age - XakaVisualsClient.danceStartAge);
+                if (elapsed < 30.0f) {
+                    float spin = elapsed / 30.0f * (float) (Math.PI * 2.0);
+                    body.pitch += 1.35f;
+                    body.roll += spin;
+                    head.pitch -= 0.28f;
+                    rightArm.pitch += 1.25f;
+                    leftArm.pitch += 1.25f;
+                    rightArm.roll += 0.28f;
+                    leftArm.roll -= 0.28f;
+                    rightLeg.pitch -= 0.65f;
+                    leftLeg.pitch += 0.65f;
+                } else if (elapsed < 65.0f) {
+                    float flip = (elapsed - 30.0f) / 35.0f;
+                    body.pitch += (float) (Math.PI * 2.0) * flip;
+                    body.roll += (float) Math.sin(flip * Math.PI) * 0.22f;
+                    rightArm.pitch += 0.45f;
+                    leftArm.pitch += 0.45f;
+                    rightLeg.pitch -= 0.55f;
+                    leftLeg.pitch -= 0.55f;
+                } else {
+                    // Final kneeling pose remains until the client tick stops playback at 100 ticks.
+                    body.pitch += 0.32f;
+                    rightArm.pitch -= 0.35f;
+                    leftArm.pitch -= 0.35f;
+                    rightLeg.pitch += 1.48f;
+                    leftLeg.pitch += 0.18f;
+                    rightLeg.yaw += 0.12f;
+                    head.pitch -= 0.12f;
+                }
             }
         }
     }
