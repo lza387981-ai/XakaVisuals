@@ -72,6 +72,18 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 drawContext.drawTextWithShadow(client.textRenderer, "VISUALS", wx + 67, wy + 3, accent);
             }
 
+            int hudY = watermark ? 36 : 8;
+            if (fps) {
+                String fpsText = client.getCurrentFps() + " FPS";
+                drawContext.drawTextWithShadow(client.textRenderer, fpsText, 8, hudY, accent());
+                hudY += 12;
+            }
+            if (coordinates && client.player != null) {
+                var pos = client.player.getPos();
+                String coordsText = String.format(java.util.Locale.ROOT, "XYZ %.1f / %.1f / %.1f", pos.x, pos.y, pos.z);
+                drawContext.drawTextWithShadow(client.textRenderer, coordsText, 8, hudY, 0xFFE7EAF2);
+            }
+
             if (!markerEnabled) return;
             int cx = client.getWindow().getScaledWidth() / 2;
             int cy = client.getWindow().getScaledHeight() / 2 + 38;
