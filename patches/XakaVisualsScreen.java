@@ -13,14 +13,15 @@ public final class XakaVisualsScreen extends Screen {
     private static final int TEXT = 0xFFF1F2F8;
     private static final int MUTED = 0xFF929BAF;
 
-    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations"};
+    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC"};
     private static final String[] CATEGORY_HINTS = {
             "Small details. A cleaner game.",
             "Your information, your layout.",
             "Make every transition feel smooth.",
             "Tune XakaVisuals to your taste.",
             "Adjust your first-person hand and held item.",
-            "Play a local character emote."
+            "Play a local character emote.",
+            "Your MP3 playlist and floating mini-player."
     };
 
     private int selectedCategory;
@@ -158,6 +159,15 @@ public final class XakaVisualsScreen extends Screen {
                         Math.round((XakaVisualsClient.handOffsetZ + 0.5f) * 20), 0, 20, accent, 7);
                 row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
             }
+            case 6 -> {
+                infoCard(c, left, top, right, "Local MP3 player", "Choose MP3 files from your computer. The mini-player stays on the HUD.");
+                row(c, mx, my, left, right, top + 72, "Add MP3 track", "Open a file picker and add a song", false, accent, false);
+                row(c, mx, my, left, right, top + 121, "Previous track", "Switch to the previous song", false, accent, false);
+                row(c, mx, my, left, right, top + 170, XakaVisualsMusic.isPlaying() ? "Pause music" : "Play music", XakaVisualsMusic.trackName(), XakaVisualsMusic.isPlaying(), accent, true);
+                row(c, mx, my, left, right, top + 219, "Next track", "Switch to the next song", false, accent, false);
+                sliderRow(c, mx, my, left, right, top + 268, "Volume", Math.round(XakaVisualsMusic.getVolume() * 100), 0, 100, accent, 9);
+                contextText(c, left + 4, top + 326, XakaVisualsMusic.status());
+            }
             case 5 -> {
                 infoCard(c, left, top, right, "Character emotes", "Local-only emotes. Moving cancels the current emote; play it again to restart.");
                 row(c, mx, my, left, right, top + 72, "Dance: " + XakaVisualsClient.danceName(), "Tap to choose; HohoDance plays a full short sequence", false, accent, false);
@@ -194,6 +204,7 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetY);
             case 7 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetZ);
             case 8 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.danceSpeed);
+            case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -217,6 +228,7 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> XakaVisualsClient.handOffsetY = Math.round((-0.5f + t) * 100) / 100.0f;
             case 7 -> XakaVisualsClient.handOffsetZ = Math.round((-0.5f + t) * 100) / 100.0f;
             case 8 -> XakaVisualsClient.danceSpeed = 0.5f + t * 1.5f;
+            case 9 -> XakaVisualsMusic.setVolume(t);
         }
     }
 
@@ -351,6 +363,12 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetY = 0.0f;
                 XakaVisualsClient.handOffsetZ = 0.0f;
             }
+        } else if (selectedCategory == 6) {
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsMusic.chooseTrack();
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsMusic.previous();
+            if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsMusic.playPause();
+            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsMusic.next();
+            if (hitRow(mouseX, mouseY, left, right, top + 268)) { activeSlider = 9; setSlider(9, mouseX, left, right); }
         } else if (selectedCategory == 5) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.activeDance = (XakaVisualsClient.activeDance + 1) % 6;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.dancePlaying = !XakaVisualsClient.dancePlaying;
@@ -374,6 +392,7 @@ public final class XakaVisualsScreen extends Screen {
             case 1 -> 408;
             case 2, 3 -> 333;
             case 4, 5 -> 284;
+            case 6 -> 370;
             default -> 310;
         };
     }
@@ -392,7 +411,7 @@ public final class XakaVisualsScreen extends Screen {
     }
 
     private String categoryIcon(int index) {
-        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; default -> "⚙"; };
+        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; default -> "⚙"; };
     }
 
     private float easeOut(float t) { return 1f - (float) Math.pow(1f - t, 3); }
