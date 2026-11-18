@@ -99,18 +99,18 @@ public final class XakaVisualsRenderer {
             Vector3f right = context.camera().getRotation().transform(new Vector3f(1, 0, 0));
             Vector3f up = context.camera().getRotation().transform(new Vector3f(0, 1, 0));
             Vector3f towardCamera = context.camera().getRotation().transform(new Vector3f(0, 0, 1));
-            double centerX = targetPos.x - camera.x + towardCamera.x * 0.16
+            double centerX = targetPos.x - camera.x + towardCamera.x * 0.34
                     + right.x * XakaVisualsClient.bodyMarkerOffsetX;
             double centerY = targetPos.y - camera.y + target.getHeight() * 0.53
                     + up.y * XakaVisualsClient.bodyMarkerOffsetY;
-            double centerZ = targetPos.z - camera.z + towardCamera.z * 0.16
+            double centerZ = targetPos.z - camera.z + towardCamera.z * 0.34
                     + right.z * XakaVisualsClient.bodyMarkerOffsetX
                     + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
             // Render the PNG frame as a camera-facing textured quad; tint changes its color.
-            float frameWidth = 1.12f + XakaVisualsClient.markerSize * 0.055f;
-            float frameHeight = Math.max(1.35f, target.getHeight() * 1.02f);
-            float rotation = (float) ((client.world.getTime()
-                    + context.tickCounter().getTickDelta(false)) * -0.0065);
+            float frameWidth = 0.88f + XakaVisualsClient.markerSize * 0.035f;
+            float frameHeight = Math.max(1.15f, target.getHeight() * 0.86f);
+            // Use a monotonic high-resolution clock so rotation never pauses at tick boundaries.
+            float rotation = (float) (System.nanoTime() * -0.00000000045);
             drawTexturedTargetFrame(consumers, centerX, centerY, centerZ, right, up,
                     frameWidth, frameHeight, rotation, targetFrameColor);
         }
