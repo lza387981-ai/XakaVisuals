@@ -58,13 +58,32 @@ public abstract class PlayerEntityModelMixin {
                 rightLeg.yaw += wave * 0.12f;
                 leftLeg.yaw -= wave * 0.12f;
             }
-            default -> {
+            case 3 -> {
                 body.pitch += 0.08f;
                 rightArm.pitch -= 0.35f;
                 leftArm.pitch -= 0.35f;
                 rightLeg.pitch += wave * 0.48f;
                 leftLeg.pitch -= wave * 0.48f;
                 head.yaw += wave * 0.08f;
+            }
+            default -> {
+                // XakaDance: energetic breakdance-inspired low spin with alternating
+                // floor-support arms and wide scissoring legs.
+                float spin = t * 1.65f;
+                float spinWave = (float) Math.sin(spin);
+                float spinWave2 = (float) Math.cos(spin);
+                body.pitch += 0.92f + spinWave2 * 0.16f;
+                body.roll += spinWave * 0.48f;
+                body.yaw += wave * 0.22f;
+                head.pitch -= 0.12f;
+                rightArm.pitch += 1.05f + spinWave * 0.72f;
+                leftArm.pitch += 0.15f - spinWave * 0.55f;
+                rightArm.roll += 0.48f + spinWave2 * 0.42f;
+                leftArm.roll -= 0.48f + spinWave2 * 0.42f;
+                rightLeg.pitch += -0.72f + spinWave * 0.92f;
+                leftLeg.pitch += 0.72f - spinWave * 0.92f;
+                rightLeg.yaw += 0.34f + spinWave2 * 0.24f;
+                leftLeg.yaw -= 0.34f + spinWave2 * 0.24f;
             }
         }
     }
