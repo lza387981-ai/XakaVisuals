@@ -141,6 +141,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 196, "FPS Boost", "Minimal particles; restores your previous setting", XakaVisualsClient.fpsBoost, accent, true);
                 row(c, mx, my, left, right, top + 245, "Enemy HP", "Show the targeted player's health", XakaVisualsClient.enemyHpEnabled, accent, true);
                 row(c, mx, my, left, right, top + 294, "Move HP HUD", "Drag the health panel anywhere on screen", false, accent, false);
+                row(c, mx, my, left, right, top + 343, "Fullbright", "Temporarily raise gamma; restores the previous value", VisualSettings.fullbright, accent, true);
             }
             case 2 -> {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
@@ -214,8 +215,6 @@ public final class XakaVisualsScreen extends Screen {
             case 8 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.danceSpeed);
             case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";
             case 10 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.wingSpeed);
-            case 11 -> String.format(java.util.Locale.ROOT, "%.1f blocks", XakaVisualsClient.cheatRange);
-            case 12 -> String.format(java.util.Locale.ROOT, "%.0f%%", XakaVisualsClient.cheatAimSpeed * 100.0f);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -241,8 +240,6 @@ public final class XakaVisualsScreen extends Screen {
             case 8 -> XakaVisualsClient.danceSpeed = 0.5f + t * 1.5f;
             case 9 -> XakaVisualsMusic.setVolume(t);
             case 10 -> XakaVisualsClient.wingSpeed = 0.5f + t * 1.5f;
-            case 11 -> XakaVisualsClient.cheatRange = 3.0f + t * 3.0f;
-            case 12 -> XakaVisualsClient.cheatAimSpeed = 0.05f + t * 0.95f;
         }
     }
 
@@ -355,6 +352,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 245)) XakaVisualsClient.enemyHpEnabled = !XakaVisualsClient.enemyHpEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 294))
                 net.minecraft.client.MinecraftClient.getInstance().setScreen(new XakaHudPositionScreen());
+            if (hitRow(mouseX, mouseY, left, right, top + 343)) VisualSettings.fullbright = !VisualSettings.fullbright;
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 0; setSlider(0, mouseX, left, right); }
@@ -377,13 +375,6 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetY = 0.0f;
                 XakaVisualsClient.handOffsetZ = 0.0f;
             }
-        } else if (selectedCategory == 8) {
-            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.cheatKillAura = !XakaVisualsClient.cheatKillAura;
-            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.cheatVovAim = !XakaVisualsClient.cheatVovAim;
-            if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.cheatDobleVoble = !XakaVisualsClient.cheatDobleVoble;
-            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.cheatAntiInvis = !XakaVisualsClient.cheatAntiInvis;
-            if (hitRow(mouseX, mouseY, left, right, top + 268)) { activeSlider = 11; setSlider(11, mouseX, left, right); }
-            if (hitRow(mouseX, mouseY, left, right, top + 317)) { activeSlider = 12; setSlider(12, mouseX, left, right); }
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
@@ -420,7 +411,6 @@ public final class XakaVisualsScreen extends Screen {
             case 4, 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
-            case 8 -> 385;
             default -> 310;
         };
     }
@@ -439,7 +429,7 @@ public final class XakaVisualsScreen extends Screen {
     }
 
     private String categoryIcon(int index) {
-        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; case 7 -> "✧"; case 8 -> "⚔"; default -> "⚙"; };
+        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; case 7 -> "✧"; default -> "⚙"; };
     }
 
     private float easeOut(float t) { return 1f - (float) Math.pow(1f - t, 3); }
