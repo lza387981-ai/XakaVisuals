@@ -9,7 +9,7 @@ import java.util.List;
 public final class XakaVisualsScreen extends Screen {
     private static final int PANEL_W = 520;
     private static final int PANEL_H = 340;
-    private static final List<String> TABS = List.of("Visual", "Cosmetics", "HUD", "Client");
+    private static final List<String> TABS = List.of("Visual", "Cosmetics", "Animations", "HUD", "Client");
 
     private String activeTab = "Visual";
     private int scroll;
@@ -20,6 +20,10 @@ public final class XakaVisualsScreen extends Screen {
 
     private List<Toggle> visibleToggles() {
         return switch (activeTab) {
+            case "Animations" -> List.of(
+                    new Toggle("Emotes", "Character emote and animation presets", "", false),
+                    new Toggle("Movement animations", "Additional cosmetic movement styles", "", false)
+            );
             case "HUD" -> List.of(
                     new Toggle("Watermark", "Compact XAKA logo in the corner", "watermark", true),
                     new Toggle("FPS counter", "Display current client FPS", "fpsCounter", true)
