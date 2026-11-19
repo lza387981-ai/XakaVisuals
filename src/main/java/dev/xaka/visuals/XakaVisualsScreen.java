@@ -176,6 +176,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 196, "No fire overlay", "Hide the first-person fire overlay", XakaVisualsClient.noFireOverlay, accent, true);
                 row(c, mx, my, left, right, top + 245, "Set GPS waypoint here", "Save your current block position", XakaVisualsClient.waypointEnabled, accent, false);
                 row(c, mx, my, left, right, top + 294, "Clear GPS waypoint", "Remove the saved waypoint", false, accent, false);
+                row(c, mx, my, left, right, top + 343, "NameProtect", "Hide names in the Xaka target HUD", XakaVisualsClient.nameProtect, accent, true);
             }
             case 7 -> {
                 infoCard(c, left, top, right, "3D character accessories", "Real shaped cloth capes and solid hats attached to your model.");
@@ -415,6 +416,7 @@ public final class XakaVisualsScreen extends Screen {
                 }
             }
             if (hitRow(mouseX, mouseY, left, right, top + 294)) XakaVisualsClient.waypointEnabled = false;
+            if (hitRow(mouseX, mouseY, left, right, top + 343)) XakaVisualsClient.nameProtect = !XakaVisualsClient.nameProtect;
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
@@ -453,7 +455,7 @@ public final class XakaVisualsScreen extends Screen {
             case 4, 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
-            case 8 -> 410;
+            case 8 -> 460;
             default -> 310;
         };
     }
