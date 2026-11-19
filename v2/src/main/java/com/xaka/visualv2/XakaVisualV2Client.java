@@ -21,11 +21,13 @@ public final class XakaVisualV2Client implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenuKey.wasPressed()) {
-                if (client.currentScreen == null) {
+                if (client.currentScreen instanceof XakaClickScreen) {
+                    client.setScreen(null);
+                } else if (client.currentScreen == null) {
                     client.setScreen(new XakaClickScreen());
                 }
             }
         });
-        System.out.println("[XakaVisual.V2] Initialized. Press Right Shift to open the menu.");
+        System.out.println("[XakaVisual.V2] Initialized. Press Right Shift to toggle the menu.");
     }
 }
