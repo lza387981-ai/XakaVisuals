@@ -48,7 +48,7 @@ public final class XakaHud {
 
         if (XakaClickScreen.isEnabled("Armor Status")) {
             String armor = "ARMOR  " + client.player.getArmor();
-            drawLabel(context, client, armor, 8, context.getScaledWindowHeight() - 24, WHITE);
+            drawLabel(context, client, armor, 8, client.getWindow().getScaledHeight() - 24, WHITE);
         }
 
         if (XakaClickScreen.isEnabled("Keystrokes")) {
@@ -56,11 +56,11 @@ public final class XakaHud {
         }
 
         if (XakaClickScreen.isEnabled("Target Info")) {
-            Entity target = client.targetedEntity;
+            Entity target = client.crosshairTarget instanceof net.minecraft.util.hit.EntityHitResult hit ? hit.getEntity() : null;
             if (target instanceof LivingEntity living && target.isAlive()) {
                 String name = target.getName().getString();
                 String health = String.format("HP  %.1f", living.getHealth());
-                int x = context.getScaledWindowWidth() / 2 + 12;
+                int x = client.getWindow().getScaledWidth() / 2 + 12;
                 int y = context.getScaledWindowHeight() / 2 + 8;
                 drawPanel(context, x, y, 112, 34);
                 context.drawText(client.textRenderer, Text.literal(name), x + 7, y + 5, WHITE, true);
