@@ -148,8 +148,8 @@ public final class XakaVisualsRenderer {
             float frameHeight = frameSize;
             // Use a monotonic high-resolution clock so rotation never pauses at tick boundaries.
             float rotation = (float) (System.nanoTime() * -0.00000000045);
-            drawTexturedTargetFrame(consumers, centerX, centerY, centerZ, right, up,
-                    frameWidth, frameHeight, rotation, targetFrameColor);
+            drawRotatingTargetFrame(consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines()),
+                    centerX, centerY, centerZ, right, up, frameSize * 0.5f, rotation, targetFrameColor);
         }
     }
 
