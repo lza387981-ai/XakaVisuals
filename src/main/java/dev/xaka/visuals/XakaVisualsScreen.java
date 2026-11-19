@@ -13,7 +13,7 @@ public final class XakaVisualsScreen extends Screen {
     private static final int TEXT = 0xFFF1F2F8;
     private static final int MUTED = 0xFF929BAF;
 
-    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC", "Cosmetics"};
+    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC", "Cosmetics", "Utilities"};
     private static final String[] CATEGORY_HINTS = {
             "Small details. A cleaner game.",
             "Your information, your layout.",
@@ -22,7 +22,8 @@ public final class XakaVisualsScreen extends Screen {
             "Adjust your first-person hand and held item.",
             "Play a local character emote.",
             "Your MP3 playlist and floating mini-player.",
-            "Volumetric capes and 3D hats for your character."
+            "Volumetric capes and 3D hats for your character.",
+            "Small client-side helpers and status alerts."
     };
 
     private int selectedCategory;
@@ -162,6 +163,11 @@ public final class XakaVisualsScreen extends Screen {
                 sliderRow(c, mx, my, left, right, top + 170, "Hand near / far",
                         Math.round((XakaVisualsClient.handOffsetZ + 0.5f) * 20), 0, 20, accent, 7);
                 row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
+            }
+            case 8 -> {
+                row(c, mx, my, left, right, top, "Auto Sprint", "Sprint while moving forward", XakaVisualsClient.autoSprint, accent, true);
+                row(c, mx, my, left, right, top + 49, "Low armor alert", "Warn when any equipped armor is nearly worn out", XakaVisualsClient.lowArmorNotify, accent, true);
+                row(c, mx, my, left, right, top + 98, "Last death coordinates", "Display the last recorded death position", XakaVisualsClient.deathCoords, accent, true);
             }
             case 7 -> {
                 infoCard(c, left, top, right, "3D character accessories", "Real shaped cloth capes and solid hats attached to your model.");
@@ -381,6 +387,10 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetY = 0.0f;
                 XakaVisualsClient.handOffsetZ = 0.0f;
             }
+        } else if (selectedCategory == 8) {
+            if (hitRow(mouseX, mouseY, left, right, top)) XakaVisualsClient.autoSprint = !XakaVisualsClient.autoSprint;
+            if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.lowArmorNotify = !XakaVisualsClient.lowArmorNotify;
+            if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.deathCoords = !XakaVisualsClient.deathCoords;
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
@@ -418,6 +428,7 @@ public final class XakaVisualsScreen extends Screen {
             case 4, 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
+            case 8 -> 210;
             default -> 310;
         };
     }
