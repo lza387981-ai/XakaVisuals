@@ -48,6 +48,8 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] NoHurtCam: disable first-person damage camera tilt
 - [x] JumpCircle and Trails controls
 - [x] CI compile/build checks for the feature batches above
+- [x] NoWeather: hide local rain/snow rendering, particles and sound
+- [ ] HideBossBar: optional local boss-bar HUD suppression
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
 - [x] Low-armor warning
@@ -65,6 +67,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 
 ## Implemented but awaiting in-game verification
 - NoWeather: local rain/snow rendering and weather particles/sound toggle; CI compilation is checked separately.
+- HideBossBar: optional local boss-bar HUD suppression; CI compilation is checked separately.
 
 See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the findings and the porting exclusions.
 

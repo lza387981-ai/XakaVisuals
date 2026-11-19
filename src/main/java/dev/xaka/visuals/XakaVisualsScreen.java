@@ -179,6 +179,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 343, "NameProtect", "Hide names in the Xaka target HUD", XakaVisualsClient.nameProtect, accent, true);
                 row(c, mx, my, left, right, top + 392, "No hurt camera", "Disable the camera tilt when your player takes damage", XakaVisualsClient.noHurtCam, accent, true);
                 row(c, mx, my, left, right, top + 441, "No weather", "Hide rain, snow and local weather particles", XakaVisualsClient.noWeather, accent, true);
+                row(c, mx, my, left, right, top + 490, "Hide boss bar", "Hide the boss health bar on your screen", XakaVisualsClient.hideBossBar, accent, true);
             }
             case 7 -> {
                 infoCard(c, left, top, right, "3D character accessories", "Real shaped cloth capes and solid hats attached to your model.");
@@ -421,6 +422,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 343)) XakaVisualsClient.nameProtect = !XakaVisualsClient.nameProtect;
             if (hitRow(mouseX, mouseY, left, right, top + 392)) XakaVisualsClient.noHurtCam = !XakaVisualsClient.noHurtCam;
             if (hitRow(mouseX, mouseY, left, right, top + 441)) XakaVisualsClient.noWeather = !XakaVisualsClient.noWeather;
+            if (hitRow(mouseX, mouseY, left, right, top + 490)) XakaVisualsClient.hideBossBar = !XakaVisualsClient.hideBossBar;
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
@@ -459,7 +461,7 @@ public final class XakaVisualsScreen extends Screen {
             case 4, 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
-            case 8 -> 559;
+            case 8 -> 608;
             default -> 310;
         };
     }
