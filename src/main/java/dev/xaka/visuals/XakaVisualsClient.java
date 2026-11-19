@@ -78,6 +78,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean playerTrails = false;
     public static boolean noFluidOverlay = false;
     public static boolean noFireOverlay = false;
+    public static boolean noHurtCam = false;
     public static boolean cooldownHud = false;
     public static boolean waypointEnabled = false;
     public static boolean nameProtect = false;

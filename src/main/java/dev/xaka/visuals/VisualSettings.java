@@ -63,6 +63,7 @@ public final class VisualSettings {
             XakaVisualsClient.playerTrails = bool(p, "playerTrails", XakaVisualsClient.playerTrails);
             XakaVisualsClient.noFluidOverlay = bool(p, "noFluidOverlay", XakaVisualsClient.noFluidOverlay);
             XakaVisualsClient.noFireOverlay = bool(p, "noFireOverlay", XakaVisualsClient.noFireOverlay);
+            XakaVisualsClient.noHurtCam = bool(p, "noHurtCam", XakaVisualsClient.noHurtCam);
             XakaVisualsClient.cooldownHud = bool(p, "cooldownHud", XakaVisualsClient.cooldownHud);
             XakaVisualsClient.waypointEnabled = bool(p, "waypointEnabled", XakaVisualsClient.waypointEnabled);
             XakaVisualsClient.nameProtect = bool(p, "nameProtect", XakaVisualsClient.nameProtect);
@@ -124,6 +125,7 @@ public final class VisualSettings {
         p.setProperty("playerTrails", Boolean.toString(XakaVisualsClient.playerTrails));
         p.setProperty("noFluidOverlay", Boolean.toString(XakaVisualsClient.noFluidOverlay));
         p.setProperty("noFireOverlay", Boolean.toString(XakaVisualsClient.noFireOverlay));
+        p.setProperty("noHurtCam", Boolean.toString(XakaVisualsClient.noHurtCam));
         p.setProperty("cooldownHud", Boolean.toString(XakaVisualsClient.cooldownHud));
         p.setProperty("waypointEnabled", Boolean.toString(XakaVisualsClient.waypointEnabled));
         p.setProperty("nameProtect", Boolean.toString(XakaVisualsClient.nameProtect));

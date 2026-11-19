@@ -5,7 +5,8 @@
   "client": [
     "HeldItemRendererMixin",
     "PlayerEntityModelMixin",
-    "InGameOverlayRendererMixin"
+    "InGameOverlayRendererMixin",
+    "GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

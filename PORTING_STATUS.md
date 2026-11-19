@@ -43,6 +43,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] Airborne movement particle trails
 - [x] NoFluid underwater overlay toggle
 - [x] No-fire first-person overlay toggle
+- [x] NoHurtCam: disable first-person damage camera tilt
 - [x] JumpCircle and Trails controls
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
