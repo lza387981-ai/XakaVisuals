@@ -213,9 +213,9 @@ public final class XakaVisualsScreen extends Screen {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
                 row(c, mx, my, left, right, top + 72, "Halo above head", "Toggle the decorative ring above your player", XakaVisualsClient.haloEnabled, accent, true);
                 sliderRow(c, mx, my, left, right, top + 121, "Halo size", XakaVisualsClient.haloSize, 4, 18, accent, 0);
-                row(c, mx, my, left, right, top + 170, "Body marker", "Toggle a ring or square around your waist", XakaVisualsClient.bodyMarkerEnabled, accent, true);
-                row(c, mx, my, left, right, top + 219, XakaVisualsClient.bodyMarkerSquare ? "Marker: square" : "Marker: circle", "Click to switch shape", false, accent, false);
-                sliderRow(c, mx, my, left, right, top + 268, "Body marker size", XakaVisualsClient.bodyMarkerSize, 3, 15, accent, 1);
+                row(c, mx, my, left, right, top + 170, "Target ESP", "Toggle the marker on the targeted player's torso", XakaVisualsClient.bodyMarkerEnabled, accent, true);
+                row(c, mx, my, left, right, top + 219, XakaVisualsClient.markerSquare ? "Target shape: square" : "Target shape: circle", "Click to switch between square and circle", false, accent, false);
+                sliderRow(c, mx, my, left, right, top + 268, "Target ESP size", XakaVisualsClient.markerSize, 2, 14, accent, 1);
                 row(c, mx, my, left, right, top + 317, "Hit particles", "Show a small burst when the targeted entity takes damage", XakaVisualsClient.hitParticles, accent, true);
                 row(c, mx, my, left, right, top + 366, "Jump circle", "Create a particle ring when you land from a jump", XakaVisualsClient.jumpCircle, accent, true);
                 row(c, mx, my, left, right, top + 415, "Movement trails", "Leave a subtle particle trail while airborne", XakaVisualsClient.playerTrails, accent, true);
@@ -346,7 +346,7 @@ public final class XakaVisualsScreen extends Screen {
         float t = (float)Math.max(0, Math.min(1, (mouseX - sx) / (double)(ex - sx)));
         switch (id) {
             case 0 -> XakaVisualsClient.haloSize = 4 + Math.round(t * 14);
-            case 1 -> XakaVisualsClient.bodyMarkerSize = 3 + Math.round(t * 12);
+            case 1 -> XakaVisualsClient.markerSize = 2 + Math.round(t * 12);
             case 2 -> XakaVisualsClient.bodyMarkerOffsetX = Math.round((-0.5f + t) * 10) / 10.0f;
             case 3 -> XakaVisualsClient.bodyMarkerOffsetZ = Math.round((-0.5f + t) * 10) / 10.0f;
             case 4 -> XakaVisualsClient.bodyMarkerOffsetY = Math.round((-0.5f + t) * 10) / 10.0f;
@@ -465,7 +465,7 @@ public final class XakaVisualsScreen extends Screen {
         if (selectedCategory == 0) {
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.animations = !XakaVisualsClient.animations;
             if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.compactHud = !XakaVisualsClient.compactHud;
-            if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerEnabled = !XakaVisualsClient.markerEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.bodyMarkerEnabled = !XakaVisualsClient.bodyMarkerEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.petEnabled = !XakaVisualsClient.petEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 245)) {
                 if (mouseX > (left + right) / 2.0) XakaVisualsClient.petType = (XakaVisualsClient.petType + 1) % 4;
@@ -498,7 +498,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 0; setSlider(0, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.bodyMarkerEnabled = !XakaVisualsClient.bodyMarkerEnabled;
-            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.bodyMarkerSquare = !XakaVisualsClient.bodyMarkerSquare;
+            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.markerSquare = !XakaVisualsClient.markerSquare;
             if (hitRow(mouseX, mouseY, left, right, top + 317)) XakaVisualsClient.hitParticles = !XakaVisualsClient.hitParticles;
             if (hitRow(mouseX, mouseY, left, right, top + 366)) XakaVisualsClient.jumpCircle = !XakaVisualsClient.jumpCircle;
             if (hitRow(mouseX, mouseY, left, right, top + 415)) XakaVisualsClient.playerTrails = !XakaVisualsClient.playerTrails;
@@ -508,14 +508,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 611)) XakaVisualsClient.jumpCubes = !XakaVisualsClient.jumpCubes;
             if (hitRow(mouseX, mouseY, left, right, top + 660)) { activeSlider = 14; setSlider(14, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 709)) { activeSlider = 15; setSlider(15, mouseX, left, right); }
-            if (hitRow(mouseX, mouseY, left, right, top + 268)) {
-                if (XakaVisualsClient.bodyMarkerSize >= 12) {
-                    XakaVisualsClient.bodyMarkerSize = 3;
-                    XakaVisualsClient.bodyMarkerOffsetY = XakaVisualsClient.bodyMarkerOffsetY >= 0.3f ? -0.3f : XakaVisualsClient.bodyMarkerOffsetY + 0.1f;
-                } else {
-                    XakaVisualsClient.bodyMarkerSize += 3;
-                }
-            }
+            if (hitRow(mouseX, mouseY, left, right, top + 268)) { activeSlider = 1; setSlider(1, mouseX, left, right); }
         } else if (selectedCategory == 4) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) { activeSlider = 5; setSlider(5, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 6; setSlider(6, mouseX, left, right); }
