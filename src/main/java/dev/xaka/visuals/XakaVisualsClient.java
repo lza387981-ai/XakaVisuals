@@ -163,10 +163,16 @@ public final class XakaVisualsClient implements ClientModInitializer {
                     previousFov = -1;
                     zoomActive = false;
                 }
-            } else if (zoomActive) {
-                if (previousFov >= 0) client.options.getFov().setValue(previousFov);
-                previousFov = -1;
-                zoomActive = false;
+            } else {
+                if (!Double.isNaN(previousGamma)) {
+                    client.options.getGamma().setValue(previousGamma);
+                    previousGamma = Double.NaN;
+                }
+                if (zoomActive) {
+                    if (previousFov >= 0) client.options.getFov().setValue(previousFov);
+                    previousFov = -1;
+                    zoomActive = false;
+                }
             }
             // Right Shift toggles only the XakaVisuals menu; other screens are left alone.
             while (openMenu.wasPressed()) {
