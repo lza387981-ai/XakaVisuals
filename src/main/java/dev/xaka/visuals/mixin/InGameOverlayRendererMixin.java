@@ -17,4 +17,9 @@ public abstract class InGameOverlayRendererMixin {
             VertexConsumerProvider vertexConsumers, CallbackInfo ci) {
         if (XakaVisualsClient.noFluidOverlay) ci.cancel();
     }
+    @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
+    private static void xaka$hideFireOverlay(MatrixStack matrices, VertexConsumerProvider vertexConsumers,
+            CallbackInfo ci) {
+        if (XakaVisualsClient.noFireOverlay) ci.cancel();
+    }
 }
