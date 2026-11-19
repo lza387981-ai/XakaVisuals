@@ -23,10 +23,13 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] New menu shell and section navigation
 - [x] XAKA watermark and FPS HUD switches
 - [x] Persistent config foundation
-- [ ] Reimplement visual modules and their settings
+- [x] Fullbright gamma toggle with restoration of the previous gamma value
+- [x] Hold-to-zoom keybind (C) with restoration of the previous FOV
+- [x] Coordinates HUD (XYZ)
+- [ ] Reimplement remaining visual modules and their settings
 - [ ] Reimplement client and utility modules
 - [ ] Port/replace approved textures, PNGs, fonts, sounds and JSON assets
 - [ ] Audit nested dependencies and their licenses
-- [ ] Build and launch-test on Minecraft 1.21.4
+- [ ] Build and launch-test on Minecraft 1.21.4 (CI build in progress; in-game launch test still required)
 
 A feature is marked complete only after its implementation and in-game behavior have been tested. Decompiled bytecode is not treated as original source code.
