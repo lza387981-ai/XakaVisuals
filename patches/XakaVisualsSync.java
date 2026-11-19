@@ -60,7 +60,8 @@ public final class XakaVisualsSync implements ModInitializer {
         int petSize = clamp(input.petSize(), 0, 10);
         int wingStyle = clamp(input.wingStyle(), 0, 2);
         int dance = clamp(input.activeDance(), 0, 5);
-        float wingSpeed = finiteClamp(input.wingSpeed(), 0.5f, 2.0f, 1.0f);\n        int hatStyle = clamp(input.hatStyle(), 0, 3);
+        float wingSpeed = finiteClamp(input.wingSpeed(), 0.5f, 2.0f, 1.0f);
+        int hatStyle = clamp(input.hatStyle(), 0, 3);
         float danceSpeed = finiteClamp(input.danceSpeed(), 0.5f, 2.0f, 1.0f);
         float startAge = Float.isFinite(input.danceStartAge())
                 ? Math.max(0.0f, Math.min(input.danceStartAge(), 1.0e7f)) : 0.0f;
