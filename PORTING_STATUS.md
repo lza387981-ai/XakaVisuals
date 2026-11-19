@@ -1,12 +1,14 @@
 # EnoughVisuals 2.6 → XakaVisuals.V2 port status
 
-This inventory was extracted from the uploaded `enoughvisuals-2.6.jar`. It records class names, not a claim that every class has already been ported.
+This inventory was extracted from the uploaded `enoughvisuals-2.6(2).jar`. It records class names, not a claim that every class has already been ported.
 
 ## Archive inventory
 - 604 application `.class` files
 - 321 PNG images
 - 84 JSON files
-- Several nested dependency JARs under `META-INF/jars/`
+- 37 fragment shaders, 24 fragment shader variants, 20 vertex shaders and 5 GLB models
+- 5 nested dependency JARs under `META-INF/jars/`
+- 2 Windows DLL files
 
 ## Visual modules
 Ambience, Animations, AspectRatio, AtmoDawnFog, AttackEffect, BlockOverlay, ChinaHat, ColorPlus, Cooldowns, Crosshair, CustomHitbox, FreeLook, FriendMarker, Fullbright, HealthIndicator, HitColor, HitParticles, HitRange, ItemLight, ItemPhysics, JumpCircle, JumpCube, JumpEffect, KillEffect, MaceIndicator, MotionBlur, MouseParticles, NoFluid, NoRender, Particles, Prediction, ShaderHands, ShaderPlayer, ShulkerPreview, SkyBox, SwingAnimation, TargetESP, TotemTracker, Trails, ViewModel, WebPanels, WorldCubes, WorldTweaks, Zoom.
@@ -45,6 +47,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] No-fire first-person overlay toggle
 - [x] NoHurtCam: disable first-person damage camera tilt
 - [x] JumpCircle and Trails controls
+- [x] CI compile/build checks for the feature batches above
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
 - [x] Low-armor warning
@@ -52,7 +55,14 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [ ] Reimplement remaining client and utility modules
 - [ ] Port/replace approved textures, PNGs, fonts, sounds and JSON assets
 - [ ] Audit nested dependencies and their licenses
-- [x] CI compile/build checks for the feature batches above
 - [ ] Launch-test the mod in Minecraft 1.21.4 and verify rendering/input in-game
+
+## Security review gate
+- [x] Static inventory of embedded classes, assets, nested JARs and native DLLs
+- [x] Inspect the remote configuration and device-identification flow
+- [ ] Review remaining networked systems and nested dependencies individually
+- [ ] Decide which optional network features can be redesigned as opt-in, transparent Xaka services
+
+See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the findings and the porting exclusions.
 
 A feature is marked complete only after its implementation and in-game behavior have been tested. Decompiled bytecode is not treated as original source code.
