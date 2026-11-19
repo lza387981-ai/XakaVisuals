@@ -15,6 +15,8 @@ public final class VisualSettings {
 
     public static boolean watermark = true;
     public static boolean fpsCounter = true;
+    public static boolean coordinates = false;
+    public static boolean fullbright = false;
 
     private VisualSettings() {}
 
@@ -25,6 +27,8 @@ public final class VisualSettings {
             p.load(in);
             watermark = Boolean.parseBoolean(p.getProperty("watermark", "true"));
             fpsCounter = Boolean.parseBoolean(p.getProperty("fpsCounter", "true"));
+            coordinates = Boolean.parseBoolean(p.getProperty("coordinates", "false"));
+            fullbright = Boolean.parseBoolean(p.getProperty("fullbright", "false"));
         } catch (IOException ignored) {
             // Defaults remain active if the config cannot be read.
         }
@@ -34,6 +38,8 @@ public final class VisualSettings {
         Properties p = new Properties();
         p.setProperty("watermark", Boolean.toString(watermark));
         p.setProperty("fpsCounter", Boolean.toString(fpsCounter));
+        p.setProperty("coordinates", Boolean.toString(coordinates));
+        p.setProperty("fullbright", Boolean.toString(fullbright));
         try {
             Files.createDirectories(FILE.getParent());
             try (OutputStream out = Files.newOutputStream(FILE)) {
