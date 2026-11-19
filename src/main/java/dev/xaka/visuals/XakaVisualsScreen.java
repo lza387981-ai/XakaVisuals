@@ -142,6 +142,8 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 245, "Enemy HP", "Show the targeted player's health", XakaVisualsClient.enemyHpEnabled, accent, true);
                 row(c, mx, my, left, right, top + 294, "Move HP HUD", "Drag the health panel anywhere on screen", false, accent, false);
                 row(c, mx, my, left, right, top + 343, "Fullbright", "Temporarily raise gamma; restores the previous value", VisualSettings.fullbright, accent, true);
+                row(c, mx, my, left, right, top + 392, "Custom crosshair", "Draw a compact accent-colored crosshair", XakaVisualsClient.customCrosshair, accent, true);
+                sliderRow(c, mx, my, left, right, top + 441, "Crosshair size", XakaVisualsClient.crosshairSize, 2, 12, accent, 13);
             }
             case 2 -> {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
@@ -213,6 +215,7 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetY);
             case 7 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.handOffsetZ);
             case 8 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.danceSpeed);
+            case 13 -> Integer.toString(XakaVisualsClient.crosshairSize);
             case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";
             case 10 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.wingSpeed);
             default -> Integer.toString(value);
@@ -238,6 +241,7 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> XakaVisualsClient.handOffsetY = Math.round((-0.5f + t) * 100) / 100.0f;
             case 7 -> XakaVisualsClient.handOffsetZ = Math.round((-0.5f + t) * 100) / 100.0f;
             case 8 -> XakaVisualsClient.danceSpeed = 0.5f + t * 1.5f;
+            case 13 -> XakaVisualsClient.crosshairSize = 2 + Math.round(t * 10);
             case 9 -> XakaVisualsMusic.setVolume(t);
             case 10 -> XakaVisualsClient.wingSpeed = 0.5f + t * 1.5f;
         }
@@ -353,6 +357,8 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 294))
                 net.minecraft.client.MinecraftClient.getInstance().setScreen(new XakaHudPositionScreen());
             if (hitRow(mouseX, mouseY, left, right, top + 343)) VisualSettings.fullbright = !VisualSettings.fullbright;
+            if (hitRow(mouseX, mouseY, left, right, top + 392)) XakaVisualsClient.customCrosshair = !XakaVisualsClient.customCrosshair;
+            if (hitRow(mouseX, mouseY, left, right, top + 441)) { activeSlider = 13; setSlider(13, mouseX, left, right); }
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 0; setSlider(0, mouseX, left, right); }
@@ -407,7 +413,7 @@ public final class XakaVisualsScreen extends Screen {
     private int categoryContentHeight() {
         return switch (selectedCategory) {
             case 0 -> 350;
-            case 1 -> 408;
+            case 1 -> 506;
             case 2, 3 -> 333;
             case 4, 5 -> 284;
             case 6 -> 370;
