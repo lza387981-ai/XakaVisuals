@@ -19,7 +19,9 @@ public record XakaVisualsSyncPayload(
         int activeDance,
         float danceSpeed,
         float danceStartAge,
-        int accentColor
+        int accentColor,
+        boolean hatEnabled,
+        int hatStyle
 ) implements CustomPayload {
     public static final Id<XakaVisualsSyncPayload> ID =
             new Id<>(Identifier.of("xakavisuals", "cosmetic_sync"));
