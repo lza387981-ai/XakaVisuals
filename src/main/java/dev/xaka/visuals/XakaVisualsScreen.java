@@ -180,6 +180,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 392, "No hurt camera", "Disable the camera tilt when your player takes damage", XakaVisualsClient.noHurtCam, accent, true);
                 row(c, mx, my, left, right, top + 441, "No weather", "Hide rain, snow and local weather particles", XakaVisualsClient.noWeather, accent, true);
                 row(c, mx, my, left, right, top + 490, "Hide boss bar", "Hide the boss health bar on your screen", XakaVisualsClient.hideBossBar, accent, true);
+                row(c, mx, my, left, right, top + 539, "No in-wall overlay", "Hide the suffocation texture when inside blocks", XakaVisualsClient.noInWallOverlay, accent, true);
             }
             case 7 -> {
                 infoCard(c, left, top, right, "3D character accessories", "Real shaped cloth capes and solid hats attached to your model.");
@@ -423,6 +424,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 392)) XakaVisualsClient.noHurtCam = !XakaVisualsClient.noHurtCam;
             if (hitRow(mouseX, mouseY, left, right, top + 441)) XakaVisualsClient.noWeather = !XakaVisualsClient.noWeather;
             if (hitRow(mouseX, mouseY, left, right, top + 490)) XakaVisualsClient.hideBossBar = !XakaVisualsClient.hideBossBar;
+            if (hitRow(mouseX, mouseY, left, right, top + 539)) XakaVisualsClient.noInWallOverlay = !XakaVisualsClient.noInWallOverlay;
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
@@ -461,7 +463,7 @@ public final class XakaVisualsScreen extends Screen {
             case 4, 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
-            case 8 -> 608;
+            case 8 -> 657;
             default -> 310;
         };
     }

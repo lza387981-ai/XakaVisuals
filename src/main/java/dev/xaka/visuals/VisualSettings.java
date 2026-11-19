@@ -66,6 +66,7 @@ public final class VisualSettings {
             XakaVisualsClient.noHurtCam = bool(p, "noHurtCam", XakaVisualsClient.noHurtCam);
             XakaVisualsClient.noWeather = bool(p, "noWeather", XakaVisualsClient.noWeather);
             XakaVisualsClient.hideBossBar = bool(p, "hideBossBar", XakaVisualsClient.hideBossBar);
+            XakaVisualsClient.noInWallOverlay = bool(p, "noInWallOverlay", XakaVisualsClient.noInWallOverlay);
             XakaVisualsClient.cooldownHud = bool(p, "cooldownHud", XakaVisualsClient.cooldownHud);
             XakaVisualsClient.waypointEnabled = bool(p, "waypointEnabled", XakaVisualsClient.waypointEnabled);
             XakaVisualsClient.nameProtect = bool(p, "nameProtect", XakaVisualsClient.nameProtect);
@@ -130,6 +131,7 @@ public final class VisualSettings {
         p.setProperty("noHurtCam", Boolean.toString(XakaVisualsClient.noHurtCam));
         p.setProperty("noWeather", Boolean.toString(XakaVisualsClient.noWeather));
         p.setProperty("hideBossBar", Boolean.toString(XakaVisualsClient.hideBossBar));
+        p.setProperty("noInWallOverlay", Boolean.toString(XakaVisualsClient.noInWallOverlay));
         p.setProperty("cooldownHud", Boolean.toString(XakaVisualsClient.cooldownHud));
         p.setProperty("waypointEnabled", Boolean.toString(XakaVisualsClient.waypointEnabled));
         p.setProperty("nameProtect", Boolean.toString(XakaVisualsClient.nameProtect));

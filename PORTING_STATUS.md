@@ -49,7 +49,8 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] JumpCircle and Trails controls
 - [x] CI compile/build checks for the feature batches above
 - [x] NoWeather: hide local rain/snow rendering, particles and sound
-- [ ] HideBossBar: optional local boss-bar HUD suppression
+- [x] HideBossBar: optional local boss-bar HUD suppression
+- [x] NoInWallOverlay: optional local suffocation-overlay suppression
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
 - [x] Low-armor warning
@@ -66,8 +67,9 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [ ] Decide which optional network features can be redesigned as opt-in, transparent Xaka services
 
 ## Implemented but awaiting in-game verification
-- NoWeather: local rain/snow rendering and weather particles/sound toggle; CI compilation is checked separately.
-- HideBossBar: optional local boss-bar HUD suppression; CI compilation is checked separately.
+- NoWeather: local rain/snow rendering and weather particles/sound toggle; implementation is CI-compiled, awaiting in-game verification.
+- HideBossBar: optional local boss-bar HUD suppression; implementation is CI-compiled, awaiting in-game verification.
+- NoInWallOverlay: local suffocation-overlay suppression; implementation is CI-compiled, awaiting in-game verification.
 
 See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the findings and the porting exclusions.
 
