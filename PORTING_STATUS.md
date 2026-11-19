@@ -58,6 +58,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] ViewModel: first-person hand/item translation and rotation across all three axes
 - [x] Crosshair: custom reticle with adjustable gap, length, thickness, center dot and outline
 - [x] Ambience: client-only visual time override with slider and sunrise/noon/sunset/midnight presets; server time is not modified
+- [x] Dropped item tilt: optional local-only subtle rotation of floating item models (visual approximation; not full rigid-body physics)
 - [ ] Reimplement remaining approved lightweight visual modules and their settings
 - [x] Exclude ShaderHands, ShaderPlayer and SkyBox from the V2 plan (performance/utility decision)
 - [x] AutoSprint

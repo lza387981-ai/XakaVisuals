@@ -56,6 +56,7 @@ public final class VisualSettings {
             XakaVisualsClient.handRotationY = decimal(p, "handRotationY", XakaVisualsClient.handRotationY);
             XakaVisualsClient.handRotationZ = decimal(p, "handRotationZ", XakaVisualsClient.handRotationZ);
             XakaVisualsClient.fpsBoost = bool(p, "fpsBoost", XakaVisualsClient.fpsBoost);
+            XakaVisualsClient.droppedItemTilt = bool(p, "droppedItemTilt", XakaVisualsClient.droppedItemTilt);
             XakaVisualsClient.customCrosshair = bool(p, "customCrosshair", XakaVisualsClient.customCrosshair);
             XakaVisualsClient.crosshairSize = integer(p, "crosshairSize", XakaVisualsClient.crosshairSize);
             XakaVisualsClient.crosshairGap = integer(p, "crosshairGap", XakaVisualsClient.crosshairGap);
@@ -140,6 +141,7 @@ public final class VisualSettings {
         p.setProperty("handRotationY", Float.toString(XakaVisualsClient.handRotationY));
         p.setProperty("handRotationZ", Float.toString(XakaVisualsClient.handRotationZ));
         p.setProperty("fpsBoost", Boolean.toString(XakaVisualsClient.fpsBoost));
+        p.setProperty("droppedItemTilt", Boolean.toString(XakaVisualsClient.droppedItemTilt));
         p.setProperty("customCrosshair", Boolean.toString(XakaVisualsClient.customCrosshair));
         p.setProperty("crosshairSize", Integer.toString(XakaVisualsClient.crosshairSize));
         p.setProperty("crosshairGap", Integer.toString(XakaVisualsClient.crosshairGap));

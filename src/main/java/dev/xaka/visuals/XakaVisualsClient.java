@@ -69,6 +69,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static float handRotationY = 0.0f;
     public static float handRotationZ = 0.0f;
     public static boolean fpsBoost = false;
+    // Client-only visual tilt for dropped item models.
+    public static boolean droppedItemTilt = false;
     public static boolean customCrosshair = false;
     public static int crosshairSize = 4;
     public static int crosshairGap = 3;

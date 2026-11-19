@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "HeldItemRendererMixin",
+    "ItemEntityRendererMixin",
     "PlayerEntityModelMixin",
     "InGameOverlayRendererMixin",
     "GameRendererMixin",

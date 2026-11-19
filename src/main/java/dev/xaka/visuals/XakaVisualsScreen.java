@@ -208,6 +208,7 @@ public final class XakaVisualsScreen extends Screen {
                 sliderRow(c, mx, my, left, right, top + 686, "Dot size", XakaVisualsClient.crosshairDotSize, 1, 6, accent, 22);
                 row(c, mx, my, left, right, top + 735, "Crosshair outline", "Add a dark edge for contrast", XakaVisualsClient.crosshairOutline, accent, true);
                 sliderRow(c, mx, my, left, right, top + 784, "Outline width", XakaVisualsClient.crosshairOutlineWidth, 1, 3, accent, 23);
+                row(c, mx, my, left, right, top + 833, "Dropped item tilt", "Add a gentle local tilt to floating item models", XakaVisualsClient.droppedItemTilt, accent, true);
             }
             case 2 -> {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
@@ -494,6 +495,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 686)) { activeSlider = 22; setSlider(22, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 735)) XakaVisualsClient.crosshairOutline = !XakaVisualsClient.crosshairOutline;
             if (hitRow(mouseX, mouseY, left, right, top + 784)) { activeSlider = 23; setSlider(23, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 833)) XakaVisualsClient.droppedItemTilt = !XakaVisualsClient.droppedItemTilt;
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 0; setSlider(0, mouseX, left, right); }
@@ -581,7 +583,7 @@ public final class XakaVisualsScreen extends Screen {
     private int categoryContentHeight() {
         return switch (selectedCategory) {
             case 0 -> 450;
-            case 1 -> 850;
+            case 1 -> 900;
             case 2 -> 767;
             case 3 -> 333;
             case 4 -> 470;
