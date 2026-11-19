@@ -18,7 +18,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api"
 }
 
 processResources {
@@ -38,4 +38,49 @@ java {
 tasks.withType(JavaCompile).configureEach {
     options.release = 21
     options.encoding = "UTF-8"
+}
+
+/*
+ * XakaVisuals.V2 is intended to be a fully local client mod.
+ * This guard deliberately scans shipped source/resources for APIs and
+ * identifiers associated with networking, device fingerprinting, or
+ * launching external processes. Any future exception requires an explicit
+ * review and a deliberate change to this policy.
+ */
+tasks.register("verifyOfflineOnly") {
+    group = "verification"
+    description = "Reject network, device-fingerprinting, and process-launch code in shipped sources."
+
+    doLast {
+        def forbiddenPatterns = [
+            [label: "Java networking API", regex: ~/(?i)\b(?:java|javax)\.net(?:\.|;)/],
+            [label: "HTTP/network client API", regex: ~/(?i)\b(?:HttpURLConnection|HttpClient|Socket|ServerSocket|DatagramSocket)\b/],
+            [label: "external process launch", regex: ~/(?i)\bProcessBuilder\b|Runtime\.getRuntime\(\)\.exec/],
+            [label: "device fingerprint identifier", regex: ~/(?i)\b(?:MachineGuid|machine-id|hwid)\b/],
+            [label: "remote URL literal", regex: ~/(?i)https?://]
+        ]
+
+        def sourceFiles = fileTree("src/main") {
+            include "**/*.java", "**/*.json", "**/*.properties", "**/*.txt",
+                    "**/*.glsl", "**/*.fsh", "**/*.vsh", "**/*.vert", "**/*.frag"
+        }
+        def violations = []
+
+        sourceFiles.each { sourceFile ->
+            def sourceText = sourceFile.getText("UTF-8")
+            forbiddenPatterns.each { rule ->
+                if (rule.regex.matcher(sourceText).find()) {
+                    violations << "${sourceFile}: ${rule.label}"
+                }
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new GradleException(
+                    "Offline-only policy check failed:\n - " + violations.join("\n - ")
+            )
+        }
+
+        logger.lifecycle("Offline-only policy check passed: no network, HWID, or process-launch indicators found.")
+    }
 }

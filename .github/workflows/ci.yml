@@ -20,6 +20,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.12"
+      - name: Verify offline-only security policy
+        run: gradle verifyOfflineOnly
       - name: Build standalone V2
         run: gradle build
       - name: Upload V2 JAR
