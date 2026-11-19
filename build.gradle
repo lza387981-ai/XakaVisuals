@@ -42,10 +42,8 @@ tasks.withType(JavaCompile).configureEach {
 
 /*
  * XakaVisuals.V2 is intended to be a fully local client mod.
- * This guard deliberately scans shipped source/resources for APIs and
- * identifiers associated with networking, device fingerprinting, or
- * launching external processes. Any future exception requires an explicit
- * review and a deliberate change to this policy.
+ * This guard scans shipped source/resources for APIs and identifiers
+ * associated with networking, device fingerprinting, or process launching.
  */
 tasks.register("verifyOfflineOnly") {
     group = "verification"
@@ -57,7 +55,7 @@ tasks.register("verifyOfflineOnly") {
             [label: "HTTP/network client API", regex: ~/(?i)\b(?:HttpURLConnection|HttpClient|Socket|ServerSocket|DatagramSocket)\b/],
             [label: "external process launch", regex: ~/(?i)\bProcessBuilder\b|Runtime\.getRuntime\(\)\.exec/],
             [label: "device fingerprint identifier", regex: ~/(?i)\b(?:MachineGuid|machine-id|hwid)\b/],
-            [label: "remote URL literal", regex: ~/(?i)https?://]
+            [label: "remote URL literal", regex: java.util.regex.Pattern.compile('(?i)https?://')]
         ]
 
         def sourceFiles = fileTree("src/main") {
