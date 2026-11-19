@@ -38,13 +38,13 @@ public final class XakaVisualsClient implements ClientModInitializer {
             if (client.player == null) return;
             int y = 8;
             if (VisualSettings.watermark) {
-                drawContext.fill(8, y - 3, 116, y + 12, 0xA9151824);
+                drawContext.fill(8, y - 3, 112, y + 14, 0xA9151824);
                 drawContext.fill(8, y - 3, 10, y + 12, 0xFF8B5CF6);
                 drawContext.drawTextWithShadow(client.textRenderer,
-                        Text.literal("XAKA").styled(s -> s.withColor(0xFFC4B5FD)),
+                        Text.literal("Xaka").styled(s -> s.withColor(0xFFC4B5FD)),
                         16, y, 0xFFFFFFFF);
                 drawContext.drawTextWithShadow(client.textRenderer,
-                        Text.literal("VISUALS V2"), 52, y, 0xFFFFFFFF);
+                        Text.literal("Visuals"), 46, y, 0xFFFFFFFF);
                 y += 20;
             }
             if (VisualSettings.fpsCounter) {
