@@ -1,7 +1,6 @@
 package dev.xaka.visuals;
 
 import net.fabricmc.loader.api.FabricLoader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,13 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-/** Persistent settings for features already implemented in V2. */
+/** Persistent configuration for the implemented XakaVisuals.V2 features. */
 public final class VisualSettings {
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("xakavisuals.properties");
-
-    public static boolean watermark = true;
-    public static boolean fpsCounter = true;
-    public static boolean coordinates = false;
     public static boolean fullbright = false;
 
     private VisualSettings() {}
@@ -25,28 +20,109 @@ public final class VisualSettings {
         Properties p = new Properties();
         try (InputStream in = Files.newInputStream(FILE)) {
             p.load(in);
-            watermark = Boolean.parseBoolean(p.getProperty("watermark", "true"));
-            fpsCounter = Boolean.parseBoolean(p.getProperty("fpsCounter", "true"));
-            coordinates = Boolean.parseBoolean(p.getProperty("coordinates", "false"));
-            fullbright = Boolean.parseBoolean(p.getProperty("fullbright", "false"));
+            XakaVisualsClient.animations = bool(p, "animations", XakaVisualsClient.animations);
+            XakaVisualsClient.compactHud = bool(p, "compactHud", XakaVisualsClient.compactHud);
+            XakaVisualsClient.watermark = bool(p, "watermark", XakaVisualsClient.watermark);
+            XakaVisualsClient.fps = bool(p, "fps", XakaVisualsClient.fps);
+            XakaVisualsClient.coordinates = bool(p, "coordinates", XakaVisualsClient.coordinates);
+            XakaVisualsClient.enemyHpEnabled = bool(p, "enemyHpEnabled", XakaVisualsClient.enemyHpEnabled);
+            XakaVisualsClient.enemyHpX = integer(p, "enemyHpX", XakaVisualsClient.enemyHpX);
+            XakaVisualsClient.enemyHpY = integer(p, "enemyHpY", XakaVisualsClient.enemyHpY);
+            XakaVisualsClient.markerEnabled = bool(p, "markerEnabled", XakaVisualsClient.markerEnabled);
+            XakaVisualsClient.markerSquare = bool(p, "markerSquare", XakaVisualsClient.markerSquare);
+            XakaVisualsClient.markerSize = integer(p, "markerSize", XakaVisualsClient.markerSize);
+            XakaVisualsClient.targetFrameColorIndex = integer(p, "targetFrameColorIndex", XakaVisualsClient.targetFrameColorIndex);
+            XakaVisualsClient.haloEnabled = bool(p, "haloEnabled", XakaVisualsClient.haloEnabled);
+            XakaVisualsClient.haloSize = integer(p, "haloSize", XakaVisualsClient.haloSize);
+            XakaVisualsClient.bodyMarkerEnabled = bool(p, "bodyMarkerEnabled", XakaVisualsClient.bodyMarkerEnabled);
+            XakaVisualsClient.bodyMarkerSquare = bool(p, "bodyMarkerSquare", XakaVisualsClient.bodyMarkerSquare);
+            XakaVisualsClient.bodyMarkerSize = integer(p, "bodyMarkerSize", XakaVisualsClient.bodyMarkerSize);
+            XakaVisualsClient.bodyMarkerOffsetX = decimal(p, "bodyMarkerOffsetX", XakaVisualsClient.bodyMarkerOffsetX);
+            XakaVisualsClient.bodyMarkerOffsetY = decimal(p, "bodyMarkerOffsetY", XakaVisualsClient.bodyMarkerOffsetY);
+            XakaVisualsClient.bodyMarkerOffsetZ = decimal(p, "bodyMarkerOffsetZ", XakaVisualsClient.bodyMarkerOffsetZ);
+            XakaVisualsClient.accentIndex = integer(p, "accentIndex", XakaVisualsClient.accentIndex);
+            XakaVisualsClient.petEnabled = bool(p, "petEnabled", XakaVisualsClient.petEnabled);
+            XakaVisualsClient.petType = integer(p, "petType", XakaVisualsClient.petType);
+            XakaVisualsClient.petSize = integer(p, "petSize", XakaVisualsClient.petSize);
+            XakaVisualsClient.wingsEnabled = bool(p, "wingsEnabled", XakaVisualsClient.wingsEnabled);
+            XakaVisualsClient.wingStyle = integer(p, "wingStyle", XakaVisualsClient.wingStyle);
+            XakaVisualsClient.wingSpeed = decimal(p, "wingSpeed", XakaVisualsClient.wingSpeed);
+            XakaVisualsClient.hatEnabled = bool(p, "hatEnabled", XakaVisualsClient.hatEnabled);
+            XakaVisualsClient.hatStyle = integer(p, "hatStyle", XakaVisualsClient.hatStyle);
+            XakaVisualsClient.handOffsetX = decimal(p, "handOffsetX", XakaVisualsClient.handOffsetX);
+            XakaVisualsClient.handOffsetY = decimal(p, "handOffsetY", XakaVisualsClient.handOffsetY);
+            XakaVisualsClient.handOffsetZ = decimal(p, "handOffsetZ", XakaVisualsClient.handOffsetZ);
+            XakaVisualsClient.fpsBoost = bool(p, "fpsBoost", XakaVisualsClient.fpsBoost);
+            XakaVisualsClient.activeDance = integer(p, "activeDance", XakaVisualsClient.activeDance);
+            XakaVisualsClient.danceSpeed = decimal(p, "danceSpeed", XakaVisualsClient.danceSpeed);
+            fullbright = bool(p, "fullbright", fullbright);
+            XakaVisualsClient.dancePlaying = false;
+            XakaVisualsMusic.setVolume(decimal(p, "musicVolume", XakaVisualsMusic.getVolume()));
         } catch (IOException ignored) {
-            // Defaults remain active if the config cannot be read.
+            // Keep safe defaults if the config is unavailable.
         }
     }
 
     public static void save() {
         Properties p = new Properties();
-        p.setProperty("watermark", Boolean.toString(watermark));
-        p.setProperty("fpsCounter", Boolean.toString(fpsCounter));
-        p.setProperty("coordinates", Boolean.toString(coordinates));
+        p.setProperty("animations", Boolean.toString(XakaVisualsClient.animations));
+        p.setProperty("compactHud", Boolean.toString(XakaVisualsClient.compactHud));
+        p.setProperty("watermark", Boolean.toString(XakaVisualsClient.watermark));
+        p.setProperty("fps", Boolean.toString(XakaVisualsClient.fps));
+        p.setProperty("coordinates", Boolean.toString(XakaVisualsClient.coordinates));
+        p.setProperty("enemyHpEnabled", Boolean.toString(XakaVisualsClient.enemyHpEnabled));
+        p.setProperty("enemyHpX", Integer.toString(XakaVisualsClient.enemyHpX));
+        p.setProperty("enemyHpY", Integer.toString(XakaVisualsClient.enemyHpY));
+        p.setProperty("markerEnabled", Boolean.toString(XakaVisualsClient.markerEnabled));
+        p.setProperty("markerSquare", Boolean.toString(XakaVisualsClient.markerSquare));
+        p.setProperty("markerSize", Integer.toString(XakaVisualsClient.markerSize));
+        p.setProperty("targetFrameColorIndex", Integer.toString(XakaVisualsClient.targetFrameColorIndex));
+        p.setProperty("haloEnabled", Boolean.toString(XakaVisualsClient.haloEnabled));
+        p.setProperty("haloSize", Integer.toString(XakaVisualsClient.haloSize));
+        p.setProperty("bodyMarkerEnabled", Boolean.toString(XakaVisualsClient.bodyMarkerEnabled));
+        p.setProperty("bodyMarkerSquare", Boolean.toString(XakaVisualsClient.bodyMarkerSquare));
+        p.setProperty("bodyMarkerSize", Integer.toString(XakaVisualsClient.bodyMarkerSize));
+        p.setProperty("bodyMarkerOffsetX", Float.toString(XakaVisualsClient.bodyMarkerOffsetX));
+        p.setProperty("bodyMarkerOffsetY", Float.toString(XakaVisualsClient.bodyMarkerOffsetY));
+        p.setProperty("bodyMarkerOffsetZ", Float.toString(XakaVisualsClient.bodyMarkerOffsetZ));
+        p.setProperty("accentIndex", Integer.toString(XakaVisualsClient.accentIndex));
+        p.setProperty("petEnabled", Boolean.toString(XakaVisualsClient.petEnabled));
+        p.setProperty("petType", Integer.toString(XakaVisualsClient.petType));
+        p.setProperty("petSize", Integer.toString(XakaVisualsClient.petSize));
+        p.setProperty("wingsEnabled", Boolean.toString(XakaVisualsClient.wingsEnabled));
+        p.setProperty("wingStyle", Integer.toString(XakaVisualsClient.wingStyle));
+        p.setProperty("wingSpeed", Float.toString(XakaVisualsClient.wingSpeed));
+        p.setProperty("hatEnabled", Boolean.toString(XakaVisualsClient.hatEnabled));
+        p.setProperty("hatStyle", Integer.toString(XakaVisualsClient.hatStyle));
+        p.setProperty("handOffsetX", Float.toString(XakaVisualsClient.handOffsetX));
+        p.setProperty("handOffsetY", Float.toString(XakaVisualsClient.handOffsetY));
+        p.setProperty("handOffsetZ", Float.toString(XakaVisualsClient.handOffsetZ));
+        p.setProperty("fpsBoost", Boolean.toString(XakaVisualsClient.fpsBoost));
+        p.setProperty("activeDance", Integer.toString(XakaVisualsClient.activeDance));
+        p.setProperty("danceSpeed", Float.toString(XakaVisualsClient.danceSpeed));
         p.setProperty("fullbright", Boolean.toString(fullbright));
+        p.setProperty("musicVolume", Float.toString(XakaVisualsMusic.getVolume()));
         try {
             Files.createDirectories(FILE.getParent());
             try (OutputStream out = Files.newOutputStream(FILE)) {
                 p.store(out, "XakaVisuals.V2");
             }
         } catch (IOException ignored) {
-            // Config persistence must never crash the game.
+            // A failed config write must not interrupt gameplay.
         }
+    }
+
+    private static boolean bool(Properties p, String key, boolean fallback) {
+        return Boolean.parseBoolean(p.getProperty(key, Boolean.toString(fallback)));
+    }
+    private static int integer(Properties p, String key, int fallback) {
+        try { return Integer.parseInt(p.getProperty(key, Integer.toString(fallback))); }
+        catch (NumberFormatException ignored) { return fallback; }
+    }
+    private static float decimal(Properties p, String key, float fallback) {
+        try {
+            float value = Float.parseFloat(p.getProperty(key, Float.toString(fallback)));
+            return Float.isFinite(value) ? value : fallback;
+        } catch (NumberFormatException ignored) { return fallback; }
     }
 }
