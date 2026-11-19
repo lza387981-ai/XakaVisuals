@@ -62,6 +62,7 @@ public final class VisualSettings {
             XakaVisualsClient.jumpCircle = bool(p, "jumpCircle", XakaVisualsClient.jumpCircle);
             XakaVisualsClient.playerTrails = bool(p, "playerTrails", XakaVisualsClient.playerTrails);
             XakaVisualsClient.noFluidOverlay = bool(p, "noFluidOverlay", XakaVisualsClient.noFluidOverlay);
+            XakaVisualsClient.noFireOverlay = bool(p, "noFireOverlay", XakaVisualsClient.noFireOverlay);
             XakaVisualsClient.activeDance = integer(p, "activeDance", XakaVisualsClient.activeDance);
             XakaVisualsClient.danceSpeed = decimal(p, "danceSpeed", XakaVisualsClient.danceSpeed);
             fullbright = bool(p, "fullbright", fullbright);
@@ -116,6 +117,7 @@ public final class VisualSettings {
         p.setProperty("jumpCircle", Boolean.toString(XakaVisualsClient.jumpCircle));
         p.setProperty("playerTrails", Boolean.toString(XakaVisualsClient.playerTrails));
         p.setProperty("noFluidOverlay", Boolean.toString(XakaVisualsClient.noFluidOverlay));
+        p.setProperty("noFireOverlay", Boolean.toString(XakaVisualsClient.noFireOverlay));
         p.setProperty("activeDance", Integer.toString(XakaVisualsClient.activeDance));
         p.setProperty("danceSpeed", Float.toString(XakaVisualsClient.danceSpeed));
         p.setProperty("fullbright", Boolean.toString(fullbright));
