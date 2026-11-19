@@ -304,6 +304,9 @@ public final class XakaVisualsScreen extends Screen {
                 sliderRow(c, mx, my, left, right, top + 175, "Marker left / right", Math.round((XakaVisualsClient.bodyMarkerOffsetX + 0.5f) * 10), 0, 10, accent, 2);
                 sliderRow(c, mx, my, left, right, top + 224, "Marker forward / back", Math.round((XakaVisualsClient.bodyMarkerOffsetZ + 0.5f) * 10), 0, 10, accent, 3);
                 sliderRow(c, mx, my, left, right, top + 273, "Marker height", Math.round((XakaVisualsClient.bodyMarkerOffsetY + 0.5f) * 10), 0, 10, accent, 4);
+                row(c, mx, my, left, right, top + 322, "ColorPlus Lite", "Apply a subtle world tint without shaders or bloom", XakaVisualsClient.colorPlusEnabled, accent, true);
+                row(c, mx, my, left, right, top + 371, "Tint preset: " + XakaVisualsClient.colorPlusPresetName(), "Tap to cycle cinematic, warm, natural, sunset and frost", false, accent, false);
+                sliderRow(c, mx, my, left, right, top + 420, "Tint strength", XakaVisualsClient.colorPlusStrength, 0, 100, accent, 26);
             }
         }
     }
@@ -329,6 +332,7 @@ public final class XakaVisualsScreen extends Screen {
             case 15 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.jumpCubeSize / 100.0f);
             case 16 -> Integer.toString(XakaVisualsClient.mouseParticleSize);
             case 25 -> XakaVisualsClient.particleDensity + "/5";
+            case 26 -> XakaVisualsClient.colorPlusStrength + "%";
             case 17 -> Math.round(XakaVisualsClient.handRotationX) + "°";
             case 18 -> Math.round(XakaVisualsClient.handRotationY) + "°";
             case 19 -> Math.round(XakaVisualsClient.handRotationZ) + "°";
@@ -377,6 +381,7 @@ public final class XakaVisualsScreen extends Screen {
             case 23 -> XakaVisualsClient.crosshairOutlineWidth = 1 + Math.round(t * 2);
             case 24 -> XakaVisualsClient.ambienceTime = Math.round(t * 23) * 1000;
             case 25 -> XakaVisualsClient.particleDensity = 1 + Math.round(t * 4);
+            case 26 -> XakaVisualsClient.colorPlusStrength = Math.round(t * 100);
         }
     }
 
@@ -585,6 +590,9 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 175)) { activeSlider = 2; setSlider(2, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 224)) { activeSlider = 3; setSlider(3, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 273)) { activeSlider = 4; setSlider(4, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 322)) XakaVisualsClient.colorPlusEnabled = !XakaVisualsClient.colorPlusEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 371)) XakaVisualsClient.colorPlusPreset = (XakaVisualsClient.colorPlusPreset + 1) % 5;
+            if (hitRow(mouseX, mouseY, left, right, top + 420)) { activeSlider = 26; setSlider(26, mouseX, left, right); }
         }
         VisualSettings.save();
         return true;
@@ -595,7 +603,7 @@ public final class XakaVisualsScreen extends Screen {
             case 0 -> 450;
             case 1 -> 950;
             case 2 -> 870;
-            case 3 -> 333;
+            case 3 -> 480;
             case 4 -> 470;
             case 5 -> 284;
             case 6 -> 370;

@@ -94,6 +94,9 @@ public final class VisualSettings {
             XakaVisualsClient.nameProtect = bool(p, "nameProtect", XakaVisualsClient.nameProtect);
             XakaVisualsClient.shulkerPreview = bool(p, "shulkerPreview", XakaVisualsClient.shulkerPreview);
             XakaVisualsClient.killEffect = bool(p, "killEffect", XakaVisualsClient.killEffect);
+            XakaVisualsClient.colorPlusEnabled = bool(p, "colorPlusEnabled", XakaVisualsClient.colorPlusEnabled);
+            XakaVisualsClient.colorPlusPreset = Math.floorMod(integer(p, "colorPlusPreset", XakaVisualsClient.colorPlusPreset), 5);
+            XakaVisualsClient.colorPlusStrength = Math.max(0, Math.min(100, integer(p, "colorPlusStrength", XakaVisualsClient.colorPlusStrength)));
             XakaVisualsClient.waypointX = integer(p, "waypointX", XakaVisualsClient.waypointX);
             XakaVisualsClient.waypointY = integer(p, "waypointY", XakaVisualsClient.waypointY);
             XakaVisualsClient.waypointZ = integer(p, "waypointZ", XakaVisualsClient.waypointZ);
@@ -183,6 +186,9 @@ public final class VisualSettings {
         p.setProperty("nameProtect", Boolean.toString(XakaVisualsClient.nameProtect));
         p.setProperty("shulkerPreview", Boolean.toString(XakaVisualsClient.shulkerPreview));
         p.setProperty("killEffect", Boolean.toString(XakaVisualsClient.killEffect));
+        p.setProperty("colorPlusEnabled", Boolean.toString(XakaVisualsClient.colorPlusEnabled));
+        p.setProperty("colorPlusPreset", Integer.toString(XakaVisualsClient.colorPlusPreset));
+        p.setProperty("colorPlusStrength", Integer.toString(XakaVisualsClient.colorPlusStrength));
         p.setProperty("waypointX", Integer.toString(XakaVisualsClient.waypointX));
         p.setProperty("waypointY", Integer.toString(XakaVisualsClient.waypointY));
         p.setProperty("waypointZ", Integer.toString(XakaVisualsClient.waypointZ));

@@ -111,6 +111,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean killEffect = false;
     private static LivingEntity killEffectCandidate;
     private static Vec3d killEffectCandidatePos = Vec3d.ZERO;
+    public static boolean colorPlusEnabled = false;
+    public static int colorPlusPreset = 0;
+    public static int colorPlusStrength = 30;
     public static boolean cooldownHud = false;
     public static boolean waypointEnabled = false;
     public static boolean nameProtect = false;
@@ -172,6 +175,21 @@ public final class XakaVisualsClient implements ClientModInitializer {
             int color, int outlineColor, int outlineWidth) {
         if (outlineWidth > 0) context.fill(x1 - outlineWidth, y1 - outlineWidth, x2 + outlineWidth, y2 + outlineWidth, outlineColor);
         context.fill(x1, y1, x2, y2, color);
+    }
+
+    private static final int[] COLOR_PLUS_TINTS = {
+            0xFF52658F, 0xFFC08A50, 0xFF719B73, 0xFFB9684F, 0xFF659AC5
+    };
+    private static final String[] COLOR_PLUS_NAMES = {
+            "Cinematic", "Warm", "Natural", "Sunset", "Frost"
+    };
+
+    public static int colorPlusTint() {
+        return COLOR_PLUS_TINTS[Math.floorMod(colorPlusPreset, COLOR_PLUS_TINTS.length)];
+    }
+
+    public static String colorPlusPresetName() {
+        return COLOR_PLUS_NAMES[Math.floorMod(colorPlusPreset, COLOR_PLUS_NAMES.length)];
     }
 
     public static int accent() {
@@ -390,6 +408,15 @@ public final class XakaVisualsClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.options.hudHidden) return;
+
+            // ColorPlus Lite is a low-cost, client-only tint overlay. It intentionally avoids
+            // full-screen shader passes, bloom and blur to keep the effect lightweight.
+            if (colorPlusEnabled && client.currentScreen == null && colorPlusStrength > 0) {
+                int alpha = Math.max(0, Math.min(36, colorPlusStrength * 36 / 100));
+                int tint = (alpha << 24) | (colorPlusTint() & 0x00FFFFFF);
+                drawContext.fill(0, 0, client.getWindow().getScaledWidth(),
+                        client.getWindow().getScaledHeight(), tint);
+            }
 
             XakaVisualsMusic.renderHud(drawContext, client);
 
