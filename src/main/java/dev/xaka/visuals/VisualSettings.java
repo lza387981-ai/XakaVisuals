@@ -58,6 +58,7 @@ public final class VisualSettings {
             XakaVisualsClient.autoSprint = bool(p, "autoSprint", XakaVisualsClient.autoSprint);
             XakaVisualsClient.lowArmorNotify = bool(p, "lowArmorNotify", XakaVisualsClient.lowArmorNotify);
             XakaVisualsClient.deathCoords = bool(p, "deathCoords", XakaVisualsClient.deathCoords);
+            XakaVisualsClient.hitParticles = bool(p, "hitParticles", XakaVisualsClient.hitParticles);
             XakaVisualsClient.activeDance = integer(p, "activeDance", XakaVisualsClient.activeDance);
             XakaVisualsClient.danceSpeed = decimal(p, "danceSpeed", XakaVisualsClient.danceSpeed);
             fullbright = bool(p, "fullbright", fullbright);
@@ -108,6 +109,7 @@ public final class VisualSettings {
         p.setProperty("autoSprint", Boolean.toString(XakaVisualsClient.autoSprint));
         p.setProperty("lowArmorNotify", Boolean.toString(XakaVisualsClient.lowArmorNotify));
         p.setProperty("deathCoords", Boolean.toString(XakaVisualsClient.deathCoords));
+        p.setProperty("hitParticles", Boolean.toString(XakaVisualsClient.hitParticles));
         p.setProperty("activeDance", Integer.toString(XakaVisualsClient.activeDance));
         p.setProperty("danceSpeed", Float.toString(XakaVisualsClient.danceSpeed));
         p.setProperty("fullbright", Boolean.toString(fullbright));
