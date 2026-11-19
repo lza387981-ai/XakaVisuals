@@ -71,6 +71,12 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean fpsBoost = false;
     public static boolean customCrosshair = false;
     public static int crosshairSize = 4;
+    public static int crosshairGap = 3;
+    public static int crosshairThickness = 1;
+    public static boolean crosshairDot = false;
+    public static int crosshairDotSize = 2;
+    public static boolean crosshairOutline = true;
+    public static int crosshairOutlineWidth = 1;
     public static boolean autoSprint = false;
     public static boolean lowArmorNotify = false;
     public static boolean deathCoords = false;
@@ -136,6 +142,12 @@ public final class XakaVisualsClient implements ClientModInitializer {
     private static final String[] TARGET_FRAME_COLOR_NAMES = {
             "White", "Violet", "Mint", "Rose", "Amber", "Blue", "Gold", "Red"
     };
+
+    private static void drawCrosshairPart(net.minecraft.client.gui.DrawContext context, int x1, int y1, int x2, int y2,
+            int color, int outlineColor, int outlineWidth) {
+        if (outlineWidth > 0) context.fill(x1 - outlineWidth, y1 - outlineWidth, x2 + outlineWidth, y2 + outlineWidth, outlineColor);
+        context.fill(x1, y1, x2, y2, color);
+    }
 
     public static int accent() {
         return ACCENTS[Math.floorMod(accentIndex, ACCENTS.length)];
@@ -420,14 +432,21 @@ public final class XakaVisualsClient implements ClientModInitializer {
             if (customCrosshair) {
                 int centerX = client.getWindow().getScaledWidth() / 2;
                 int centerY = client.getWindow().getScaledHeight() / 2;
-                int size = Math.max(2, Math.min(12, crosshairSize));
-                int gap = 3;
-                int thickness = 1;
+                int size = Math.max(2, Math.min(16, crosshairSize));
+                int gap = Math.max(0, Math.min(12, crosshairGap));
+                int thickness = Math.max(1, Math.min(4, crosshairThickness));
+                int half = thickness / 2;
                 int color = accent();
-                drawContext.fill(centerX - gap - size, centerY, centerX - gap, centerY + thickness, color);
-                drawContext.fill(centerX + gap + 1, centerY, centerX + gap + size + 1, centerY + thickness, color);
-                drawContext.fill(centerX, centerY - gap - size, centerX + thickness, centerY - gap, color);
-                drawContext.fill(centerX, centerY + gap + 1, centerX + thickness, centerY + gap + size + 1, color);
+                int outline = crosshairOutline ? Math.max(1, Math.min(3, crosshairOutlineWidth)) : 0;
+                int outlineColor = 0xE8000000;
+                drawCrosshairPart(drawContext, centerX - gap - size, centerY - half, centerX - gap, centerY - half + thickness, color, outlineColor, outline);
+                drawCrosshairPart(drawContext, centerX + gap + 1, centerY - half, centerX + gap + size + 1, centerY - half + thickness, color, outlineColor, outline);
+                drawCrosshairPart(drawContext, centerX - half, centerY - gap - size, centerX - half + thickness, centerY - gap, color, outlineColor, outline);
+                drawCrosshairPart(drawContext, centerX - half, centerY + gap + 1, centerX - half + thickness, centerY + gap + size + 1, color, outlineColor, outline);
+                if (crosshairDot) {
+                    int dot = Math.max(1, Math.min(6, crosshairDotSize));
+                    drawCrosshairPart(drawContext, centerX - dot / 2, centerY - dot / 2, centerX - dot / 2 + dot, centerY - dot / 2 + dot, color, outlineColor, outline);
+                }
             }
 
             if (!markerEnabled) return;

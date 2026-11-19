@@ -201,6 +201,12 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 392, "Custom crosshair", "Draw a compact accent-colored crosshair", XakaVisualsClient.customCrosshair, accent, true);
                 sliderRow(c, mx, my, left, right, top + 441, "Crosshair size", XakaVisualsClient.crosshairSize, 2, 12, accent, 13);
                 row(c, mx, my, left, right, top + 490, "Cooldowns", "Show your attack cooldown percentage", XakaVisualsClient.cooldownHud, accent, true);
+                sliderRow(c, mx, my, left, right, top + 539, "Crosshair gap", XakaVisualsClient.crosshairGap, 0, 12, accent, 20);
+                sliderRow(c, mx, my, left, right, top + 588, "Crosshair thickness", XakaVisualsClient.crosshairThickness, 1, 4, accent, 21);
+                row(c, mx, my, left, right, top + 637, "Center dot", "Show a small dot in the middle", XakaVisualsClient.crosshairDot, accent, true);
+                sliderRow(c, mx, my, left, right, top + 686, "Dot size", XakaVisualsClient.crosshairDotSize, 1, 6, accent, 22);
+                row(c, mx, my, left, right, top + 735, "Crosshair outline", "Add a dark edge for contrast", XakaVisualsClient.crosshairOutline, accent, true);
+                sliderRow(c, mx, my, left, right, top + 784, "Outline width", XakaVisualsClient.crosshairOutlineWidth, 1, 3, accent, 23);
             }
             case 2 -> {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
@@ -307,6 +313,10 @@ public final class XakaVisualsScreen extends Screen {
             case 17 -> Math.round(XakaVisualsClient.handRotationX) + "°";
             case 18 -> Math.round(XakaVisualsClient.handRotationY) + "°";
             case 19 -> Math.round(XakaVisualsClient.handRotationZ) + "°";
+            case 20 -> Integer.toString(XakaVisualsClient.crosshairGap);
+            case 21 -> Integer.toString(XakaVisualsClient.crosshairThickness);
+            case 22 -> Integer.toString(XakaVisualsClient.crosshairDotSize);
+            case 23 -> Integer.toString(XakaVisualsClient.crosshairOutlineWidth);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -341,6 +351,10 @@ public final class XakaVisualsScreen extends Screen {
             case 17 -> XakaVisualsClient.handRotationX = -180.0f + t * 360.0f;
             case 18 -> XakaVisualsClient.handRotationY = -180.0f + t * 360.0f;
             case 19 -> XakaVisualsClient.handRotationZ = -180.0f + t * 360.0f;
+            case 20 -> XakaVisualsClient.crosshairGap = Math.round(t * 12);
+            case 21 -> XakaVisualsClient.crosshairThickness = 1 + Math.round(t * 3);
+            case 22 -> XakaVisualsClient.crosshairDotSize = 1 + Math.round(t * 5);
+            case 23 -> XakaVisualsClient.crosshairOutlineWidth = 1 + Math.round(t * 2);
         }
     }
 
@@ -459,6 +473,12 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 392)) XakaVisualsClient.customCrosshair = !XakaVisualsClient.customCrosshair;
             if (hitRow(mouseX, mouseY, left, right, top + 441)) { activeSlider = 13; setSlider(13, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 490)) XakaVisualsClient.cooldownHud = !XakaVisualsClient.cooldownHud;
+            if (hitRow(mouseX, mouseY, left, right, top + 539)) { activeSlider = 20; setSlider(20, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 588)) { activeSlider = 21; setSlider(21, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 637)) XakaVisualsClient.crosshairDot = !XakaVisualsClient.crosshairDot;
+            if (hitRow(mouseX, mouseY, left, right, top + 686)) { activeSlider = 22; setSlider(22, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 735)) XakaVisualsClient.crosshairOutline = !XakaVisualsClient.crosshairOutline;
+            if (hitRow(mouseX, mouseY, left, right, top + 784)) { activeSlider = 23; setSlider(23, mouseX, left, right); }
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 0; setSlider(0, mouseX, left, right); }
@@ -545,7 +565,7 @@ public final class XakaVisualsScreen extends Screen {
     private int categoryContentHeight() {
         return switch (selectedCategory) {
             case 0 -> 450;
-            case 1 -> 556;
+            case 1 -> 850;
             case 2 -> 767;
             case 3 -> 333;
             case 4 -> 470;

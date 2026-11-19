@@ -58,6 +58,12 @@ public final class VisualSettings {
             XakaVisualsClient.fpsBoost = bool(p, "fpsBoost", XakaVisualsClient.fpsBoost);
             XakaVisualsClient.customCrosshair = bool(p, "customCrosshair", XakaVisualsClient.customCrosshair);
             XakaVisualsClient.crosshairSize = integer(p, "crosshairSize", XakaVisualsClient.crosshairSize);
+            XakaVisualsClient.crosshairGap = integer(p, "crosshairGap", XakaVisualsClient.crosshairGap);
+            XakaVisualsClient.crosshairThickness = integer(p, "crosshairThickness", XakaVisualsClient.crosshairThickness);
+            XakaVisualsClient.crosshairDot = bool(p, "crosshairDot", XakaVisualsClient.crosshairDot);
+            XakaVisualsClient.crosshairDotSize = integer(p, "crosshairDotSize", XakaVisualsClient.crosshairDotSize);
+            XakaVisualsClient.crosshairOutline = bool(p, "crosshairOutline", XakaVisualsClient.crosshairOutline);
+            XakaVisualsClient.crosshairOutlineWidth = integer(p, "crosshairOutlineWidth", XakaVisualsClient.crosshairOutlineWidth);
             XakaVisualsClient.autoSprint = bool(p, "autoSprint", XakaVisualsClient.autoSprint);
             XakaVisualsClient.lowArmorNotify = bool(p, "lowArmorNotify", XakaVisualsClient.lowArmorNotify);
             XakaVisualsClient.deathCoords = bool(p, "deathCoords", XakaVisualsClient.deathCoords);
@@ -134,6 +140,12 @@ public final class VisualSettings {
         p.setProperty("fpsBoost", Boolean.toString(XakaVisualsClient.fpsBoost));
         p.setProperty("customCrosshair", Boolean.toString(XakaVisualsClient.customCrosshair));
         p.setProperty("crosshairSize", Integer.toString(XakaVisualsClient.crosshairSize));
+        p.setProperty("crosshairGap", Integer.toString(XakaVisualsClient.crosshairGap));
+        p.setProperty("crosshairThickness", Integer.toString(XakaVisualsClient.crosshairThickness));
+        p.setProperty("crosshairDot", Boolean.toString(XakaVisualsClient.crosshairDot));
+        p.setProperty("crosshairDotSize", Integer.toString(XakaVisualsClient.crosshairDotSize));
+        p.setProperty("crosshairOutline", Boolean.toString(XakaVisualsClient.crosshairOutline));
+        p.setProperty("crosshairOutlineWidth", Integer.toString(XakaVisualsClient.crosshairOutlineWidth));
         p.setProperty("autoSprint", Boolean.toString(XakaVisualsClient.autoSprint));
         p.setProperty("lowArmorNotify", Boolean.toString(XakaVisualsClient.lowArmorNotify));
         p.setProperty("deathCoords", Boolean.toString(XakaVisualsClient.deathCoords));

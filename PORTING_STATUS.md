@@ -32,7 +32,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] Attack cooldown percentage HUD
 - [x] GPS waypoint capture, distance and clear controls
 - [x] NameProtect for target-health HUD names
-- [x] Custom crosshair with size setting
+- [x] Custom crosshair with adjustable length, gap, thickness, center dot and outline
 - [x] Target marker with adjustable size, offsets and color palette
 - [x] Player halo and body marker with shape/size/position controls
 - [x] Local floating Creeper, Wither, Warden and Allay companions
@@ -56,6 +56,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] HideBossBar: optional local boss-bar HUD suppression
 - [x] NoInWallOverlay: optional local suffocation-overlay suppression
 - [x] ViewModel: first-person hand/item translation and rotation across all three axes
+- [x] Crosshair: custom reticle with adjustable gap, length, thickness, center dot and outline
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
 - [x] Low-armor warning
@@ -79,6 +80,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - JumpCube: local takeoff-triggered wireframe cubes with adjustable count and size; implementation is CI-compiled, awaiting in-game verification.
 - MouseParticles: local menu cursor sparkle trail with size control; implementation is CI-compiled, awaiting in-game verification.
 - ViewModel: local first-person item transform with XYZ position and rotation sliders; implementation is CI-compiled, awaiting in-game verification.
+- Crosshair: local custom reticle with gap, thickness, dot and outline controls; implementation is CI-compiled, awaiting in-game verification.
 
 See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the findings and the porting exclusions.
 
