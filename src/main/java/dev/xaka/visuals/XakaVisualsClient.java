@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
@@ -71,6 +73,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean deathCoords = false;
     private static boolean hasDeathLocation = false;
     private static int lastDeathX, lastDeathY, lastDeathZ;
+    public static boolean hitParticles = false;
+    private static int previousHitTargetId = -1;
+    private static float previousHitTargetHealth = -1.0f;
     // Local emote playback; the renderer mixin applies it only to this player's model.
     public static boolean dancePlaying = false;
     public static int activeDance = 0;
@@ -178,6 +183,31 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 "key.xakavisuals.zoom", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, "category.xakavisuals.main"
         ));
         ClientTickEvents.END_CLIENT_TICK.register(XakaVisualsMusic::tickMouse);
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (!hitParticles || client.player == null || client.world == null
+                    || !(client.crosshairTarget instanceof EntityHitResult hit)
+                    || !(hit.getEntity() instanceof LivingEntity target) || target == client.player) {
+                previousHitTargetId = -1;
+                previousHitTargetHealth = -1.0f;
+                return;
+            }
+            float health = target.getHealth();
+            if (target.getId() == previousHitTargetId && previousHitTargetHealth >= 0.0f
+                    && health < previousHitTargetHealth) {
+                for (int i = 0; i < 8; i++) {
+                    double vx = (Math.random() - 0.5) * 0.18;
+                    double vy = 0.04 + Math.random() * 0.16;
+                    double vz = (Math.random() - 0.5) * 0.18;
+                    client.world.addParticle(ParticleTypes.CRIT,
+                            target.getX() + (Math.random() - 0.5) * target.getWidth(),
+                            target.getY() + target.getHeight() * 0.55,
+                            target.getZ() + (Math.random() - 0.5) * target.getWidth(),
+                            vx, vy, vz);
+                }
+            }
+            previousHitTargetId = target.getId();
+            previousHitTargetHealth = health;
+        });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) {
