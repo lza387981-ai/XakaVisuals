@@ -26,6 +26,7 @@ public final class VisualSettings {
             XakaVisualsClient.fps = bool(p, "fps", XakaVisualsClient.fps);
             XakaVisualsClient.coordinates = bool(p, "coordinates", XakaVisualsClient.coordinates);
             XakaVisualsClient.enemyHpEnabled = bool(p, "enemyHpEnabled", XakaVisualsClient.enemyHpEnabled);
+            XakaVisualsClient.selfHealthHud = bool(p, "selfHealthHud", XakaVisualsClient.selfHealthHud);
             XakaVisualsClient.enemyHpX = integer(p, "enemyHpX", XakaVisualsClient.enemyHpX);
             XakaVisualsClient.enemyHpY = integer(p, "enemyHpY", XakaVisualsClient.enemyHpY);
             XakaVisualsClient.markerEnabled = bool(p, "markerEnabled", XakaVisualsClient.markerEnabled);
@@ -112,6 +113,7 @@ public final class VisualSettings {
         p.setProperty("fps", Boolean.toString(XakaVisualsClient.fps));
         p.setProperty("coordinates", Boolean.toString(XakaVisualsClient.coordinates));
         p.setProperty("enemyHpEnabled", Boolean.toString(XakaVisualsClient.enemyHpEnabled));
+        p.setProperty("selfHealthHud", Boolean.toString(XakaVisualsClient.selfHealthHud));
         p.setProperty("enemyHpX", Integer.toString(XakaVisualsClient.enemyHpX));
         p.setProperty("enemyHpY", Integer.toString(XakaVisualsClient.enemyHpY));
         p.setProperty("markerEnabled", Boolean.toString(XakaVisualsClient.markerEnabled));

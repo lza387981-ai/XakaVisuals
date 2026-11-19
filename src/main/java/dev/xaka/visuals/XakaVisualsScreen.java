@@ -198,6 +198,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 196, "FPS Boost", "Minimal particles; restores your previous setting", XakaVisualsClient.fpsBoost, accent, true);
                 row(c, mx, my, left, right, top + 245, "Enemy HP", "Show the targeted player's health", XakaVisualsClient.enemyHpEnabled, accent, true);
                 row(c, mx, my, left, right, top + 294, "Move HP HUD", "Drag the health panel anywhere on screen", false, accent, false);
+                row(c, mx, my, left, right, top + 882, "Health indicator", "Show your own HP and absorption bar", XakaVisualsClient.selfHealthHud, accent, true);
                 row(c, mx, my, left, right, top + 343, "Fullbright", "Temporarily raise gamma; restores the previous value", VisualSettings.fullbright, accent, true);
                 row(c, mx, my, left, right, top + 392, "Custom crosshair", "Draw a compact accent-colored crosshair", XakaVisualsClient.customCrosshair, accent, true);
                 sliderRow(c, mx, my, left, right, top + 441, "Crosshair size", XakaVisualsClient.crosshairSize, 2, 12, accent, 13);
@@ -486,6 +487,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.markerSquare = !XakaVisualsClient.markerSquare;
             if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.fpsBoost = !XakaVisualsClient.fpsBoost;
             if (hitRow(mouseX, mouseY, left, right, top + 245)) XakaVisualsClient.enemyHpEnabled = !XakaVisualsClient.enemyHpEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 882)) XakaVisualsClient.selfHealthHud = !XakaVisualsClient.selfHealthHud;
             if (hitRow(mouseX, mouseY, left, right, top + 294))
                 net.minecraft.client.MinecraftClient.getInstance().setScreen(new XakaHudPositionScreen());
             if (hitRow(mouseX, mouseY, left, right, top + 343)) VisualSettings.fullbright = !VisualSettings.fullbright;
@@ -587,7 +589,7 @@ public final class XakaVisualsScreen extends Screen {
     private int categoryContentHeight() {
         return switch (selectedCategory) {
             case 0 -> 450;
-            case 1 -> 900;
+            case 1 -> 950;
             case 2 -> 816;
             case 3 -> 333;
             case 4 -> 470;

@@ -28,6 +28,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean fps = true;
     public static boolean coordinates = false;
     public static boolean enemyHpEnabled = true;
+    public static boolean selfHealthHud = false;
     public static int enemyHpX = -1;
     public static int enemyHpY = -1;
     public static boolean markerEnabled = false;
@@ -393,6 +394,31 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 drawContext.fill(barX, barY, barX + barW, barY + 4, 0xFF343B49);
                 drawContext.fill(barX, barY, barX + Math.round(barW * Math.min(1.0f, health / maxHealth)),
                         barY + 4, hpColor);
+            }
+            if (selfHealthHud && client.player != null) {
+                var player = client.player;
+                float health = Math.max(0.0f, player.getHealth());
+                float maxHealth = Math.max(1.0f, player.getMaxHealth());
+                float absorption = Math.max(0.0f, player.getAbsorptionAmount());
+                int sw = client.getWindow().getScaledWidth();
+                int sh = client.getWindow().getScaledHeight();
+                int x = 8;
+                int y = sh - 34;
+                int width = Math.min(132, Math.max(96, sw / 5));
+                int barWidth = width - 16;
+                int color = health / maxHealth > 0.5f ? 0xFF55D68B
+                        : health / maxHealth > 0.25f ? 0xFFFFC15A : 0xFFFF626F;
+                drawContext.fill(x, y, x + width, y + 26, 0xD9101420);
+                drawContext.fill(x, y, x + 2, y + 26, accent());
+                String hp = String.format(java.util.Locale.ROOT, "%.1f / %.0f HP", health, maxHealth);
+                drawContext.drawTextWithShadow(client.textRenderer, hp, x + 7, y + 4, 0xFFF2F3F8);
+                drawContext.fill(x + 7, y + 17, x + 7 + barWidth, y + 22, 0xFF343B49);
+                drawContext.fill(x + 7, y + 17, x + 7 + Math.round(barWidth * Math.min(1.0f, health / maxHealth)),
+                        y + 22, color);
+                if (absorption > 0.0f) {
+                    int extra = Math.round(barWidth * Math.min(1.0f, absorption / maxHealth));
+                    drawContext.fill(x + 7, y + 17, x + 7 + extra, y + 19, 0xFFFFD45C);
+                }
             }
             if (fps) {
                 String fpsText = client.getCurrentFps() + " FPS";
