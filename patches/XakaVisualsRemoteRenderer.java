@@ -38,7 +38,7 @@ public final class XakaVisualsRemoteRenderer {
         for (PlayerEntity player : client.world.getPlayers()) {
             if (player == client.player) continue;
             XakaVisualsSyncPayload state = XakaVisualsSyncClient.getState(player.getUuid());
-            if (state == null || (!state.petEnabled() && !state.wingsEnabled())) continue;
+            if (state == null || (!state.petEnabled() && !state.wingsEnabled() && !state.hatEnabled())) continue;
 
             Vec3d pos = player.getLerpedPos(tickDelta);
             double bx = pos.x - camera.x;
@@ -89,45 +89,11 @@ public final class XakaVisualsRemoteRenderer {
                 matrices.pop();
             }
 
-            if (state.wingsEnabled()) {
-                int color = state.accentColor();
-                float sideX = (float) Math.cos(yaw);
-                float sideZ = (float) Math.sin(yaw);
-                float backX = (float) Math.sin(yaw);
-                float backZ = (float) -Math.cos(yaw);
-                float phase = (float) (client.world.getTime() + tickDelta) * 0.22f * state.wingSpeed();
-                float flap = (float) Math.sin(phase) * 0.12f;
-                float span = state.wingStyle() == 2 ? 1.32f : state.wingStyle() == 1 ? 1.20f : 1.08f;
-                net.minecraft.util.Identifier wingTexture = net.minecraft.util.Identifier.of("xakavisuals", "textures/entity/cosmetic_wing.png");
-                var wingMesh = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getEntityTranslucent(wingTexture));
-                // The attachment point is behind the torso (not in front of it).
-                // Three overlapping textured planes create a layered, thicker feather silhouette.
-                for (int side : new int[]{-1, 1}) {
-                    double rootX = bx + backX * 0.22;
-                    double rootY = by + 1.18;
-                    double rootZ = bz + backZ * 0.22;
-                    double tipX = rootX + sideX * span * side + backX * 0.24;
-                    double tipY = by + 1.66 + flap * side;
-                    double tipZ = rootZ + sideZ * span * side + backZ * 0.24;
-                    double outerX = rootX + sideX * span * 0.96 * side + backX * 0.78;
-                    double outerY = by + 1.08 + flap * side * 0.45;
-                    double outerZ = rootZ + sideZ * span * 0.96 * side + backZ * 0.78;
-                    double innerX = rootX + sideX * span * 0.30 * side + backX * 0.62;
-                    double innerY = by + 1.36 + flap * side * 0.25;
-                    double innerZ = rootZ + sideZ * span * 0.30 * side + backZ * 0.62;
-                    // Rear feather layer: slightly larger and farther behind the player.
-                    drawWingLayer(wingMesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
-                            outerX,outerY,outerZ, innerX,innerY,innerZ, color, side == 1,
-                            backX * 0.045, backZ * 0.045, 1.035);
-                    // Main feather layer.
-                    drawWingLayer(wingMesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
-                            outerX,outerY,outerZ, innerX,innerY,innerZ, color, side == 1,
-                            0.0, 0.0, 1.0);
-                    // Smaller overlapping inner layer hides seams around the shoulder joint.
-                    drawWingLayer(wingMesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
-                            outerX,outerY,outerZ, innerX,innerY,innerZ, color, side == 1,
-                            -backX * 0.035, -backZ * 0.035, 0.70);
-                }
+            if (state.wingsEnabled() || state.hatEnabled()) {
+                XakaCosmeticsRenderer.render(consumers, bx, by, bz, bodyYaw,
+                        state.wingsEnabled() ? Math.floorMod(state.wingStyle(), 3) + 1 : 0,
+                        state.hatEnabled() ? Math.floorMod(state.hatStyle(), 4) + 1 : 0,
+                        client.world.getTime() + tickDelta);
             }
         }
     }
