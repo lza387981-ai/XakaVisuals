@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class WorldTimeMixin {
     @Inject(method = "getTimeOfDay()J", at = @At("RETURN"), cancellable = true)
     private void xakavisuals$overrideClientVisualTime(CallbackInfoReturnable<Long> cir) {
-        if (this instanceof ClientWorld && XakaVisualsClient.ambienceTimeEnabled) {
+        if ((Object) this instanceof ClientWorld && XakaVisualsClient.ambienceTimeEnabled) {
             cir.setReturnValue((long) Math.floorMod(XakaVisualsClient.ambienceTime, 24000));
         }
     }
