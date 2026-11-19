@@ -76,6 +76,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean hitParticles = false;
     public static boolean jumpCircle = false;
     public static boolean playerTrails = false;
+    public static boolean noFluidOverlay = false;
     private static boolean wasOnGround = true;
     private static int trailTicks = 0;
     private static int previousHitTargetId = -1;
