@@ -16,10 +16,22 @@ import org.joml.Vector3f;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.Identifier;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /** Local-only cosmetics: a thick halo, camera-relative companion and crosshair player marker. */
 public final class XakaVisualsRenderer {
+    private static final List<JumpWave> JUMP_WAVES = new ArrayList<>();
+
     private XakaVisualsRenderer() {}
+
+    public static void spawnJumpEffect(double x, double y, double z) {
+        if (!XakaVisualsClient.jumpEffect) return;
+        if (JUMP_WAVES.size() >= 12) JUMP_WAVES.remove(0);
+        JUMP_WAVES.add(new JumpWave(x, y, z, System.nanoTime(),
+                XakaVisualsClient.jumpEffectRadius, XakaVisualsClient.jumpEffectDuration));
+    }
 
     public static void register() {
         WorldRenderEvents.AFTER_ENTITIES.register(XakaVisualsRenderer::render);
@@ -28,15 +40,20 @@ public final class XakaVisualsRenderer {
     private static void render(WorldRenderContext context) {
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
-        if (player == null || client.world == null || context.matrixStack() == null || context.consumers() == null) return;
+        if (player == null || client.world == null || context.matrixStack() == null || context.consumers() == null) {
+            JUMP_WAVES.clear();
+            return;
+        }
         if (client.options.hudHidden) return;
+        if (!XakaVisualsClient.jumpEffect) JUMP_WAVES.clear();
 
         boolean halo = XakaVisualsClient.haloEnabled;
         boolean marker = XakaVisualsClient.bodyMarkerEnabled;
         boolean pet = XakaVisualsClient.petEnabled;
         boolean cape = XakaVisualsClient.wingsEnabled;
         boolean hat = XakaVisualsClient.hatEnabled;
-        if (!halo && !marker && !pet && !cape && !hat) return;
+        boolean jumpWave = !JUMP_WAVES.isEmpty();
+        if (!halo && !marker && !pet && !cape && !hat && !jumpWave) return;
 
         Vec3d camera = context.camera().getPos();
         Vec3d playerPos = player.getLerpedPos(context.tickCounter().getTickDelta(false));
@@ -49,6 +66,8 @@ public final class XakaVisualsRenderer {
         int targetFrameColor = XakaVisualsClient.targetFrameColor();
         float tickDelta = context.tickCounter().getTickDelta(false);
         float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, player.prevBodyYaw, player.bodyYaw);
+
+        if (jumpWave) renderJumpWaves(consumers, camera);
 
         if (halo) {
             float radius = 0.34f + XakaVisualsClient.haloSize * 0.035f;
@@ -156,6 +175,50 @@ public final class XakaVisualsRenderer {
 
 
 
+
+    private static void renderJumpWaves(net.minecraft.client.render.VertexConsumerProvider consumers, Vec3d camera) {
+        long now = System.nanoTime();
+        var out = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
+        Iterator<JumpWave> iterator = JUMP_WAVES.iterator();
+        while (iterator.hasNext()) {
+            JumpWave wave = iterator.next();
+            float progress = (now - wave.startedAt) / 1_000_000.0f / wave.durationMs;
+            if (progress >= 1.0f) {
+                iterator.remove();
+                continue;
+            }
+            float radius = 0.22f + (wave.radius - 0.22f) * progress;
+            int alpha = Math.max(0, Math.min(220, Math.round(220.0f * (1.0f - progress))));
+            int color = withAlpha(XakaVisualsClient.accent(), alpha);
+            drawCircle(out, wave.x - camera.x, wave.y - camera.y, wave.z - camera.z,
+                    radius, progress * 0.12f, color, 64);
+
+            float delayed = progress - 0.22f;
+            if (delayed >= 0.0f && delayed < 1.0f) {
+                float secondRadius = 0.22f + (wave.radius - 0.22f) * delayed;
+                int secondAlpha = Math.max(0, Math.min(180, Math.round(180.0f * (1.0f - delayed))));
+                drawCircle(out, wave.x - camera.x, wave.y - camera.y, wave.z - camera.z,
+                        secondRadius, 0.08f + delayed * 0.12f,
+                        withAlpha(0xFFFFFFFF, secondAlpha), 64);
+            }
+        }
+    }
+
+    private static final class JumpWave {
+        private final double x, y, z;
+        private final long startedAt;
+        private final float radius;
+        private final int durationMs;
+
+        private JumpWave(double x, double y, double z, long startedAt, float radius, int durationMs) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.startedAt = startedAt;
+            this.radius = Math.max(1.0f, radius);
+            this.durationMs = Math.max(100, durationMs);
+        }
+    }
 
     private static void drawWingLayer(net.minecraft.client.render.VertexConsumer out,
             double rx,double ry,double rz, double tx,double ty,double tz,

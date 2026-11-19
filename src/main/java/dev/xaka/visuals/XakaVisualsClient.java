@@ -75,6 +75,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     private static int lastDeathX, lastDeathY, lastDeathZ;
     public static boolean hitParticles = false;
     public static boolean jumpCircle = false;
+    public static boolean jumpEffect = false;
+    public static int jumpEffectRadius = 5;
+    public static int jumpEffectDuration = 800;
     public static boolean playerTrails = false;
     public static boolean noFluidOverlay = false;
     public static boolean noFireOverlay = false;
@@ -210,6 +213,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 return;
             }
             boolean onGround = client.player.isOnGround();
+            if (jumpEffect && wasOnGround && !onGround && client.player.getVelocity().y > 0.0) {
+                XakaVisualsRenderer.spawnJumpEffect(client.player.getX(), client.player.getY() + 0.04, client.player.getZ());
+            }
             if (jumpCircle && !wasOnGround && onGround) {
                 double x = client.player.getX();
                 double y = client.player.getY() + 0.08;

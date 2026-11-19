@@ -157,6 +157,9 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 317, "Hit particles", "Show a small burst when the targeted entity takes damage", XakaVisualsClient.hitParticles, accent, true);
                 row(c, mx, my, left, right, top + 366, "Jump circle", "Create a particle ring when you land from a jump", XakaVisualsClient.jumpCircle, accent, true);
                 row(c, mx, my, left, right, top + 415, "Movement trails", "Leave a subtle particle trail while airborne", XakaVisualsClient.playerTrails, accent, true);
+                row(c, mx, my, left, right, top + 464, "Jump effect", "Draw two expanding rings when you take off", XakaVisualsClient.jumpEffect, accent, true);
+                sliderRow(c, mx, my, left, right, top + 513, "Wave radius", XakaVisualsClient.jumpEffectRadius, 5, 100, accent, 11);
+                sliderRow(c, mx, my, left, right, top + 562, "Wave duration", XakaVisualsClient.jumpEffectDuration, 300, 2000, accent, 12);
             }
             case 4 -> {
                 infoCard(c, left, top, right, "First-person hand", "Move your hand and held item without moving the camera.");
@@ -263,6 +266,8 @@ public final class XakaVisualsScreen extends Screen {
             case 13 -> XakaVisualsClient.crosshairSize = 2 + Math.round(t * 10);
             case 9 -> XakaVisualsMusic.setVolume(t);
             case 10 -> XakaVisualsClient.wingSpeed = 0.5f + t * 1.5f;
+            case 11 -> XakaVisualsClient.jumpEffectRadius = 5 + Math.round(t * 95);
+            case 12 -> XakaVisualsClient.jumpEffectDuration = 300 + Math.round(t * 1700);
         }
     }
 
@@ -387,6 +392,9 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 317)) XakaVisualsClient.hitParticles = !XakaVisualsClient.hitParticles;
             if (hitRow(mouseX, mouseY, left, right, top + 366)) XakaVisualsClient.jumpCircle = !XakaVisualsClient.jumpCircle;
             if (hitRow(mouseX, mouseY, left, right, top + 415)) XakaVisualsClient.playerTrails = !XakaVisualsClient.playerTrails;
+            if (hitRow(mouseX, mouseY, left, right, top + 464)) XakaVisualsClient.jumpEffect = !XakaVisualsClient.jumpEffect;
+            if (hitRow(mouseX, mouseY, left, right, top + 513)) { activeSlider = 11; setSlider(11, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 562)) { activeSlider = 12; setSlider(12, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 268)) {
                 if (XakaVisualsClient.bodyMarkerSize >= 12) {
                     XakaVisualsClient.bodyMarkerSize = 3;
@@ -458,7 +466,7 @@ public final class XakaVisualsScreen extends Screen {
         return switch (selectedCategory) {
             case 0 -> 350;
             case 1 -> 556;
-            case 2 -> 480;
+            case 2 -> 620;
             case 3 -> 333;
             case 4, 5 -> 284;
             case 6 -> 370;
