@@ -172,6 +172,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 49, "Low armor alert", "Warn when any equipped armor is nearly worn out", XakaVisualsClient.lowArmorNotify, accent, true);
                 row(c, mx, my, left, right, top + 98, "Last death coordinates", "Display the last recorded death position", XakaVisualsClient.deathCoords, accent, true);
                 row(c, mx, my, left, right, top + 147, "NoFluid overlay", "Hide the underwater screen overlay", XakaVisualsClient.noFluidOverlay, accent, true);
+                row(c, mx, my, left, right, top + 196, "No fire overlay", "Hide the first-person fire overlay", XakaVisualsClient.noFireOverlay, accent, true);
             }
             case 7 -> {
                 infoCard(c, left, top, right, "3D character accessories", "Real shaped cloth capes and solid hats attached to your model.");
@@ -399,6 +400,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.lowArmorNotify = !XakaVisualsClient.lowArmorNotify;
             if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.deathCoords = !XakaVisualsClient.deathCoords;
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.noFluidOverlay = !XakaVisualsClient.noFluidOverlay;
+            if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.noFireOverlay = !XakaVisualsClient.noFireOverlay;
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
@@ -437,7 +439,7 @@ public final class XakaVisualsScreen extends Screen {
             case 4, 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
-            case 8 -> 260;
+            case 8 -> 310;
             default -> 310;
         };
     }
