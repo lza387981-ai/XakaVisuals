@@ -160,7 +160,7 @@ jobs:
           PY
 
 
-      - name: Generate feathered cosmetic wing texture
+      - name: Generate layered purple-black feather wing texture
         run: |
           python3 -m pip install --quiet pillow
           python3 - <<'PY'
@@ -169,51 +169,78 @@ jobs:
           import math
           out = Path("source/XakaVisuals/src/main/resources/assets/xakavisuals/textures/entity/cosmetic_wing.png")
           out.parent.mkdir(parents=True, exist_ok=True)
-          S = 256
-          mask = Image.new("L", (S,S), 0)
-          md = ImageDraw.Draw(mask)
-          # A broad, curved wing silhouette with a pointed outer tip and scalloped feather edge.
-          outline = [(18,226),(44,184),(67,145),(93,109),(122,77),(154,48),(188,24),
-                     (231,12),(222,57),(220,93),(224,128),(214,161),(196,191),
-                     (171,218),(141,238),(104,249),(65,247),(35,239)]
-          md.polygon(outline, fill=255)
-          mask = mask.filter(ImageFilter.GaussianBlur(1.2))
-          im = Image.new("RGBA", (S,S), (0,0,0,0))
-          pix = im.load()
-          for y in range(S):
-              for x in range(S):
-                  a = mask.getpixel((x,y))
-                  if a:
-                      t = max(0,min(1,(x+y)/(2*S)))
-                      pix[x,y] = (int(245-35*t), int(231-48*t), 255, int(a*0.88))
-          # Layered feather vanes fan outward from the wing root.
-          detail = Image.new("RGBA", (S,S), (0,0,0,0))
-          d = ImageDraw.Draw(detail)
-          feathers = [
-              ((38,222),(75,161),(110,116)),
-              ((45,230),(99,180),(143,130)),
-              ((55,236),(124,199),(174,149)),
-              ((72,240),(148,215),(199,174)),
-              ((92,243),(169,225),(216,197)),
-              ((115,241),(185,227),(222,218)),
-              ((133,232),(195,217),(210,235))
-          ]
-          for i,(root,mid,tip) in enumerate(feathers):
-              d.polygon([root,mid,tip,(mid[0]+12,mid[1]+10)], fill=(255,255,255,38))
-              d.line([root,mid,tip], fill=(255,255,255,155), width=2)
-          # Subtle luminous outer rim and a strong curved central spar.
-          edge = Image.new("RGBA",(S,S),(0,0,0,0))
-          ed = ImageDraw.Draw(edge)
-          ed.line(outline+[outline[0]], fill=(255,255,255,190), width=3, joint="curve")
-          glow = edge.filter(ImageFilter.GaussianBlur(7))
-          im.alpha_composite(glow)
-          im.alpha_composite(detail)
-          im.alpha_composite(edge)
-          # Clip all decoration to the wing silhouette, retaining a soft glow just outside it.
-          alpha = im.getchannel("A")
-          clipped = Image.new("RGBA",(S,S),(0,0,0,0))
-          clipped.paste(im,(0,0),mask)
-          clipped.save(out)
+          W,H=512,768
+          im=Image.new("RGBA",(W,H),(0,0,0,0))
+          # Broad single wing silhouette, with a rounded shoulder and long tapered tips.
+          silhouette=[(384,300),(354,232),(310,164),(252,105),(188,54),(122,20),
+                      (82,8),(91,70),(55,132),(66,202),(34,268),(57,340),
+                      (38,410),(76,478),(83,548),(132,620),(164,702),(218,754),
+                      (270,704),(300,648),(333,590),(365,530),(399,470),(431,412),
+                      (454,354),(438,322),(410,304)]
+          mask=Image.new("L",(W,H),0); md=ImageDraw.Draw(mask); md.polygon(silhouette,fill=255)
+          # Deep charcoal base with violet shading toward the outer feathers.
+          base=Image.new("RGBA",(W,H),(0,0,0,0)); bp=base.load()
+          for y in range(H):
+              for x in range(W):
+                  if mask.getpixel((x,y)):
+                      t=max(0,min(1,(0.72*x+0.28*y)/W))
+                      bp[x,y]=(int(12+24*t),int(7+5*t),int(24+86*t),255)
+          im.alpha_composite(base)
+          # Feather polygon between root and tip, with a tapered point and subtle central shaft.
+          def feather(root,tip,width,base_col,edge_col):
+              dx=tip[0]-root[0]; dy=tip[1]-root[1]
+              ln=max(1,math.hypot(dx,dy)); nx=-dy/ln; ny=dx/ln
+              mid=(root[0]+dx*.48,root[1]+dy*.48)
+              pts=[(root[0]-nx*width*.28,root[1]-ny*width*.28),
+                   (mid[0]-nx*width*.72,mid[1]-ny*width*.72),
+                   (tip[0],tip[1]),
+                   (mid[0]+nx*width*.72,mid[1]+ny*width*.72),
+                   (root[0]+nx*width*.28,root[1]+ny*width*.28)]
+              layer=Image.new("RGBA",(W,H),(0,0,0,0)); d=ImageDraw.Draw(layer)
+              d.polygon(pts,fill=base_col)
+              d.line([root,mid,tip],fill=edge_col,width=2)
+              # Fine barbs on both sides make each feather visibly layered.
+              for t in (.30,.43,.56,.69,.80):
+                  cx=root[0]+dx*t; cy=root[1]+dy*t
+                  spread=width*(.22+.42*t)
+                  for sign in (-1,1):
+                      ex=cx+nx*spread*sign-dx/ln*width*.10
+                      ey=cy+ny*spread*sign-dy/ln*width*.10
+                      d.line((cx,cy,ex,ey),fill=(180,112,255,65),width=1)
+              im.alpha_composite(layer)
+          # Long outer flight feathers fan from the shoulder to make the wings wide.
+          root=(385,340)
+          tips=[(82,16),(61,105),(43,190),(32,280),(43,370),(72,465),
+                (112,555),(164,650),(220,742),(274,690),(315,620),(352,545)]
+          for i,tip in enumerate(tips):
+              feather(root,tip,42+(i%3)*5,(19,9,39,245),(137,66,224,210))
+          # Second overlapping row, shifted inward, creates the visible feather depth.
+          inner_root=(390,365)
+          inner_tips=[(150,112),(116,190),(98,268),(95,345),(120,425),
+                      (158,500),(205,565),(252,618),(302,565),(342,490)]
+          for i,tip in enumerate(inner_tips):
+              feather(inner_root,tip,34+(i%2)*5,(28,13,55,250),(169,91,255,220))
+          # Compact coverts overlap the feather roots; this hides seams at the shoulder.
+          coverts=[((400,330),(290,245),38),((410,350),(315,275),42),
+                   ((410,370),(335,315),40),((405,392),(345,355),38),
+                   ((397,410),(330,405),36),((390,430),(310,450),34),
+                   ((385,450),(292,492),32)]
+          for root,tip,w in coverts:
+              feather(root,tip,w,(13,7,27,255),(190,119,255,235))
+          # A dark raised shoulder plate with violet rim gives a thick layered root.
+          plate=Image.new("RGBA",(W,H),(0,0,0,0)); pd=ImageDraw.Draw(plate)
+          pd.polygon([(350,275),(392,292),(430,344),(420,397),(380,435),
+                      (338,410),(316,365)],fill=(10,5,23,250),outline=(181,103,255,230),width=5)
+          pd.line([(350,300),(390,340),(414,380)],fill=(213,161,255,210),width=4)
+          im.alpha_composite(plate)
+          # Clip opaque feather fills to the wing outline, then restore a soft purple rim.
+          alpha=ImageChops.multiply(im.getchannel("A"),mask) if False else None
+          clipped=Image.new("RGBA",(W,H),(0,0,0,0)); clipped.paste(im,(0,0),mask)
+          edge=Image.new("RGBA",(W,H),(0,0,0,0)); ed=ImageDraw.Draw(edge)
+          ed.line(silhouette+[silhouette[0]],fill=(160,72,255,230),width=5,joint="curve")
+          clipped.alpha_composite(edge.filter(ImageFilter.GaussianBlur(12)))
+          clipped.alpha_composite(edge)
+          clipped.save(out,optimize=True)
           print(f"Generated {out} ({out.stat().st_size} bytes)")
           PY
 
