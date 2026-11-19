@@ -79,6 +79,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean noFluidOverlay = false;
     public static boolean noFireOverlay = false;
     public static boolean cooldownHud = false;
+    public static boolean waypointEnabled = false;
+    public static int waypointX, waypointY, waypointZ;
     private static boolean wasOnGround = true;
     private static int trailTicks = 0;
     private static int previousHitTargetId = -1;
@@ -374,6 +376,13 @@ public final class XakaVisualsClient implements ClientModInitializer {
             if (deathCoords && hasDeathLocation) {
                 String death = "Last death: " + lastDeathX + " / " + lastDeathY + " / " + lastDeathZ;
                 drawContext.drawTextWithShadow(client.textRenderer, death, 8, hudY, 0xFFFF8D8D);
+                hudY += 12;
+            }
+            if (waypointEnabled && client.player != null) {
+                double distance = Math.sqrt(client.player.squaredDistanceTo(waypointX + 0.5, waypointY + 0.5, waypointZ + 0.5));
+                String waypoint = String.format(java.util.Locale.ROOT, "GPS: %d / %d / %d  (%.0fm)",
+                        waypointX, waypointY, waypointZ, distance);
+                drawContext.drawTextWithShadow(client.textRenderer, waypoint, 8, hudY, 0xFF8FD8FF);
                 hudY += 12;
             }
             if (cooldownHud && client.player != null) {
