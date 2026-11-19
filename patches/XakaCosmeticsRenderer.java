@@ -11,7 +11,7 @@ public final class XakaCosmeticsRenderer {
     private XakaCosmeticsRenderer() {}
 
     public static void render(VertexConsumerProvider consumers, double x, double y, double z,
-                              float yawDegrees, int capeStyle, int hatStyle, float tick) {
+                              float yawDegrees, float headYawDegrees, int capeStyle, int hatStyle, float tick) {
         if (capeStyle <= 0 && hatStyle <= 0) return;
         double a = Math.toRadians(yawDegrees);
         double sx = Math.cos(a), sz = Math.sin(a);
@@ -54,10 +54,14 @@ public final class XakaCosmeticsRenderer {
                     point(x,y,z,sx,sz,bx,bz,-0.27,1.30,0.25), tint(base,1.22f));
         }
         if (hatStyle > 0) {
+            double ha = Math.toRadians(headYawDegrees);
+            double hsx = Math.cos(ha), hsz = Math.sin(ha);
+            double hbx = Math.sin(ha), hbz = -Math.cos(ha);
             int color = switch (hatStyle) {
                 case 2 -> 0xFF24202F;
                 case 3 -> 0xFF70451F;
                 case 4 -> 0xFF243C65;
+                case 5 -> 0xFF45B957;
                 default -> 0xFF482078;
             };
             VertexConsumer out = consumers.getBuffer(RenderLayer.getEntityTranslucent(WHITE));
@@ -75,6 +79,16 @@ public final class XakaCosmeticsRenderer {
                 // Compact crown with a visor: a cap.
                 box(out,x,y,z,sx,sz,bx,bz,-0.25,1.82,-0.25,0.25,2.02,0.25,tint(color,1.12f));
                 box(out,x,y,z,sx,sz,bx,bz,-0.22,1.82,-0.48,0.22,1.88,-0.20,color);
+            } else if (hatStyle == 5) {
+                // Frog hat with rounded green crown, broad brim, raised eyes and pupils.
+                box(out,x,y,z,hsx,hsz,hbx,hbz,-0.34,1.82,-0.34,0.34,1.89,0.34,color);
+                box(out,x,y,z,hsx,hsz,hbx,hbz,-0.27,1.88,-0.27,0.27,2.13,0.27,0xFF45B957);
+                box(out,x,y,z,hsx,hsz,hbx,hbz,-0.22,2.08,-0.22,-0.055,2.27,-0.055,0xFF329644);
+                box(out,x,y,z,hsx,hsz,hbx,hbz,0.055,2.08,-0.22,0.22,2.27,-0.055,0xFF329644);
+                box(out,x,y,z,hsx,hsz,hbx,hbz,-0.225,2.20,-0.235,-0.045,2.37,-0.045,0xFFB8F36A);
+                box(out,x,y,z,hsx,hsz,hbx,hbz,0.045,2.20,-0.235,0.225,2.37,-0.045,0xFFB8F36A);
+                box(out,x,y,z,hsx,hsz,hbx,hbz,-0.155,2.23,-0.252,-0.105,2.31,-0.202,0xFF17221A);
+                box(out,x,y,z,hsx,hsz,hbx,hbz,0.105,2.23,-0.252,0.155,2.31,-0.202,0xFF17221A);
             } else {
                 // Royal top hat with a taller crown and contrasting ribbon.
                 box(out,x,y,z,sx,sz,bx,bz,-0.23,1.82,-0.23,0.23,2.18,0.23,tint(color,1.12f));
