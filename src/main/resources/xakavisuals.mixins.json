@@ -6,7 +6,8 @@
     "HeldItemRendererMixin",
     "PlayerEntityModelMixin",
     "InGameOverlayRendererMixin",
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

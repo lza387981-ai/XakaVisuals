@@ -63,6 +63,9 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [ ] Review remaining networked systems and nested dependencies individually
 - [ ] Decide which optional network features can be redesigned as opt-in, transparent Xaka services
 
+## Implemented but awaiting in-game verification
+- NoWeather: local rain/snow rendering and weather particles/sound toggle; CI compilation is checked separately.
+
 See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the findings and the porting exclusions.
 
 A feature is marked complete only after its implementation and in-game behavior have been tested. Decompiled bytecode is not treated as original source code.
