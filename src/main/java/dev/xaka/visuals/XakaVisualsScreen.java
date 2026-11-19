@@ -26,7 +26,9 @@ public final class XakaVisualsScreen extends Screen {
             );
             case "HUD" -> List.of(
                     new Toggle("Watermark", "Compact XAKA logo in the corner", "watermark", true),
-                    new Toggle("FPS counter", "Display current client FPS", "fpsCounter", true)
+                    new Toggle("FPS counter", "Display current client FPS", "fpsCounter", true),
+                    new Toggle("Coordinates", "Show your current XYZ position", "coordinates", true),
+                    new Toggle("Fullbright", "Temporarily raise gamma while enabled", "fullbright", true)
             );
             case "Cosmetics" -> List.of(
                     new Toggle("Mini pets", "Decorative companion system", "", false),
@@ -37,7 +39,8 @@ public final class XakaVisualsScreen extends Screen {
                     new Toggle("Safe FPS mode", "Reversible visual workload reduction", "", false)
             );
             default -> List.of(
-                    new Toggle("Fullbright", "World brightness customization", "", false),
+                    new Toggle("Fullbright", "World brightness customization", "fullbright", true),
+                    new Toggle("Zoom", "Hold C to zoom; release to restore FOV", "", false),
                     new Toggle("Player halo", "Player highlight visual", "", false),
                     new Toggle("Target marker", "Configurable target marker visual", "", false),
                     new Toggle("Hit particles", "Custom hit particle effects", "", false),
@@ -169,6 +172,8 @@ public final class XakaVisualsScreen extends Screen {
             return switch (id) {
                 case "watermark" -> VisualSettings.watermark;
                 case "fpsCounter" -> VisualSettings.fpsCounter;
+                case "coordinates" -> VisualSettings.coordinates;
+                case "fullbright" -> VisualSettings.fullbright;
                 default -> false;
             };
         }
@@ -177,6 +182,8 @@ public final class XakaVisualsScreen extends Screen {
             switch (id) {
                 case "watermark" -> VisualSettings.watermark = !VisualSettings.watermark;
                 case "fpsCounter" -> VisualSettings.fpsCounter = !VisualSettings.fpsCounter;
+                case "coordinates" -> VisualSettings.coordinates = !VisualSettings.coordinates;
+                case "fullbright" -> VisualSettings.fullbright = !VisualSettings.fullbright;
             }
         }
     }
