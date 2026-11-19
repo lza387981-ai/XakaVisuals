@@ -62,12 +62,18 @@ public final class XakaCosmeticsRenderer {
                 case 3 -> 0xFF70451F;
                 case 4 -> 0xFF243C65;
                 case 5 -> 0xFF45B957;
+                case 6 -> 0xFFE0B34A;
                 default -> 0xFF482078;
             };
             VertexConsumer out = consumers.getBuffer(RenderLayer.getEntityTranslucent(WHITE));
             // Head center is around 1.5 blocks; brim and crown are independent 3D solids.
-            box(out,x,y,z,hsx,hsz,hbx,hbz,-0.34,1.76,-0.34,0.34,1.82,0.34,color);
-            if (hatStyle == 2) {
+            if (hatStyle != 6) box(out,x,y,z,hsx,hsz,hbx,hbz,-0.34,1.76,-0.34,0.34,1.82,0.34,color);
+            if (hatStyle == 6) {
+                // Chinese conical hat: broad solid brim, tapered crown and a contrasting lower band.
+                box(out,x,y,z,hsx,hsz,hbx,hbz,-0.43,1.78,-0.43,0.43,1.84,0.43,color);
+                cone(out,x,y,z,hsx,hsz,hbx,hbz,0.0,1.83,0.0,0.36,2.40,color);
+                box(out,x,y,z,hsx,hsz,hbx,hbz,-0.30,1.84,-0.30,0.30,1.90,0.30,0xFF8C3D27);
+            } else if (hatStyle == 2) {
                 // Witch hat: a broad brim and tapering, visibly three-dimensional crown.
                 box(out,x,y,z,sx,sz,bx,bz,-0.22,1.82,-0.22,0.22,2.02,0.22,tint(color,1.08f));
                 pyramid(out,x,y,z,hsx,hsz,hbx,hbz,0.0,2.02,0.0,0.18,2.48,color);
@@ -122,6 +128,20 @@ public final class XakaCosmeticsRenderer {
         quad(o,p[4],p[0],p[3],p[7],tint(color,0.92f)); quad(o,p[1],p[5],p[6],p[2],tint(color,1.12f));
         quad(o,p[3],p[2],p[6],p[7],tint(color,1.18f)); quad(o,p[4],p[5],p[1],p[0],tint(color,0.72f));
     }
+    private static void cone(VertexConsumer o,double x,double y,double z,double sx,double sz,double bx,double bz,
+                              double cx,double baseY,double cz,double radius,double topY,int color) {
+        int segments = 32;
+        double[] apex = point(x,y,z,sx,sz,bx,bz,cx,topY,cz);
+        for (int i=0;i<segments;i++) {
+            double a0 = Math.PI * 2.0 * i / segments;
+            double a1 = Math.PI * 2.0 * (i+1) / segments;
+            double[] p0 = point(x,y,z,sx,sz,bx,bz,cx+Math.cos(a0)*radius,baseY,cz+Math.sin(a0)*radius);
+            double[] p1 = point(x,y,z,sx,sz,bx,bz,cx+Math.cos(a1)*radius,baseY,cz+Math.sin(a1)*radius);
+            int shade = (i % 4 == 0) ? tint(color,1.12f) : color;
+            tri(o,p0,p1,apex,shade);
+        }
+    }
+
     private static void pyramid(VertexConsumer o,double x,double y,double z,double sx,double sz,double bx,double bz,
                                 double cx,double cy,double cz,double radius,double topY,int color) {
         double[] a=point(x,y,z,sx,sz,bx,bz,cx-radius,cy,cz-radius);

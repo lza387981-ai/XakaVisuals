@@ -37,6 +37,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] Player halo and body marker with shape/size/position controls
 - [x] Local floating Creeper, Wither, Warden and Allay companions
 - [x] Original procedural cape and hat cosmetics
+- [x] ChinaHat: local procedural 3D conical hat style inspired by the source visual module
 - [x] First-person hand/item position controls
 - [x] Six local player emote presets with speed control
 - [x] Reversible FPS Boost (restores the prior particle setting)
