@@ -6,7 +6,9 @@ import net.minecraft.text.Text;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;\nimport java.util.Set;\nimport org.lwjgl.glfw.GLFW;
+import java.util.Map;
+import java.util.Set;
+import org.lwjgl.glfw.GLFW;
 
 public final class XakaClickScreen extends Screen {
     private static final int ACCENT = 0xFF39BDF8;
