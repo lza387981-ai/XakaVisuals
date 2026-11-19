@@ -55,6 +55,9 @@ public final class VisualSettings {
             XakaVisualsClient.fpsBoost = bool(p, "fpsBoost", XakaVisualsClient.fpsBoost);
             XakaVisualsClient.customCrosshair = bool(p, "customCrosshair", XakaVisualsClient.customCrosshair);
             XakaVisualsClient.crosshairSize = integer(p, "crosshairSize", XakaVisualsClient.crosshairSize);
+            XakaVisualsClient.autoSprint = bool(p, "autoSprint", XakaVisualsClient.autoSprint);
+            XakaVisualsClient.lowArmorNotify = bool(p, "lowArmorNotify", XakaVisualsClient.lowArmorNotify);
+            XakaVisualsClient.deathCoords = bool(p, "deathCoords", XakaVisualsClient.deathCoords);
             XakaVisualsClient.activeDance = integer(p, "activeDance", XakaVisualsClient.activeDance);
             XakaVisualsClient.danceSpeed = decimal(p, "danceSpeed", XakaVisualsClient.danceSpeed);
             fullbright = bool(p, "fullbright", fullbright);
@@ -102,6 +105,9 @@ public final class VisualSettings {
         p.setProperty("fpsBoost", Boolean.toString(XakaVisualsClient.fpsBoost));
         p.setProperty("customCrosshair", Boolean.toString(XakaVisualsClient.customCrosshair));
         p.setProperty("crosshairSize", Integer.toString(XakaVisualsClient.crosshairSize));
+        p.setProperty("autoSprint", Boolean.toString(XakaVisualsClient.autoSprint));
+        p.setProperty("lowArmorNotify", Boolean.toString(XakaVisualsClient.lowArmorNotify));
+        p.setProperty("deathCoords", Boolean.toString(XakaVisualsClient.deathCoords));
         p.setProperty("activeDance", Integer.toString(XakaVisualsClient.activeDance));
         p.setProperty("danceSpeed", Float.toString(XakaVisualsClient.danceSpeed));
         p.setProperty("fullbright", Boolean.toString(fullbright));
