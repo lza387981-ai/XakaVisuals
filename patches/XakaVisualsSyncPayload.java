@@ -30,7 +30,7 @@ public record XakaVisualsSyncPayload(
         this(buf.readUuid(), buf.readBoolean(), buf.readVarInt(), buf.readVarInt(),
                 buf.readBoolean(), buf.readVarInt(), buf.readFloat(),
                 buf.readBoolean(), buf.readVarInt(), buf.readFloat(), buf.readFloat(),
-                buf.readInt());
+                buf.readInt(), buf.readBoolean(), buf.readVarInt());
     }
 
     private void write(RegistryByteBuf buf) {
@@ -45,7 +45,7 @@ public record XakaVisualsSyncPayload(
         buf.writeVarInt(activeDance);
         buf.writeFloat(danceSpeed);
         buf.writeFloat(danceStartAge);
-        buf.writeInt(accentColor);
+        buf.writeInt(accentColor);\n        buf.writeBoolean(hatEnabled);\n        buf.writeVarInt(hatStyle);
     }
 
     @Override
