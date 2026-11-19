@@ -74,6 +74,10 @@ public final class XakaVisualsClient implements ClientModInitializer {
     private static boolean hasDeathLocation = false;
     private static int lastDeathX, lastDeathY, lastDeathZ;
     public static boolean hitParticles = false;
+    public static boolean jumpCircle = false;
+    public static boolean playerTrails = false;
+    private static boolean wasOnGround = true;
+    private static int trailTicks = 0;
     private static int previousHitTargetId = -1;
     private static float previousHitTargetHealth = -1.0f;
     // Local emote playback; the renderer mixin applies it only to this player's model.
@@ -189,6 +193,41 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 "key.xakavisuals.zoom", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, "category.xakavisuals.main"
         ));
         ClientTickEvents.END_CLIENT_TICK.register(XakaVisualsMusic::tickMouse);
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player == null || client.world == null) {
+                wasOnGround = true;
+                trailTicks = 0;
+                return;
+            }
+            boolean onGround = client.player.isOnGround();
+            if (jumpCircle && !wasOnGround && onGround) {
+                double x = client.player.getX();
+                double y = client.player.getY() + 0.08;
+                double z = client.player.getZ();
+                for (int i = 0; i < 28; i++) {
+                    double angle = Math.PI * 2.0 * i / 28.0;
+                    double vx = Math.cos(angle) * 0.035;
+                    double vz = Math.sin(angle) * 0.035;
+                    client.world.addParticle(ParticleTypes.END_ROD,
+                            x + Math.cos(angle) * 0.55, y, z + Math.sin(angle) * 0.55,
+                            vx, 0.015, vz);
+                }
+            }
+            wasOnGround = onGround;
+            if (playerTrails && !client.player.isOnGround()
+                    && client.player.getVelocity().horizontalLengthSquared() > 0.012) {
+                if (++trailTicks % 3 == 0) {
+                    var velocity = client.player.getVelocity();
+                    client.world.addParticle(ParticleTypes.END_ROD,
+                            client.player.getX() - velocity.x * 1.5,
+                            client.player.getY() + 0.08,
+                            client.player.getZ() - velocity.z * 1.5,
+                            0.0, 0.01, 0.0);
+                }
+            } else {
+                trailTicks = 0;
+            }
+        });
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!hitParticles || client.player == null || client.world == null
                     || !(client.crosshairTarget instanceof EntityHitResult hit)
