@@ -89,7 +89,7 @@ public final class XakaVisualsRemoteRenderer {
                 matrices.pop();
             }
 
-            if (wings) {
+            if (state.wingsEnabled()) {
                 int color = state.accentColor();
                 float yaw = (float) Math.toRadians(bodyYaw);
                 float sideX = (float) Math.cos(yaw);
@@ -99,7 +99,7 @@ public final class XakaVisualsRemoteRenderer {
                 float phase = (float) (client.world.getTime() + tickDelta) * 0.22f * state.wingSpeed();
                 float flap = (float) Math.sin(phase) * 0.12f;
                 float span = state.wingStyle() == 2 ? 1.32f : state.wingStyle() == 1 ? 1.20f : 1.08f;
-                net.minecraft.util.Identifier wingTexture = Identifier.of("xakavisuals", "textures/entity/cosmetic_wing.png");
+                net.minecraft.util.Identifier wingTexture = net.minecraft.util.Identifier.of("xakavisuals", "textures/entity/cosmetic_wing.png");
                 var wingMesh = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getEntityTranslucent(wingTexture));
                 // The attachment point is behind the torso (not in front of it).
                 // Three overlapping textured planes create a layered, thicker feather silhouette.
