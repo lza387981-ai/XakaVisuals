@@ -27,6 +27,7 @@ public final class XakaVisualV2Client implements ClientModInitializer {
         XakaHud.register();
         XakaWorldVisuals.register();
         XakaPerformance.register();
+        XakaCosmeticTrail.register();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenuKey.wasPressed()) {
