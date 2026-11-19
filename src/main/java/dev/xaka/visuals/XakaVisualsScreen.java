@@ -400,6 +400,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 224)) { activeSlider = 3; setSlider(3, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 273)) { activeSlider = 4; setSlider(4, mouseX, left, right); }
         }
+        VisualSettings.save();
         return true;
     }
 
@@ -435,6 +436,12 @@ public final class XakaVisualsScreen extends Screen {
     private float easeOut(float t) { return 1f - (float) Math.pow(1f - t, 3); }
 
     @Override
+    public void close() {
+        VisualSettings.save();
+        super.close();
+    }
+
+    @Override
     public boolean shouldPause() { return false; }
 
 
@@ -465,7 +472,7 @@ public final class XakaVisualsScreen extends Screen {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (button == 0) { activeSlider = -1; navDragging = false; }
+        if (button == 0) { activeSlider = -1; navDragging = false; VisualSettings.save(); }
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
