@@ -57,7 +57,6 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 zoomActive = false;
             }
             while (openMenu.wasPressed()) {
-            while (openMenu.wasPressed()) {
                 if (client.currentScreen instanceof XakaVisualsScreen) {
                     client.setScreen(null);
                 } else if (client.currentScreen == null) {
