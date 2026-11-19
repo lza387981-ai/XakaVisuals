@@ -59,6 +59,8 @@ public final class VisualSettings {
             XakaVisualsClient.lowArmorNotify = bool(p, "lowArmorNotify", XakaVisualsClient.lowArmorNotify);
             XakaVisualsClient.deathCoords = bool(p, "deathCoords", XakaVisualsClient.deathCoords);
             XakaVisualsClient.hitParticles = bool(p, "hitParticles", XakaVisualsClient.hitParticles);
+            XakaVisualsClient.jumpCircle = bool(p, "jumpCircle", XakaVisualsClient.jumpCircle);
+            XakaVisualsClient.playerTrails = bool(p, "playerTrails", XakaVisualsClient.playerTrails);
             XakaVisualsClient.activeDance = integer(p, "activeDance", XakaVisualsClient.activeDance);
             XakaVisualsClient.danceSpeed = decimal(p, "danceSpeed", XakaVisualsClient.danceSpeed);
             fullbright = bool(p, "fullbright", fullbright);
@@ -110,6 +112,8 @@ public final class VisualSettings {
         p.setProperty("lowArmorNotify", Boolean.toString(XakaVisualsClient.lowArmorNotify));
         p.setProperty("deathCoords", Boolean.toString(XakaVisualsClient.deathCoords));
         p.setProperty("hitParticles", Boolean.toString(XakaVisualsClient.hitParticles));
+        p.setProperty("jumpCircle", Boolean.toString(XakaVisualsClient.jumpCircle));
+        p.setProperty("playerTrails", Boolean.toString(XakaVisualsClient.playerTrails));
         p.setProperty("activeDance", Integer.toString(XakaVisualsClient.activeDance));
         p.setProperty("danceSpeed", Float.toString(XakaVisualsClient.danceSpeed));
         p.setProperty("fullbright", Boolean.toString(fullbright));
