@@ -111,8 +111,12 @@ public final class XakaVisualsClient implements ClientModInitializer {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            // Drain key presses while a screen is open so Right Shift closes the menu
+            // exactly once instead of immediately reopening it on the same tick.
             while (openMenu.wasPressed()) {
-                MinecraftClient.getInstance().setScreen(new XakaVisualsScreen());
+                if (client.currentScreen == null) {
+                    client.setScreen(new XakaVisualsScreen());
+                }
             }
         });
 
