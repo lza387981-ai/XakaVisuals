@@ -12,6 +12,10 @@ import org.lwjgl.glfw.GLFW;
 
 public final class XakaVisualsClient implements ClientModInitializer {
     private static KeyBinding openMenu;
+    private static KeyBinding zoomKey;
+    private static boolean zoomActive;
+    private static int previousFov = -1;
+    private static double previousGamma = Double.NaN;
 
     @Override
     public void onInitializeClient() {
@@ -23,7 +27,36 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 "category.xakavisuals"
         ));
 
+        zoomKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.xakavisuals.zoom", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, "category.xakavisuals"
+        ));
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player != null) {
+                if (VisualSettings.fullbright) {
+                    if (Double.isNaN(previousGamma)) previousGamma = client.options.getGamma().getValue();
+                    client.options.getGamma().setValue(16.0);
+                } else if (!Double.isNaN(previousGamma)) {
+                    client.options.getGamma().setValue(previousGamma);
+                    previousGamma = Double.NaN;
+                }
+                if (zoomKey.isPressed()) {
+                    if (!zoomActive) {
+                        previousFov = client.options.getFov().getValue();
+                        zoomActive = true;
+                    }
+                    client.options.getFov().setValue(30);
+                } else if (zoomActive) {
+                    if (previousFov >= 0) client.options.getFov().setValue(previousFov);
+                    previousFov = -1;
+                    zoomActive = false;
+                }
+            } else if (zoomActive) {
+                if (previousFov >= 0) client.options.getFov().setValue(previousFov);
+                previousFov = -1;
+                zoomActive = false;
+            }
+            while (openMenu.wasPressed()) {
             while (openMenu.wasPressed()) {
                 if (client.currentScreen instanceof XakaVisualsScreen) {
                     client.setScreen(null);
@@ -46,6 +79,12 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 drawContext.drawTextWithShadow(client.textRenderer,
                         Text.literal("Visuals"), 46, y, 0xFFFFFFFF);
                 y += 20;
+            }
+            if (VisualSettings.coordinates) {
+                String coords = String.format(java.util.Locale.ROOT, "XYZ: %.1f / %.1f / %.1f",
+                        client.player.getX(), client.player.getY(), client.player.getZ());
+                drawContext.drawTextWithShadow(client.textRenderer, coords, 8, y, 0xFFE5E7EB);
+                y += 12;
             }
             if (VisualSettings.fpsCounter) {
                 drawContext.drawTextWithShadow(client.textRenderer,
