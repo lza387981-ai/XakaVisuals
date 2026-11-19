@@ -145,6 +145,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 343, "Fullbright", "Temporarily raise gamma; restores the previous value", VisualSettings.fullbright, accent, true);
                 row(c, mx, my, left, right, top + 392, "Custom crosshair", "Draw a compact accent-colored crosshair", XakaVisualsClient.customCrosshair, accent, true);
                 sliderRow(c, mx, my, left, right, top + 441, "Crosshair size", XakaVisualsClient.crosshairSize, 2, 12, accent, 13);
+                row(c, mx, my, left, right, top + 490, "Cooldowns", "Show your attack cooldown percentage", XakaVisualsClient.cooldownHud, accent, true);
             }
             case 2 -> {
                 infoCard(c, left, top, right, "Player cosmetics", "Local decorative effects attached to your own character.");
@@ -370,6 +371,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 343)) VisualSettings.fullbright = !VisualSettings.fullbright;
             if (hitRow(mouseX, mouseY, left, right, top + 392)) XakaVisualsClient.customCrosshair = !XakaVisualsClient.customCrosshair;
             if (hitRow(mouseX, mouseY, left, right, top + 441)) { activeSlider = 13; setSlider(13, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 490)) XakaVisualsClient.cooldownHud = !XakaVisualsClient.cooldownHud;
         } else if (selectedCategory == 2) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.haloEnabled = !XakaVisualsClient.haloEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 0; setSlider(0, mouseX, left, right); }
@@ -433,7 +435,7 @@ public final class XakaVisualsScreen extends Screen {
     private int categoryContentHeight() {
         return switch (selectedCategory) {
             case 0 -> 350;
-            case 1 -> 506;
+            case 1 -> 556;
             case 2 -> 480;
             case 3 -> 333;
             case 4, 5 -> 284;
