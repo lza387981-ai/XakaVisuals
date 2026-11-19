@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "xakavisual_v2",
+  "version": "${version}",
+  "name": "XakaVisual.V2",
+  "description": "A fresh client-side visual mod for Minecraft 1.21.4.",
+  "environment": "client",
+  "entrypoints": { "client": ["com.xaka.visualv2.XakaVisualV2Client"] },
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": "~1.21.4",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
