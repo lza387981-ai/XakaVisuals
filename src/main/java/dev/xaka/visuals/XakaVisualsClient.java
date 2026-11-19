@@ -15,6 +15,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        VisualSettings.load();
         openMenu = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.xakavisuals.open",
                 InputUtil.Type.KEYSYM,
@@ -24,7 +25,11 @@ public final class XakaVisualsClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenu.wasPressed()) {
-                client.setScreen(new XakaVisualsScreen());
+                if (client.currentScreen instanceof XakaVisualsScreen) {
+                    client.setScreen(null);
+                } else if (client.currentScreen == null) {
+                    client.setScreen(new XakaVisualsScreen());
+                }
             }
         });
 
@@ -43,8 +48,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 y += 20;
             }
             if (VisualSettings.fpsCounter) {
-                String fps = client.getCurrentFps() + " FPS";
-                drawContext.drawTextWithShadow(client.textRenderer, fps, 8, y, 0xFFB8F3D1);
+                drawContext.drawTextWithShadow(client.textRenderer,
+                        client.getCurrentFps() + " FPS", 8, y, 0xFFB8F3D1);
             }
         });
     }
