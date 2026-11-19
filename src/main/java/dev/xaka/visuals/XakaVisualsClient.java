@@ -8,12 +8,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public final class XakaVisualsClient implements ClientModInitializer {
-    private static final KeyBinding.Category CATEGORY =
-            KeyBinding.Category.create(Identifier.of("xakavisuals", "main"));
     private static KeyBinding openMenu;
 
     @Override
@@ -22,7 +19,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 "key.xakavisuals.open",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_RIGHT_SHIFT,
-                CATEGORY
+                "category.xakavisuals"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
