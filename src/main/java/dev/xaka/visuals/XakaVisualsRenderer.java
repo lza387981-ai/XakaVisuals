@@ -180,7 +180,9 @@ public final class XakaVisualsRenderer {
                     + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
             // Lightweight camera-facing Target ESP at the target's torso.
             // Shape selection is local and uses line primitives only (no texture or shader).
-            float frameSize = 0.78f + XakaVisualsClient.markerSize * 0.015f;
+            // Make the size slider clearly useful while keeping the marker compact by default.
+            // Values 2..14 map to a visible 0.64..1.18 world-unit frame diameter.
+            float frameSize = 0.55f + XakaVisualsClient.markerSize * 0.045f;
             var markerLines = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
             if (XakaVisualsClient.markerSquare) {
                 drawBillboardSquare(markerLines, centerX, centerY, centerZ, right, up,
