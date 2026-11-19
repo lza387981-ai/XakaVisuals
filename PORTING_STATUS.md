@@ -27,6 +27,9 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] Hold-to-zoom keybind (C) with restoration of the previous FOV, including world exit
 - [x] Coordinates, FPS, watermark and target health HUD
 - [x] Draggable target-health HUD position editor
+- [x] Attack cooldown percentage HUD
+- [x] GPS waypoint capture, distance and clear controls
+- [x] NameProtect for target-health HUD names
 - [x] Custom crosshair with size setting
 - [x] Target marker with adjustable size, offsets and color palette
 - [x] Player halo and body marker with shape/size/position controls
@@ -40,6 +43,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] Airborne movement particle trails
 - [x] NoFluid underwater overlay toggle
 - [x] No-fire first-person overlay toggle
+- [x] JumpCircle and Trails controls
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
 - [x] Low-armor warning
