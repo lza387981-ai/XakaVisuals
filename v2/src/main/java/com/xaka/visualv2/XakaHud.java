@@ -27,10 +27,14 @@ public final class XakaHud {
         int top = 8;
 
         if (XakaClickScreen.isEnabled("XAKA Watermark")) {
-            drawPanel(context, left, top, 118, 30);
+            drawPanel(context, left, top, 132, 30);
             context.fill(left, top, left + 3, top + 30, ACCENT);
-            context.drawText(client.textRenderer, Text.literal("XAKA"), left + 10, top + 5, WHITE, true);
-            context.drawText(client.textRenderer, Text.literal("VISUAL.V2"), left + 10, top + 17, MUTED, false);
+            for (int i = 0; i < 8; i++) {
+                context.fill(left + 7 + i, top + 6 + i, left + 10 + i, top + 9 + i, ACCENT);
+                context.fill(left + 20 - i, top + 6 + i, left + 23 - i, top + 9 + i, ACCENT);
+            }
+            context.drawText(client.textRenderer, Text.literal("XAKA"), left + 31, top + 5, WHITE, true);
+            context.drawText(client.textRenderer, Text.literal("VISUAL.V2"), left + 31, top + 17, MUTED, false);
             top += 38;
         }
 
