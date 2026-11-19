@@ -44,7 +44,7 @@ public final class XakaVisualsSync implements ModInitializer {
             UUID id = handler.player.getUuid();
             STATES.remove(id);
             XakaVisualsSyncPayload cleared = new XakaVisualsSyncPayload(
-                    id, false, 0, 5, false, 0, 1.0f, false, 0, 1.0f, 0.0f, 0xFF9B78FF);
+                    id, false, 0, 5, false, 0, 1.0f, false, 0, 1.0f, 0.0f, 0xFF9B78FF, false, 0);
             server.execute(() -> {
                 for (ServerPlayerEntity recipient : server.getPlayerManager().getPlayerList()) {
                     if (ServerPlayNetworking.canSend(recipient, XakaVisualsSyncPayload.ID)) {
@@ -60,13 +60,13 @@ public final class XakaVisualsSync implements ModInitializer {
         int petSize = clamp(input.petSize(), 0, 10);
         int wingStyle = clamp(input.wingStyle(), 0, 2);
         int dance = clamp(input.activeDance(), 0, 5);
-        float wingSpeed = finiteClamp(input.wingSpeed(), 0.5f, 2.0f, 1.0f);
+        float wingSpeed = finiteClamp(input.wingSpeed(), 0.5f, 2.0f, 1.0f);\n        int hatStyle = clamp(input.hatStyle(), 0, 3);
         float danceSpeed = finiteClamp(input.danceSpeed(), 0.5f, 2.0f, 1.0f);
         float startAge = Float.isFinite(input.danceStartAge())
                 ? Math.max(0.0f, Math.min(input.danceStartAge(), 1.0e7f)) : 0.0f;
         return new XakaVisualsSyncPayload(sender, input.petEnabled(), petType, petSize,
                 input.wingsEnabled(), wingStyle, wingSpeed, input.dancePlaying(), dance,
-                danceSpeed, startAge, input.accentColor() | 0xFF000000);
+                danceSpeed, startAge, input.accentColor() | 0xFF000000, input.hatEnabled(), hatStyle);
     }
 
     private static int clamp(int value, int min, int max) {
