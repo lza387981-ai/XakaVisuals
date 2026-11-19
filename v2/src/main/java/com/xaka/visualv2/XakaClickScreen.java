@@ -6,7 +6,7 @@ import net.minecraft.text.Text;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Map;\nimport java.util.Set;\nimport org.lwjgl.glfw.GLFW;
 
 public final class XakaClickScreen extends Screen {
     private static final int ACCENT = 0xFF39BDF8;
@@ -16,6 +16,14 @@ public final class XakaClickScreen extends Screen {
 
     private static final Map<String, List<String>> MODULES = new LinkedHashMap<>();
     private static final Map<String, Boolean> STATES = new LinkedHashMap<>();
+    private static final Set<String> IMPLEMENTED = Set.of(
+            "XAKA Watermark", "FPS Counter", "Coordinates",
+            "Armor Status", "Keystrokes", "Target Info"
+    );
+
+    public static boolean isEnabled(String name) {
+        return STATES.getOrDefault(name, false);
+    }
 
     static {
         MODULES.put("Visual", List.of(
