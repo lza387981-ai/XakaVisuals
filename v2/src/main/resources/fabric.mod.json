@@ -6,6 +6,7 @@
   "description": "A fresh client-side visual mod for Minecraft 1.21.4.",
   "environment": "client",
   "entrypoints": { "client": ["com.xaka.visualv2.XakaVisualV2Client"] },
+  "mixins": ["xakavisualv2.mixins.json"],
   "depends": {
     "fabricloader": ">=0.16.10",
     "minecraft": "~1.21.4",
