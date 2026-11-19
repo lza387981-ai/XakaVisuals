@@ -35,6 +35,7 @@ jobs:
           cp patches/XakaVisualsMusic.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsMusic.java
           sed -i '/dependencies {/a\    include(implementation("com.googlecode.soundlibs:mp3spi:1.9.5.4"))\n    include(implementation("com.googlecode.soundlibs:jlayer:1.0.1.4"))\n    include(implementation("com.googlecode.soundlibs:tritonus-share:0.3.7.4"))' source/XakaVisuals/build.gradle
           cp patches/XakaVisualsRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsRenderer.java
+          cp patches/XakaCosmeticsRenderer.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaCosmeticsRenderer.java
           cp patches/XakaVisualsSyncPayload.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsSyncPayload.java
           cp patches/XakaVisualsSync.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsSync.java
           cp patches/XakaVisualsSyncClient.java source/XakaVisuals/src/main/java/dev/xaka/visuals/XakaVisualsSyncClient.java
@@ -318,6 +319,18 @@ jobs:
           done
           echo "===== MIXIN CONFIG FILE LIST ====="
           find source/XakaVisuals/src/main/resources -type f -iname '*mixin*' -print
+      - name: Generate solid cosmetic texture
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          out = Path("source/XakaVisuals/src/main/resources/assets/xakavisuals/textures/entity/cosmetic_white.png")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          Image.new("RGBA", (16, 16), (255, 255, 255, 255)).save(out)
+          print(f"Generated {out}")
+          PY
+
       - name: Build Fabric mod
         working-directory: source/XakaVisuals
         run: gradle build --no-daemon
