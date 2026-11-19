@@ -19,7 +19,7 @@ public final class XakaClickScreen extends Screen {
     private static final Map<String, List<String>> MODULES = new LinkedHashMap<>();
     private static final Map<String, Boolean> STATES = new LinkedHashMap<>();
     private static final Set<String> IMPLEMENTED = Set.of(
-            "Target Marker", "Entity Halo", "Mini Creeper Pet", "Mini Wither Pet",
+            "Target Marker", "Entity Halo", "Mini Creeper Pet", "Mini Wither Pet", "Cosmetic Trail",
             "XAKA Watermark", "FPS Counter", "Coordinates", "Armor Status",
             "Keystrokes", "Target Info", "FPS Boost"
     );
