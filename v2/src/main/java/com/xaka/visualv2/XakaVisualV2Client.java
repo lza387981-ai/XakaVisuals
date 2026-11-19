@@ -8,6 +8,11 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 public final class XakaVisualV2Client implements ClientModInitializer {
+    public static int markerSize = 5;
+    public static int haloSize = 8;
+    public static float handOffsetX = 0.0f;
+    public static float handOffsetY = 0.0f;
+    public static float handOffsetZ = 0.0f;
     private static KeyBinding openMenuKey;
 
     @Override
@@ -21,6 +26,7 @@ public final class XakaVisualV2Client implements ClientModInitializer {
 
         XakaHud.register();
         XakaWorldVisuals.register();
+        XakaPerformance.register();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenuKey.wasPressed()) {
