@@ -22,7 +22,7 @@ public final class XakaVisualsScreen extends Screen {
             "Adjust your first-person hand and held item.",
             "Play a local character emote.",
             "Your MP3 playlist and floating mini-player.",
-            "Animated wings and character accessories."
+            "Volumetric capes and 3D hats for your character."
     };
 
     private int selectedCategory;
@@ -161,10 +161,11 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
             }
             case 7 -> {
-                infoCard(c, left, top, right, "Animated wings", "Cosmetic wings follow your character and flap while you move.");
-                row(c, mx, my, left, right, top + 72, "Wings", "Toggle animated wings on your character", XakaVisualsClient.wingsEnabled, accent, true);
-                row(c, mx, my, left, right, top + 121, "Style: " + new String[]{"Fairy", "Angel", "Bat"}[Math.floorMod(XakaVisualsClient.wingStyle, 3)], "Tap to cycle wing designs", false, accent, false);
-                sliderRow(c, mx, my, left, right, top + 170, "Flap speed", Math.round(XakaVisualsClient.wingSpeed * 10), 5, 20, accent, 10);
+                infoCard(c, left, top, right, "3D character accessories", "Real shaped cloth capes and solid hats attached to your model.");
+                row(c, mx, my, left, right, top + 72, "Cape", "Toggle the flowing 3D cape on your back", XakaVisualsClient.wingsEnabled, accent, true);
+                row(c, mx, my, left, right, top + 121, "Cape style: " + new String[]{"Royal violet", "Shadow", "Crimson"}[Math.floorMod(XakaVisualsClient.wingStyle, 3)], "Tap to switch cape design", false, accent, false);
+                row(c, mx, my, left, right, top + 170, "Hat", "Toggle 3D headwear", XakaVisualsClient.hatEnabled, accent, true);
+                row(c, mx, my, left, right, top + 219, "Hat style: " + new String[]{"Top hat", "Witch hat", "Adventurer", "Cap"}[Math.floorMod(XakaVisualsClient.hatStyle, 4)], "Tap to switch hat design", false, accent, false);
             }
             case 6 -> {
                 infoCard(c, left, top, right, "Local MP3 player", "Choose MP3 files from your computer. The mini-player stays on the HUD.");
@@ -375,7 +376,8 @@ public final class XakaVisualsScreen extends Screen {
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
-            if (hitRow(mouseX, mouseY, left, right, top + 170)) { activeSlider = 10; setSlider(10, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.hatEnabled = !XakaVisualsClient.hatEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.hatStyle = (XakaVisualsClient.hatStyle + 1) % 4;
         } else if (selectedCategory == 6) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsMusic.chooseTrack();
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsMusic.previous();
@@ -406,7 +408,7 @@ public final class XakaVisualsScreen extends Screen {
             case 2, 3 -> 333;
             case 4, 5 -> 284;
             case 6 -> 370;
-            case 7 -> 284;
+            case 7 -> 333;
             default -> 310;
         };
     }
