@@ -410,14 +410,23 @@ public final class XakaVisualsClient implements ClientModInitializer {
                         : health / maxHealth > 0.25f ? 0xFFFFC15A : 0xFFFF626F;
                 drawContext.fill(x, y, x + width, y + 26, 0xD9101420);
                 drawContext.fill(x, y, x + 2, y + 26, accent());
-                String hp = String.format(java.util.Locale.ROOT, "%.1f / %.0f HP", health, maxHealth);
+                String hp = absorption > 0.0f
+                        ? String.format(java.util.Locale.ROOT, "%.1f HP  +%.0f Abs", health, absorption)
+                        : String.format(java.util.Locale.ROOT, "%.1f / %.0f HP", health, maxHealth);
                 drawContext.drawTextWithShadow(client.textRenderer, hp, x + 7, y + 4, 0xFFF2F3F8);
-                drawContext.fill(x + 7, y + 17, x + 7 + barWidth, y + 22, 0xFF343B49);
-                drawContext.fill(x + 7, y + 17, x + 7 + Math.round(barWidth * Math.min(1.0f, health / maxHealth)),
-                        y + 22, color);
-                if (absorption > 0.0f) {
-                    int extra = Math.round(barWidth * Math.min(1.0f, absorption / maxHealth));
-                    drawContext.fill(x + 7, y + 17, x + 7 + extra, y + 19, 0xFFFFD45C);
+                int barX = x + 7;
+                int barY = y + 17;
+                drawContext.fill(barX, barY, barX + barWidth, barY + 5, 0xFF343B49);
+                float totalPool = Math.max(1.0f, maxHealth + absorption);
+                int healthPixels = Math.min(barWidth, Math.round(barWidth * health / totalPool));
+                int absorptionPixels = Math.min(barWidth - healthPixels,
+                        Math.round(barWidth * absorption / totalPool));
+                if (healthPixels > 0) {
+                    drawContext.fill(barX, barY, barX + healthPixels, barY + 5, color);
+                }
+                if (absorptionPixels > 0) {
+                    drawContext.fill(barX + healthPixels, barY, barX + healthPixels + absorptionPixels,
+                            barY + 5, 0xFFFFD45C);
                 }
             }
             if (fps) {
