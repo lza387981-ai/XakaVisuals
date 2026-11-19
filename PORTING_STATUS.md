@@ -23,13 +23,27 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] New menu shell and section navigation
 - [x] XAKA watermark and FPS HUD switches
 - [x] Persistent config foundation
-- [x] Fullbright gamma toggle with restoration of the previous gamma value
-- [x] Hold-to-zoom keybind (C) with restoration of the previous FOV
-- [x] Coordinates HUD (XYZ)
+- [x] Fullbright gamma toggle with restoration of the previous gamma value, including world exit
+- [x] Hold-to-zoom keybind (C) with restoration of the previous FOV, including world exit
+- [x] Coordinates, FPS, watermark and target health HUD
+- [x] Draggable target-health HUD position editor
+- [x] Custom crosshair with size setting
+- [x] Target marker with adjustable size, offsets and color palette
+- [x] Player halo and body marker with shape/size/position controls
+- [x] Local floating Creeper, Wither, Warden and Allay companions
+- [x] Original procedural cape and hat cosmetics
+- [x] First-person hand/item position controls
+- [x] Six local player emote presets with speed control
+- [x] Reversible FPS Boost (restores the prior particle setting)
+- [x] Hit particles when the crosshair-target's health decreases
 - [ ] Reimplement remaining visual modules and their settings
-- [ ] Reimplement client and utility modules
+- [x] AutoSprint
+- [x] Low-armor warning
+- [x] Last-death coordinates HUD
+- [ ] Reimplement remaining client and utility modules
 - [ ] Port/replace approved textures, PNGs, fonts, sounds and JSON assets
 - [ ] Audit nested dependencies and their licenses
-- [ ] Build and launch-test on Minecraft 1.21.4 (CI build in progress; in-game launch test still required)
+- [x] CI compile/build checks for the feature batches above
+- [ ] Launch-test the mod in Minecraft 1.21.4 and verify rendering/input in-game
 
 A feature is marked complete only after its implementation and in-game behavior have been tested. Decompiled bytecode is not treated as original source code.
