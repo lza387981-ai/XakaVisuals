@@ -77,6 +77,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean jumpCircle = false;
     public static boolean jumpEffect = false;
     public static boolean jumpCubes = false;
+    public static boolean mouseParticles = false;
+    public static int mouseParticleSize = 5;
     public static int jumpCubeCount = 5;
     public static int jumpCubeSize = 18;
     public static int jumpEffectRadius = 5;

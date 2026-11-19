@@ -4,6 +4,9 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public final class XakaVisualsScreen extends Screen {
     private static final int BG = 0xF00C0F18;
@@ -33,6 +36,10 @@ public final class XakaVisualsScreen extends Screen {
     private int navScrollOffset = 0;
     private int contentScrollOffset = 0;
     private boolean navDragging = false;
+    private static final List<CursorSparkle> CURSOR_SPARKLES = new ArrayList<>();
+    private double lastMouseX, lastMouseY;
+    private boolean hasLastMouse;
+    private long lastSparkleSpawn;
 
     public XakaVisualsScreen() {
         super(Text.literal("XakaVisuals"));
@@ -119,8 +126,54 @@ public final class XakaVisualsScreen extends Screen {
                     y + panelH - 27, MUTED);
             context.drawTextWithShadow(textRenderer, "v1.0.0", right - 35, y + panelH - 27, MUTED);
         }
+        renderCursorSparkles(context);
         // Do not call super.render() here: it renders the screen background after our UI,
         // which can apply the blur shader over the entire frame on some Minecraft versions.
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        long now = System.nanoTime();
+        double dx = mouseX - lastMouseX, dy = mouseY - lastMouseY;
+        if (XakaVisualsClient.mouseParticles && hasLastMouse && dx * dx + dy * dy >= 9.0
+                && now - lastSparkleSpawn >= 10_000_000L && CURSOR_SPARKLES.size() < 72) {
+            double speed = Math.sqrt(dx * dx + dy * dy);
+            double spread = Math.min(1.8, 0.35 + speed * 0.035);
+            CURSOR_SPARKLES.add(new CursorSparkle(mouseX, mouseY,
+                    (Math.random() - 0.5) * spread, -0.25 - Math.random() * spread,
+                    XakaVisualsClient.mouseParticleSize, now));
+            lastSparkleSpawn = now;
+        }
+        lastMouseX = mouseX; lastMouseY = mouseY; hasLastMouse = true;
+    }
+
+    private void renderCursorSparkles(DrawContext context) {
+        if (!XakaVisualsClient.mouseParticles) { CURSOR_SPARKLES.clear(); return; }
+        long now = System.nanoTime();
+        Iterator<CursorSparkle> iterator = CURSOR_SPARKLES.iterator();
+        while (iterator.hasNext()) {
+            CursorSparkle sparkle = iterator.next();
+            float age = (now - sparkle.startedAt) / 1_000_000.0f;
+            float progress = age / 680.0f;
+            if (progress >= 1.0f) { iterator.remove(); continue; }
+            int alpha = Math.max(0, Math.min(230, Math.round(230.0f * (1.0f - progress))));
+            int color = (alpha << 24) | (XakaVisualsClient.accent() & 0x00FFFFFF);
+            int x = Math.round((float)(sparkle.x + sparkle.vx * age * 0.055));
+            int y = Math.round((float)(sparkle.y + sparkle.vy * age * 0.055));
+            int size = Math.max(2, Math.round(sparkle.size * (1.0f - progress * 0.35f)));
+            context.fill(x - size / 2, y - 1, x + size / 2 + 1, y + 2, color);
+            context.fill(x - 1, y - size / 2, x + 2, y + size / 2 + 1, color);
+            context.fill(x - 1, y - 1, x + 1, y + 1, 0xFFFFFFFF);
+        }
+    }
+
+    private static final class CursorSparkle {
+        private final double x, y, vx, vy;
+        private final int size;
+        private final long startedAt;
+        private CursorSparkle(double x, double y, double vx, double vy, int size, long startedAt) {
+            this.x=x; this.y=y; this.vx=vx; this.vy=vy; this.size=size; this.startedAt=startedAt;
+        }
     }
 
     private void renderCategory(DrawContext c, int mx, int my, int left, int right, int top, int accent) {
@@ -133,6 +186,8 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 196, "Floating pet", "Toggle your local decorative companion", XakaVisualsClient.petEnabled, accent, true);
                 row(c, mx, my, left, right, top + 245, "Pet: " + XakaVisualsClient.petName(), "Click right side to switch; left side changes size", false, accent, false);
                 row(c, mx, my, left, right, top + 294, "Frame color: " + XakaVisualsClient.targetFrameColorName(), "Tap to cycle through 8 colors", false, XakaVisualsClient.targetFrameColor(), false);
+                row(c, mx, my, left, right, top + 343, "Mouse particles", "Small sparkles follow your cursor in this menu", XakaVisualsClient.mouseParticles, accent, true);
+                sliderRow(c, mx, my, left, right, top + 392, "Sparkle size", XakaVisualsClient.mouseParticleSize, 2, 10, accent, 16);
             }
             case 1 -> {
                 row(c, mx, my, left, right, top, "Watermark", "Show the XakaVisuals brand in-game", XakaVisualsClient.watermark, accent, true);
@@ -245,6 +300,7 @@ public final class XakaVisualsScreen extends Screen {
             case 10 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.wingSpeed);
             case 14 -> Integer.toString(XakaVisualsClient.jumpCubeCount);
             case 15 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.jumpCubeSize / 100.0f);
+            case 16 -> Integer.toString(XakaVisualsClient.mouseParticleSize);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -275,6 +331,7 @@ public final class XakaVisualsScreen extends Screen {
             case 12 -> XakaVisualsClient.jumpEffectDuration = 300 + Math.round(t * 1700);
             case 14 -> XakaVisualsClient.jumpCubeCount = 1 + Math.round(t * 9);
             case 15 -> XakaVisualsClient.jumpCubeSize = 5 + Math.round(t * 35);
+            case 16 -> XakaVisualsClient.mouseParticleSize = 2 + Math.round(t * 8);
         }
     }
 
@@ -378,6 +435,8 @@ public final class XakaVisualsScreen extends Screen {
             }
             if (hitRow(mouseX, mouseY, left, right, top + 294))
                 XakaVisualsClient.targetFrameColorIndex = (XakaVisualsClient.targetFrameColorIndex + 1) % 8;
+            if (hitRow(mouseX, mouseY, left, right, top + 343)) XakaVisualsClient.mouseParticles = !XakaVisualsClient.mouseParticles;
+            if (hitRow(mouseX, mouseY, left, right, top + 392)) { activeSlider = 16; setSlider(16, mouseX, left, right); }
         } else if (selectedCategory == 1) {
             if (hitRow(mouseX, mouseY, left, right, top)) XakaVisualsClient.watermark = !XakaVisualsClient.watermark;
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.fps = !XakaVisualsClient.fps;
@@ -474,7 +533,7 @@ public final class XakaVisualsScreen extends Screen {
 
     private int categoryContentHeight() {
         return switch (selectedCategory) {
-            case 0 -> 350;
+            case 0 -> 450;
             case 1 -> 556;
             case 2 -> 767;
             case 3 -> 333;
