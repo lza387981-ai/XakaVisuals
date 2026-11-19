@@ -63,6 +63,7 @@ public final class VisualSettings {
             XakaVisualsClient.playerTrails = bool(p, "playerTrails", XakaVisualsClient.playerTrails);
             XakaVisualsClient.noFluidOverlay = bool(p, "noFluidOverlay", XakaVisualsClient.noFluidOverlay);
             XakaVisualsClient.noFireOverlay = bool(p, "noFireOverlay", XakaVisualsClient.noFireOverlay);
+            XakaVisualsClient.cooldownHud = bool(p, "cooldownHud", XakaVisualsClient.cooldownHud);
             XakaVisualsClient.activeDance = integer(p, "activeDance", XakaVisualsClient.activeDance);
             XakaVisualsClient.danceSpeed = decimal(p, "danceSpeed", XakaVisualsClient.danceSpeed);
             fullbright = bool(p, "fullbright", fullbright);
@@ -118,6 +119,7 @@ public final class VisualSettings {
         p.setProperty("playerTrails", Boolean.toString(XakaVisualsClient.playerTrails));
         p.setProperty("noFluidOverlay", Boolean.toString(XakaVisualsClient.noFluidOverlay));
         p.setProperty("noFireOverlay", Boolean.toString(XakaVisualsClient.noFireOverlay));
+        p.setProperty("cooldownHud", Boolean.toString(XakaVisualsClient.cooldownHud));
         p.setProperty("activeDance", Integer.toString(XakaVisualsClient.activeDance));
         p.setProperty("danceSpeed", Float.toString(XakaVisualsClient.danceSpeed));
         p.setProperty("fullbright", Boolean.toString(fullbright));
