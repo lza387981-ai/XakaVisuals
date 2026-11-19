@@ -64,6 +64,10 @@ public final class VisualSettings {
             XakaVisualsClient.noFluidOverlay = bool(p, "noFluidOverlay", XakaVisualsClient.noFluidOverlay);
             XakaVisualsClient.noFireOverlay = bool(p, "noFireOverlay", XakaVisualsClient.noFireOverlay);
             XakaVisualsClient.cooldownHud = bool(p, "cooldownHud", XakaVisualsClient.cooldownHud);
+            XakaVisualsClient.waypointEnabled = bool(p, "waypointEnabled", XakaVisualsClient.waypointEnabled);
+            XakaVisualsClient.waypointX = integer(p, "waypointX", XakaVisualsClient.waypointX);
+            XakaVisualsClient.waypointY = integer(p, "waypointY", XakaVisualsClient.waypointY);
+            XakaVisualsClient.waypointZ = integer(p, "waypointZ", XakaVisualsClient.waypointZ);
             XakaVisualsClient.activeDance = integer(p, "activeDance", XakaVisualsClient.activeDance);
             XakaVisualsClient.danceSpeed = decimal(p, "danceSpeed", XakaVisualsClient.danceSpeed);
             fullbright = bool(p, "fullbright", fullbright);
@@ -120,6 +124,10 @@ public final class VisualSettings {
         p.setProperty("noFluidOverlay", Boolean.toString(XakaVisualsClient.noFluidOverlay));
         p.setProperty("noFireOverlay", Boolean.toString(XakaVisualsClient.noFireOverlay));
         p.setProperty("cooldownHud", Boolean.toString(XakaVisualsClient.cooldownHud));
+        p.setProperty("waypointEnabled", Boolean.toString(XakaVisualsClient.waypointEnabled));
+        p.setProperty("waypointX", Integer.toString(XakaVisualsClient.waypointX));
+        p.setProperty("waypointY", Integer.toString(XakaVisualsClient.waypointY));
+        p.setProperty("waypointZ", Integer.toString(XakaVisualsClient.waypointZ));
         p.setProperty("activeDance", Integer.toString(XakaVisualsClient.activeDance));
         p.setProperty("danceSpeed", Float.toString(XakaVisualsClient.danceSpeed));
         p.setProperty("fullbright", Boolean.toString(fullbright));
