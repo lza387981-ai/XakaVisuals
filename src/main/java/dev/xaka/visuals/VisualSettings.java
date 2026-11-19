@@ -93,6 +93,7 @@ public final class VisualSettings {
             XakaVisualsClient.waypointEnabled = bool(p, "waypointEnabled", XakaVisualsClient.waypointEnabled);
             XakaVisualsClient.nameProtect = bool(p, "nameProtect", XakaVisualsClient.nameProtect);
             XakaVisualsClient.shulkerPreview = bool(p, "shulkerPreview", XakaVisualsClient.shulkerPreview);
+            XakaVisualsClient.killEffect = bool(p, "killEffect", XakaVisualsClient.killEffect);
             XakaVisualsClient.waypointX = integer(p, "waypointX", XakaVisualsClient.waypointX);
             XakaVisualsClient.waypointY = integer(p, "waypointY", XakaVisualsClient.waypointY);
             XakaVisualsClient.waypointZ = integer(p, "waypointZ", XakaVisualsClient.waypointZ);
@@ -181,6 +182,7 @@ public final class VisualSettings {
         p.setProperty("waypointEnabled", Boolean.toString(XakaVisualsClient.waypointEnabled));
         p.setProperty("nameProtect", Boolean.toString(XakaVisualsClient.nameProtect));
         p.setProperty("shulkerPreview", Boolean.toString(XakaVisualsClient.shulkerPreview));
+        p.setProperty("killEffect", Boolean.toString(XakaVisualsClient.killEffect));
         p.setProperty("waypointX", Integer.toString(XakaVisualsClient.waypointX));
         p.setProperty("waypointY", Integer.toString(XakaVisualsClient.waypointY));
         p.setProperty("waypointZ", Integer.toString(XakaVisualsClient.waypointZ));

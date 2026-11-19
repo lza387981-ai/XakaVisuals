@@ -108,6 +108,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean hideBossBar = false;
     public static boolean noInWallOverlay = false;
     public static boolean shulkerPreview = false;
+    public static boolean killEffect = false;
+    private static LivingEntity killEffectCandidate;
+    private static Vec3d killEffectCandidatePos = Vec3d.ZERO;
     public static boolean cooldownHud = false;
     public static boolean waypointEnabled = false;
     public static boolean nameProtect = false;
@@ -151,6 +154,19 @@ public final class XakaVisualsClient implements ClientModInitializer {
     private static final String[] TARGET_FRAME_COLOR_NAMES = {
             "White", "Violet", "Mint", "Rose", "Amber", "Blue", "Gold", "Red"
     };
+
+    private static void spawnKillEffect(MinecraftClient client, Vec3d position) {
+        if (client.world == null) return;
+        int count = 8 + Math.max(1, Math.min(5, particleDensity)) * 2;
+        for (int i = 0; i < count; i++) {
+            double angle = Math.PI * 2.0 * i / count;
+            double dx = Math.cos(angle);
+            double dz = Math.sin(angle);
+            client.world.addParticle(ParticleTypes.END_ROD,
+                    position.x + dx * 0.45, position.y + 0.55, position.z + dz * 0.45,
+                    dx * 0.025, 0.035, dz * 0.025);
+        }
+    }
 
     private static void drawCrosshairPart(net.minecraft.client.gui.DrawContext context, int x1, int y1, int x2, int y2,
             int color, int outlineColor, int outlineWidth) {
@@ -298,6 +314,26 @@ public final class XakaVisualsClient implements ClientModInitializer {
             }
             previousHitTargetId = target.getId();
             previousHitTargetHealth = health;
+        });
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (!killEffect || client.world == null) {
+                killEffectCandidate = null;
+                return;
+            }
+            if (killEffectCandidate != null) {
+                killEffectCandidatePos = killEffectCandidate.getPos();
+                if (!killEffectCandidate.isAlive() || killEffectCandidate.isRemoved()) {
+                    spawnKillEffect(client, killEffectCandidatePos);
+                    killEffectCandidate = null;
+                }
+            }
+            if (client.player != null && client.crosshairTarget instanceof EntityHitResult hit
+                    && hit.getEntity() instanceof LivingEntity target
+                    && target != client.player && target.isAlive()) {
+                killEffectCandidate = target;
+                killEffectCandidatePos = target.getPos();
+            }
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

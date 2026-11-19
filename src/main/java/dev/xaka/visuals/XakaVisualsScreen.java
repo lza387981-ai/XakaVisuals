@@ -228,6 +228,7 @@ public final class XakaVisualsScreen extends Screen {
                 sliderRow(c, mx, my, left, right, top + 660, "Cube count", XakaVisualsClient.jumpCubeCount, 1, 10, accent, 14);
                 sliderRow(c, mx, my, left, right, top + 709, "Cube size", XakaVisualsClient.jumpCubeSize, 5, 40, accent, 15);
                 sliderRow(c, mx, my, left, right, top + 758, "Particle density", XakaVisualsClient.particleDensity, 1, 5, accent, 25);
+                row(c, mx, my, left, right, top + 807, "Kill Effect", "Show a small local sparkle burst when the tracked target is defeated", XakaVisualsClient.killEffect, accent, true);
             }
             case 4 -> {
                 infoCard(c, left, top, right, "First-person hand", "Move your hand and held item without moving the camera.");
@@ -517,6 +518,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 660)) { activeSlider = 14; setSlider(14, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 709)) { activeSlider = 15; setSlider(15, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 758)) { activeSlider = 25; setSlider(25, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 807)) XakaVisualsClient.killEffect = !XakaVisualsClient.killEffect;
             if (hitRow(mouseX, mouseY, left, right, top + 268)) { activeSlider = 1; setSlider(1, mouseX, left, right); }
         } else if (selectedCategory == 4) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) { activeSlider = 5; setSlider(5, mouseX, left, right); }
@@ -592,7 +594,7 @@ public final class XakaVisualsScreen extends Screen {
         return switch (selectedCategory) {
             case 0 -> 450;
             case 1 -> 950;
-            case 2 -> 816;
+            case 2 -> 870;
             case 3 -> 333;
             case 4 -> 470;
             case 5 -> 284;
