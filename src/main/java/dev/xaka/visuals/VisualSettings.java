@@ -53,6 +53,8 @@ public final class VisualSettings {
             XakaVisualsClient.handOffsetY = decimal(p, "handOffsetY", XakaVisualsClient.handOffsetY);
             XakaVisualsClient.handOffsetZ = decimal(p, "handOffsetZ", XakaVisualsClient.handOffsetZ);
             XakaVisualsClient.fpsBoost = bool(p, "fpsBoost", XakaVisualsClient.fpsBoost);
+            XakaVisualsClient.customCrosshair = bool(p, "customCrosshair", XakaVisualsClient.customCrosshair);
+            XakaVisualsClient.crosshairSize = integer(p, "crosshairSize", XakaVisualsClient.crosshairSize);
             XakaVisualsClient.activeDance = integer(p, "activeDance", XakaVisualsClient.activeDance);
             XakaVisualsClient.danceSpeed = decimal(p, "danceSpeed", XakaVisualsClient.danceSpeed);
             fullbright = bool(p, "fullbright", fullbright);
@@ -98,6 +100,8 @@ public final class VisualSettings {
         p.setProperty("handOffsetY", Float.toString(XakaVisualsClient.handOffsetY));
         p.setProperty("handOffsetZ", Float.toString(XakaVisualsClient.handOffsetZ));
         p.setProperty("fpsBoost", Boolean.toString(XakaVisualsClient.fpsBoost));
+        p.setProperty("customCrosshair", Boolean.toString(XakaVisualsClient.customCrosshair));
+        p.setProperty("crosshairSize", Integer.toString(XakaVisualsClient.crosshairSize));
         p.setProperty("activeDance", Integer.toString(XakaVisualsClient.activeDance));
         p.setProperty("danceSpeed", Float.toString(XakaVisualsClient.danceSpeed));
         p.setProperty("fullbright", Boolean.toString(fullbright));
