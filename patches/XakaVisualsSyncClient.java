@@ -53,7 +53,9 @@ public final class XakaVisualsSyncClient {
                 XakaVisualsClient.activeDance,
                 XakaVisualsClient.danceSpeed,
                 XakaVisualsClient.danceStartAge,
-                XakaVisualsClient.accent(),\n                XakaVisualsClient.hatEnabled,\n                XakaVisualsClient.hatStyle);
+                XakaVisualsClient.accent(),
+                XakaVisualsClient.hatEnabled,
+                XakaVisualsClient.hatStyle);
 
         if (!current.equals(lastSent)) {
             // Vanilla servers simply do not advertise this channel, so no packet is sent there.
