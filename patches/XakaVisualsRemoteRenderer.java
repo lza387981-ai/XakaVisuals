@@ -89,43 +89,61 @@ public final class XakaVisualsRemoteRenderer {
                 matrices.pop();
             }
 
-            if (state.wingsEnabled()) {
+            if (wings) {
                 int color = state.accentColor();
+                float yaw = (float) Math.toRadians(bodyYaw);
                 float sideX = (float) Math.cos(yaw);
                 float sideZ = (float) Math.sin(yaw);
                 float backX = (float) Math.sin(yaw);
                 float backZ = (float) -Math.cos(yaw);
                 float phase = (float) (client.world.getTime() + tickDelta) * 0.22f * state.wingSpeed();
-                float flap = (float) Math.sin(phase) * 0.24f;
-                float span = state.wingStyle() == 2 ? 0.92f : state.wingStyle() == 1 ? 0.82f : 0.74f;
-                var mesh = consumers.getBuffer(RenderLayer.getEntityTranslucent(
-                        net.minecraft.util.Identifier.of("xakavisuals", "textures/entity/cosmetic_wing.png")));
-                var outline = consumers.getBuffer(RenderLayer.getLines());
+                float flap = (float) Math.sin(phase) * 0.12f;
+                float span = state.wingStyle() == 2 ? 1.32f : state.wingStyle() == 1 ? 1.20f : 1.08f;
+                net.minecraft.util.Identifier wingTexture = Identifier.of("xakavisuals", "textures/entity/cosmetic_wing.png");
+                var wingMesh = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getEntityTranslucent(wingTexture));
+                // The attachment point is behind the torso (not in front of it).
+                // Three overlapping textured planes create a layered, thicker feather silhouette.
                 for (int side : new int[]{-1, 1}) {
-                    double rootX = bx - backX * 0.17;
-                    double rootY = by + 1.02;
-                    double rootZ = bz - backZ * 0.17;
-                    double tipX = rootX + sideX * span * side + backX * 0.12;
-                    double tipY = by + 1.28 + flap * side;
-                    double tipZ = rootZ + sideZ * span * side + backZ * 0.12;
-                    double outerX = rootX + sideX * span * 0.86 * side + backX * 0.48;
-                    double outerY = by + 1.48 + flap * side * 0.70;
-                    double outerZ = rootZ + sideZ * span * 0.86 * side + backZ * 0.48;
-                    double innerX = rootX + sideX * span * 0.24 * side + backX * 0.40;
-                    double innerY = by + 1.30 + flap * side * 0.30;
-                    double innerZ = bz - backZ * 0.17 + sideZ * span * 0.24 * side + backZ * 0.40;
-                    drawWingMesh(mesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
-                            outerX,outerY,outerZ, innerX,innerY,innerZ, color, side == 1);
-                    int outlineColor = (color & 0x00FFFFFF) | 0xD0000000;
-                    line(outline,rootX,rootY,rootZ,tipX,tipY,tipZ,outlineColor);
-                    line(outline,tipX,tipY,tipZ,outerX,outerY,outerZ,outlineColor);
-                    line(outline,outerX,outerY,outerZ,innerX,innerY,innerZ,outlineColor);
-                    line(outline,innerX,innerY,innerZ,rootX,rootY,rootZ,outlineColor);
+                    double rootX = bx + backX * 0.22;
+                    double rootY = by + 1.18;
+                    double rootZ = bz + backZ * 0.22;
+                    double tipX = rootX + sideX * span * side + backX * 0.24;
+                    double tipY = by + 1.66 + flap * side;
+                    double tipZ = rootZ + sideZ * span * side + backZ * 0.24;
+                    double outerX = rootX + sideX * span * 0.96 * side + backX * 0.78;
+                    double outerY = by + 1.08 + flap * side * 0.45;
+                    double outerZ = rootZ + sideZ * span * 0.96 * side + backZ * 0.78;
+                    double innerX = rootX + sideX * span * 0.30 * side + backX * 0.62;
+                    double innerY = by + 1.36 + flap * side * 0.25;
+                    double innerZ = rootZ + sideZ * span * 0.30 * side + backZ * 0.62;
+                    // Rear feather layer: slightly larger and farther behind the player.
+                    drawWingLayer(wingMesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
+                            outerX,outerY,outerZ, innerX,innerY,innerZ, color, side == 1,
+                            backX * 0.045, backZ * 0.045, 1.035);
+                    // Main feather layer.
+                    drawWingLayer(wingMesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
+                            outerX,outerY,outerZ, innerX,innerY,innerZ, color, side == 1,
+                            0.0, 0.0, 1.0);
+                    // Smaller overlapping inner layer hides seams around the shoulder joint.
+                    drawWingLayer(wingMesh, rootX,rootY,rootZ, tipX,tipY,tipZ,
+                            outerX,outerY,outerZ, innerX,innerY,innerZ, color, side == 1,
+                            -backX * 0.035, -backZ * 0.035, 0.70);
                 }
             }
         }
     }
 
+
+    private static void drawWingLayer(VertexConsumer out,
+            double rx,double ry,double rz, double tx,double ty,double tz,
+            double ox,double oy,double oz, double ix,double iy,double iz,
+            int color, boolean mirror, double offsetX, double offsetZ, double scale) {
+        double stx = rx + (tx-rx)*scale, sty = ry + (ty-ry)*scale, stz = rz + (tz-rz)*scale;
+        double sox = rx + (ox-rx)*scale, soy = ry + (oy-ry)*scale, soz = rz + (oz-rz)*scale;
+        double six = rx + (ix-rx)*scale, siy = ry + (iy-ry)*scale, siz = rz + (iz-rz)*scale;
+        drawWingMesh(out, rx+offsetX,ry,rz+offsetZ, stx+offsetX,sty,stz+offsetZ,
+                sox+offsetX,soy,soz+offsetZ, six+offsetX,siy,siz+offsetZ, color, mirror);
+    }
 
     private static void drawWingMesh(VertexConsumer out,
             double rx,double ry,double rz, double tx,double ty,double tz,
