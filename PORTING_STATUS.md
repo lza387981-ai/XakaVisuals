@@ -33,7 +33,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] GPS waypoint capture, distance and clear controls
 - [x] NameProtect for target-health HUD names
 - [x] Custom crosshair with adjustable length, gap, thickness, center dot and outline
-- [x] Target marker with adjustable size, offsets and color palette
+- [x] Target ESP torso marker with adjustable size, offsets, color and square/circle shape
 - [x] Player halo and body marker with shape/size/position controls
 - [x] Local floating Creeper, Wither, Warden and Allay companions
 - [x] Original procedural cape and hat cosmetics
@@ -58,7 +58,8 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] ViewModel: first-person hand/item translation and rotation across all three axes
 - [x] Crosshair: custom reticle with adjustable gap, length, thickness, center dot and outline
 - [x] Ambience: client-only visual time override with slider and sunrise/noon/sunset/midnight presets; server time is not modified
-- [ ] Reimplement remaining visual modules and their settings
+- [ ] Reimplement remaining approved lightweight visual modules and their settings
+- [x] Exclude ShaderHands, ShaderPlayer and SkyBox from the V2 plan (performance/utility decision)
 - [x] AutoSprint
 - [x] Low-armor warning
 - [x] Last-death coordinates HUD

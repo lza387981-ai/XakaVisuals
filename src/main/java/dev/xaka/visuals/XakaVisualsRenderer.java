@@ -178,14 +178,17 @@ public final class XakaVisualsRenderer {
             double centerZ = targetPos.z - camera.z + towardCamera.z * 0.48
                     + right.z * XakaVisualsClient.bodyMarkerOffsetX
                     + towardCamera.z * XakaVisualsClient.bodyMarkerOffsetZ;
-            // Render the PNG frame as a camera-facing textured quad; tint changes its color.
+            // Lightweight camera-facing Target ESP at the target's torso.
+            // Shape selection is local and uses line primitives only (no texture or shader).
             float frameSize = 0.78f + XakaVisualsClient.markerSize * 0.015f;
-            float frameWidth = frameSize;
-            float frameHeight = frameSize;
-            // Use a monotonic high-resolution clock so rotation never pauses at tick boundaries.
-            float rotation = (float) (System.nanoTime() * -0.00000000045);
-            drawRotatingTargetFrame(consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines()),
-                    centerX, centerY, centerZ, right, up, frameSize * 0.5f, rotation, targetFrameColor);
+            var markerLines = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
+            if (XakaVisualsClient.markerSquare) {
+                drawBillboardSquare(markerLines, centerX, centerY, centerZ, right, up,
+                        frameSize * 0.5f, targetFrameColor);
+            } else {
+                drawBillboardCircle(markerLines, centerX, centerY, centerZ, right, up,
+                        frameSize * 0.5f, targetFrameColor, 32);
+            }
         }
     }
 

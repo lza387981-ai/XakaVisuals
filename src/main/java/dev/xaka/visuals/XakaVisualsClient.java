@@ -31,7 +31,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static int enemyHpX = -1;
     public static int enemyHpY = -1;
     public static boolean markerEnabled = false;
-    public static boolean markerSquare = false;
+    public static boolean markerSquare = true;
     public static int markerSize = 5;
     public static int targetFrameColorIndex = 0;
     public static boolean haloEnabled = false;

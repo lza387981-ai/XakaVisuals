@@ -183,7 +183,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top, "Clean interface", "A calm, distraction-free visual style", true, accent, false);
                 row(c, mx, my, left, right, top + 49, "Smooth animations", "Animated menu transitions", XakaVisualsClient.animations, accent, true);
                 row(c, mx, my, left, right, top + 98, "Compact HUD", "Reduce the height of HUD panels", XakaVisualsClient.compactHud, accent, true);
-                row(c, mx, my, left, right, top + 147, "Enemy target frame", "Slowly rotating corner brackets around the target", XakaVisualsClient.markerEnabled, accent, true);
+                row(c, mx, my, left, right, top + 147, "Target ESP", "A lightweight marker on the targeted player’s torso", XakaVisualsClient.markerEnabled, accent, true);
                 row(c, mx, my, left, right, top + 196, "Floating pet", "Toggle your local decorative companion", XakaVisualsClient.petEnabled, accent, true);
                 row(c, mx, my, left, right, top + 245, "Pet: " + XakaVisualsClient.petName(), "Click right side to switch; left side changes size", false, accent, false);
                 row(c, mx, my, left, right, top + 294, "Frame color: " + XakaVisualsClient.targetFrameColorName(), "Tap to cycle through 8 colors", false, XakaVisualsClient.targetFrameColor(), false);
@@ -194,7 +194,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top, "Watermark", "Show the XakaVisuals brand in-game", XakaVisualsClient.watermark, accent, true);
                 row(c, mx, my, left, right, top + 49, "FPS counter", "Display your current frame rate", XakaVisualsClient.fps, accent, true);
                 row(c, mx, my, left, right, top + 98, "Coordinates", "Show your current block position", XakaVisualsClient.coordinates, accent, true);
-                row(c, mx, my, left, right, top + 147, "Marker shape", XakaVisualsClient.markerSquare ? "Square — click to use circle" : "Circle — click to use square", XakaVisualsClient.markerSquare, accent, false);
+                row(c, mx, my, left, right, top + 147, "Target ESP shape", XakaVisualsClient.markerSquare ? "Square — click to use circle" : "Circle — click to use square", XakaVisualsClient.markerSquare, accent, false);
                 row(c, mx, my, left, right, top + 196, "FPS Boost", "Minimal particles; restores your previous setting", XakaVisualsClient.fpsBoost, accent, true);
                 row(c, mx, my, left, right, top + 245, "Enemy HP", "Show the targeted player's health", XakaVisualsClient.enemyHpEnabled, accent, true);
                 row(c, mx, my, left, right, top + 294, "Move HP HUD", "Drag the health panel anywhere on screen", false, accent, false);
