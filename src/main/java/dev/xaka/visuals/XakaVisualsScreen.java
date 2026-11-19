@@ -21,19 +21,25 @@ public final class XakaVisualsScreen extends Screen {
     private List<Toggle> visibleToggles() {
         return switch (activeTab) {
             case "HUD" -> List.of(
-                    new Toggle("Watermark", "Compact XAKA logo in the corner", "watermark"),
-                    new Toggle("FPS counter", "Display current client FPS", "fpsCounter")
+                    new Toggle("Watermark", "Compact XAKA logo in the corner", "watermark", true),
+                    new Toggle("FPS counter", "Display current client FPS", "fpsCounter", true)
             );
             case "Cosmetics" -> List.of(
-                    new Toggle("Mini pets", "Decorative companion system", "cosmeticPets")
+                    new Toggle("Mini pets", "Decorative companion system", "", false),
+                    new Toggle("Emotions", "Character animation and emote system", "", false)
             );
             case "Client" -> List.of(
-                    new Toggle("First-person hand controls", "Hand position customization", "handPosition"),
-                    new Toggle("Safe FPS mode", "Reversible visual workload reduction", "safeFpsBoost")
+                    new Toggle("First-person hand controls", "Hand position customization", "", false),
+                    new Toggle("Safe FPS mode", "Reversible visual workload reduction", "", false)
             );
             default -> List.of(
-                    new Toggle("Player halo", "Player highlight visual", "playerHalo"),
-                    new Toggle("Target marker", "Configurable target marker visual", "targetMarker")
+                    new Toggle("Fullbright", "World brightness customization", "", false),
+                    new Toggle("Player halo", "Player highlight visual", "", false),
+                    new Toggle("Target marker", "Configurable target marker visual", "", false),
+                    new Toggle("Hit particles", "Custom hit particle effects", "", false),
+                    new Toggle("Motion blur", "Motion blur visual effect", "", false),
+                    new Toggle("Zoom", "Camera zoom control", "", false),
+                    new Toggle("View model", "First-person item positioning", "", false)
             );
         };
     }
@@ -70,14 +76,13 @@ public final class XakaVisualsScreen extends Screen {
         int contentX = left + 139;
         ctx.drawTextWithShadow(textRenderer, activeTab.toUpperCase() + " SETTINGS",
                 contentX, top + 59, 0xFFF3F4F6);
-        ctx.drawTextWithShadow(textRenderer, "XakaVisuals.V2  •  Minecraft 1.21.4",
+        ctx.drawTextWithShadow(textRenderer, "Feature port status",
                 contentX, top + 76, 0xFF8E95A8);
 
         List<Toggle> toggles = visibleToggles();
-        int rowY = top + 111 - scroll;
         int maxScroll = Math.max(0, toggles.size() * 49 - (panelH - 140));
         scroll = Math.min(scroll, maxScroll);
-        rowY = top + 111 - scroll;
+        int rowY = top + 111 - scroll;
         for (Toggle toggle : toggles) {
             if (rowY + 35 >= top + 96 && rowY <= top + panelH - 26) {
                 ctx.fill(contentX - 8, rowY - 7, left + panelW - 16, rowY + 34, 0xFF1E2230);
@@ -85,17 +90,22 @@ public final class XakaVisualsScreen extends Screen {
                         0xFFF3F4F6);
                 ctx.drawTextWithShadow(textRenderer, toggle.description, contentX + 7, rowY + 15,
                         0xFF929AAF);
-                boolean enabled = toggle.enabled();
-                int sx = left + panelW - 68;
-                int sy = rowY + 3;
-                ctx.fill(sx, sy, sx + 38, sy + 17, enabled ? 0xFF7655C7 : 0xFF45495A);
-                ctx.fill(enabled ? sx + 22 : sx + 3, sy + 3,
-                        enabled ? sx + 35 : sx + 16, sy + 14, 0xFFFFFFFF);
+                if (toggle.ready) {
+                    boolean enabled = toggle.enabled();
+                    int sx = left + panelW - 68;
+                    int sy = rowY + 3;
+                    ctx.fill(sx, sy, sx + 38, sy + 17, enabled ? 0xFF7655C7 : 0xFF45495A);
+                    ctx.fill(enabled ? sx + 22 : sx + 3, sy + 3,
+                            enabled ? sx + 35 : sx + 16, sy + 14, 0xFFFFFFFF);
+                } else {
+                    ctx.drawTextWithShadow(textRenderer, "PORTING",
+                            left + panelW - 75, rowY + 5, 0xFFFFC978);
+                }
             }
             rowY += 49;
         }
 
-        ctx.drawTextWithShadow(textRenderer, "Settings are saved automatically",
+        ctx.drawTextWithShadow(textRenderer, "Only implemented features can be toggled",
                 left + 17, top + panelH - 19, 0xFF777F94);
         super.render(ctx, mouseX, mouseY, delta);
     }
@@ -121,7 +131,7 @@ public final class XakaVisualsScreen extends Screen {
         List<Toggle> toggles = visibleToggles();
         int rowY = top + 111 - scroll;
         for (Toggle toggle : toggles) {
-            if (mouseX >= left + 131 && mouseX <= left + panelW - 16
+            if (toggle.ready && mouseX >= left + 131 && mouseX <= left + panelW - 16
                     && mouseY >= rowY - 7 && mouseY <= rowY + 34) {
                 toggle.flip();
                 VisualSettings.save();
@@ -150,16 +160,11 @@ public final class XakaVisualsScreen extends Screen {
         return false;
     }
 
-    private record Toggle(String title, String description, String id) {
+    private record Toggle(String title, String description, String id, boolean ready) {
         boolean enabled() {
             return switch (id) {
                 case "watermark" -> VisualSettings.watermark;
                 case "fpsCounter" -> VisualSettings.fpsCounter;
-                case "playerHalo" -> VisualSettings.playerHalo;
-                case "targetMarker" -> VisualSettings.targetMarker;
-                case "cosmeticPets" -> VisualSettings.cosmeticPets;
-                case "handPosition" -> VisualSettings.handPosition;
-                case "safeFpsBoost" -> VisualSettings.safeFpsBoost;
                 default -> false;
             };
         }
@@ -168,11 +173,6 @@ public final class XakaVisualsScreen extends Screen {
             switch (id) {
                 case "watermark" -> VisualSettings.watermark = !VisualSettings.watermark;
                 case "fpsCounter" -> VisualSettings.fpsCounter = !VisualSettings.fpsCounter;
-                case "playerHalo" -> VisualSettings.playerHalo = !VisualSettings.playerHalo;
-                case "targetMarker" -> VisualSettings.targetMarker = !VisualSettings.targetMarker;
-                case "cosmeticPets" -> VisualSettings.cosmeticPets = !VisualSettings.cosmeticPets;
-                case "handPosition" -> VisualSettings.handPosition = !VisualSettings.handPosition;
-                case "safeFpsBoost" -> VisualSettings.safeFpsBoost = !VisualSettings.safeFpsBoost;
             }
         }
     }
