@@ -34,13 +34,13 @@ public final class XakaCosmeticsRenderer {
                 double d0=0.18+sway*(r+1), d1=0.20+sway*(r+2);
                 int shade = (r%2==0) ? base : tint(base,0.84f);
                 quad(out, point(x,y,z,sx,sz,bx,bz,-w0,y0,-d0),
-                        point(x,y,z,sx,sz,bx,bz,w0,y0,-d0),
+                        point(x,y,z,sx,sz,bx,bz,w0,y0,d0),
                         point(x,y,z,sx,sz,bx,bz,w1,y1,-d1),
-                        point(x,y,z,sx,sz,bx,bz,-w1,y1,-d1), shade);
+                        point(x,y,z,sx,sz,bx,bz,-w1,y1,d1), shade);
                 // narrow raised outer piping, rendered as solid side panels
-                quad(out, point(x,y,z,sx,sz,bx,bz,-w0,y0,-d0-0.012),
+                quad(out, point(x,y,z,sx,sz,bx,bz,-w0,y0,d0+0.012),
                         point(x,y,z,sx,sz,bx,bz,-w0+0.025,y0,-d0-0.012),
-                        point(x,y,z,sx,sz,bx,bz,-w1+0.025,y1,-d1-0.012),
+                        point(x,y,z,sx,sz,bx,bz,-w1+0.025,y1,d1+0.012),
                         point(x,y,z,sx,sz,bx,bz,-w1,y1,-d1-0.012), tint(base,1.45f));
                 quad(out, point(x,y,z,sx,sz,bx,bz,w0-0.025,y0,-d0-0.012),
                         point(x,y,z,sx,sz,bx,bz,w0,y0,-d0-0.012),
@@ -49,9 +49,9 @@ public final class XakaCosmeticsRenderer {
             }
             // Folded collar at the shoulders.
             quad(out, point(x,y,z,sx,sz,bx,bz,-0.34,1.48,-0.17),
-                    point(x,y,z,sx,sz,bx,bz,0.34,1.48,-0.17),
+                    point(x,y,z,sx,sz,bx,bz,0.34,1.48,0.17),
                     point(x,y,z,sx,sz,bx,bz,0.27,1.30,-0.25),
-                    point(x,y,z,sx,sz,bx,bz,-0.27,1.30,-0.25), tint(base,1.22f));
+                    point(x,y,z,sx,sz,bx,bz,-0.27,1.30,0.25), tint(base,1.22f));
         }
         if (hatStyle > 0) {
             int color = switch (hatStyle) {
@@ -62,11 +62,11 @@ public final class XakaCosmeticsRenderer {
             };
             VertexConsumer out = consumers.getBuffer(RenderLayer.getEntityTranslucent(WHITE));
             // Head center is around 1.5 blocks; brim and crown are independent 3D solids.
-            box(out,x,y,z,sx,sz,bx,bz,-0.34,1.76,-0.34,0.34,1.82,0.34,color);
+            box(out,x,y,z,hsx,hsz,hbx,hbz,-0.34,1.76,-0.34,0.34,1.82,0.34,color);
             if (hatStyle == 2) {
                 // Witch hat: a broad brim and tapering, visibly three-dimensional crown.
                 box(out,x,y,z,sx,sz,bx,bz,-0.22,1.82,-0.22,0.22,2.02,0.22,tint(color,1.08f));
-                pyramid(out,x,y,z,sx,sz,bx,bz,0.0,2.02,0.0,0.18,2.48,color);
+                pyramid(out,x,y,z,hsx,hsz,hbx,hbz,0.0,2.02,0.0,0.18,2.48,color);
             } else if (hatStyle == 3) {
                 // Adventurer hat with a raised crown and a front band.
                 box(out,x,y,z,sx,sz,bx,bz,-0.23,1.82,-0.23,0.23,2.08,0.23,tint(color,1.12f));
