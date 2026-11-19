@@ -78,6 +78,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean playerTrails = false;
     public static boolean noFluidOverlay = false;
     public static boolean noFireOverlay = false;
+    public static boolean cooldownHud = false;
     private static boolean wasOnGround = true;
     private static int trailTicks = 0;
     private static int previousHitTargetId = -1;
@@ -373,6 +374,12 @@ public final class XakaVisualsClient implements ClientModInitializer {
             if (deathCoords && hasDeathLocation) {
                 String death = "Last death: " + lastDeathX + " / " + lastDeathY + " / " + lastDeathZ;
                 drawContext.drawTextWithShadow(client.textRenderer, death, 8, hudY, 0xFFFF8D8D);
+                hudY += 12;
+            }
+            if (cooldownHud && client.player != null) {
+                int cooldown = Math.round(client.player.getAttackCooldownProgress(0.0f) * 100.0f);
+                drawContext.drawTextWithShadow(client.textRenderer, "Attack cooldown: " + cooldown + "%",
+                        8, hudY, accent());
                 hudY += 12;
             }
             if (coordinates && client.player != null) {
