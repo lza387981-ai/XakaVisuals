@@ -66,6 +66,11 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean fpsBoost = false;
     public static boolean customCrosshair = false;
     public static int crosshairSize = 4;
+    public static boolean autoSprint = false;
+    public static boolean lowArmorNotify = false;
+    public static boolean deathCoords = false;
+    private static boolean hasDeathLocation = false;
+    private static int lastDeathX, lastDeathY, lastDeathZ;
     // Local emote playback; the renderer mixin applies it only to this player's model.
     public static boolean dancePlaying = false;
     public static int activeDance = 0;
@@ -126,6 +131,15 @@ public final class XakaVisualsClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player != null) {
+                if (client.player.getHealth() <= 0.0f) {
+                    lastDeathX = client.player.getBlockX();
+                    lastDeathY = client.player.getBlockY();
+                    lastDeathZ = client.player.getBlockZ();
+                    hasDeathLocation = true;
+                }
+                if (autoSprint && client.player.input.movementForward > 0.0f && !client.player.isSneaking()) {
+                    client.player.setSprinting(true);
+                }
                 if (VisualSettings.fullbright) {
                     if (Double.isNaN(previousGamma)) previousGamma = client.options.getGamma().getValue();
                     client.options.getGamma().setValue(16.0);
@@ -264,6 +278,24 @@ public final class XakaVisualsClient implements ClientModInitializer {
             if (fps) {
                 String fpsText = client.getCurrentFps() + " FPS";
                 drawContext.drawTextWithShadow(client.textRenderer, fpsText, 8, hudY, accent());
+                hudY += 12;
+            }
+            if (lowArmorNotify && client.player != null) {
+                boolean low = false;
+                for (int slot = 0; slot < 4; slot++) {
+                    var armor = client.player.getInventory().getArmorStack(slot);
+                    if (!armor.isEmpty() && armor.getMaxDamage() > 0
+                            && armor.getMaxDamage() - armor.getDamage() <= Math.max(1, armor.getMaxDamage() / 5)) {
+                        low = true;
+                        break;
+                    }
+                }
+                if (low) drawContext.drawTextWithShadow(client.textRenderer, "LOW ARMOR", 8, hudY, 0xFFFFB45E);
+                if (low) hudY += 12;
+            }
+            if (deathCoords && hasDeathLocation) {
+                String death = "Last death: " + lastDeathX + " / " + lastDeathY + " / " + lastDeathZ;
+                drawContext.drawTextWithShadow(client.textRenderer, death, 8, hudY, 0xFFFF8D8D);
                 hudY += 12;
             }
             if (coordinates && client.player != null) {
