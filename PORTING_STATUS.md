@@ -57,6 +57,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] NoInWallOverlay: optional local suffocation-overlay suppression
 - [x] ViewModel: first-person hand/item translation and rotation across all three axes
 - [x] Crosshair: custom reticle with adjustable gap, length, thickness, center dot and outline
+- [x] Ambience: client-only visual time override with slider and sunrise/noon/sunset/midnight presets; server time is not modified
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
 - [x] Low-armor warning
@@ -81,6 +82,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - MouseParticles: local menu cursor sparkle trail with size control; implementation is CI-compiled, awaiting in-game verification.
 - ViewModel: local first-person item transform with XYZ position and rotation sliders; implementation is CI-compiled, awaiting in-game verification.
 - Crosshair: local custom reticle with gap, thickness, dot and outline controls; implementation is CI-compiled, awaiting in-game verification.
+- Ambience: client-only time-of-day override with saved local setting and quick presets; implementation is CI-compiled, awaiting in-game verification.
 
 See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the findings and the porting exclusions.
 

@@ -8,6 +8,7 @@
     "InGameOverlayRendererMixin",
     "GameRendererMixin",
     "WorldRendererMixin",
+    "WorldTimeMixin",
     "BossBarHudMixin"
   ],
   "injectors": {

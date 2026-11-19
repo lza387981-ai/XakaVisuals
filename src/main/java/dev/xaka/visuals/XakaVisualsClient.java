@@ -97,6 +97,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean noFireOverlay = false;
     public static boolean noHurtCam = false;
     public static boolean noWeather = false;
+    // Client-only visual time override; does not change server/world time.
+    public static boolean ambienceTimeEnabled = false;
+    public static int ambienceTime = 6000;
     public static boolean hideBossBar = false;
     public static boolean noInWallOverlay = false;
     public static boolean cooldownHud = false;

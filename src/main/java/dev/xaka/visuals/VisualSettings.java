@@ -82,6 +82,8 @@ public final class VisualSettings {
             XakaVisualsClient.noFireOverlay = bool(p, "noFireOverlay", XakaVisualsClient.noFireOverlay);
             XakaVisualsClient.noHurtCam = bool(p, "noHurtCam", XakaVisualsClient.noHurtCam);
             XakaVisualsClient.noWeather = bool(p, "noWeather", XakaVisualsClient.noWeather);
+            XakaVisualsClient.ambienceTimeEnabled = bool(p, "ambienceTimeEnabled", XakaVisualsClient.ambienceTimeEnabled);
+            XakaVisualsClient.ambienceTime = Math.floorMod(integer(p, "ambienceTime", XakaVisualsClient.ambienceTime), 24000);
             XakaVisualsClient.hideBossBar = bool(p, "hideBossBar", XakaVisualsClient.hideBossBar);
             XakaVisualsClient.noInWallOverlay = bool(p, "noInWallOverlay", XakaVisualsClient.noInWallOverlay);
             XakaVisualsClient.cooldownHud = bool(p, "cooldownHud", XakaVisualsClient.cooldownHud);
@@ -164,6 +166,8 @@ public final class VisualSettings {
         p.setProperty("noFireOverlay", Boolean.toString(XakaVisualsClient.noFireOverlay));
         p.setProperty("noHurtCam", Boolean.toString(XakaVisualsClient.noHurtCam));
         p.setProperty("noWeather", Boolean.toString(XakaVisualsClient.noWeather));
+        p.setProperty("ambienceTimeEnabled", Boolean.toString(XakaVisualsClient.ambienceTimeEnabled));
+        p.setProperty("ambienceTime", Integer.toString(Math.floorMod(XakaVisualsClient.ambienceTime, 24000)));
         p.setProperty("hideBossBar", Boolean.toString(XakaVisualsClient.hideBossBar));
         p.setProperty("noInWallOverlay", Boolean.toString(XakaVisualsClient.noInWallOverlay));
         p.setProperty("cooldownHud", Boolean.toString(XakaVisualsClient.cooldownHud));

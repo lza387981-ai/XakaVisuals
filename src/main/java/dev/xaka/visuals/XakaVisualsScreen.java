@@ -16,7 +16,7 @@ public final class XakaVisualsScreen extends Screen {
     private static final int TEXT = 0xFFF1F2F8;
     private static final int MUTED = 0xFF929BAF;
 
-    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC", "Cosmetics", "Utilities"};
+    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC", "Cosmetics", "Utilities", "World"};
     private static final String[] CATEGORY_HINTS = {
             "Small details. A cleaner game.",
             "Your information, your layout.",
@@ -26,7 +26,8 @@ public final class XakaVisualsScreen extends Screen {
             "Play a local character emote.",
             "Your MP3 playlist and floating mini-player.",
             "Volumetric capes and 3D hats for your character.",
-            "Small client-side helpers and status alerts."
+            "Small client-side helpers and status alerts.",
+            "Local visual time-of-day controls. Server time remains unchanged."
     };
 
     private int selectedCategory;
@@ -276,6 +277,18 @@ public final class XakaVisualsScreen extends Screen {
                 sliderRow(c, mx, my, left, right, top + 170, "Animation speed",
                         Math.round(XakaVisualsClient.danceSpeed * 10), 5, 20, accent, 8);
             }
+            case 9 -> {
+                infoCard(c, left, top, right, "Ambience", "Change the sky cycle on your client only; the world and server clock are untouched.");
+                row(c, mx, my, left, right, top + 72, "Custom time of day", "Override the visible day/night cycle locally", XakaVisualsClient.ambienceTimeEnabled, accent, true);
+                int gameHour = Math.floorMod(XakaVisualsClient.ambienceTime / 1000, 24);
+                int clockHour = (gameHour + 6) % 24;
+                sliderRow(c, mx, my, left, right, top + 121, "Visual time", gameHour, 0, 23, accent, 24);
+                String preset = switch (XakaVisualsClient.ambienceTime) {
+                    case 0 -> "Sunrise"; case 6000 -> "Noon"; case 12000 -> "Sunset"; case 18000 -> "Midnight"; default -> "Custom";
+                };
+                row(c, mx, my, left, right, top + 170, "Quick preset: " + preset, "Tap to cycle sunrise, noon, sunset and midnight", false, accent, false);
+                contextText(c, left + 4, top + 222, String.format(java.util.Locale.ROOT, "Displayed clock: %02d:00", clockHour));
+            }
             case 3 -> {
                 infoCard(c, left, top, right, "Accent color", "Choose a signature color for the XakaVisuals interface.");
                 String[] names = {"Violet", "Mint", "Rose", "Amber", "Blue"};
@@ -317,6 +330,7 @@ public final class XakaVisualsScreen extends Screen {
             case 21 -> Integer.toString(XakaVisualsClient.crosshairThickness);
             case 22 -> Integer.toString(XakaVisualsClient.crosshairDotSize);
             case 23 -> Integer.toString(XakaVisualsClient.crosshairOutlineWidth);
+            case 24 -> String.format(java.util.Locale.ROOT, "%02d:00", (value + 6) % 24);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -355,6 +369,7 @@ public final class XakaVisualsScreen extends Screen {
             case 21 -> XakaVisualsClient.crosshairThickness = 1 + Math.round(t * 3);
             case 22 -> XakaVisualsClient.crosshairDotSize = 1 + Math.round(t * 5);
             case 23 -> XakaVisualsClient.crosshairOutlineWidth = 1 + Math.round(t * 2);
+            case 24 -> XakaVisualsClient.ambienceTime = Math.round(t * 23) * 1000;
         }
     }
 
@@ -512,6 +527,14 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetX = XakaVisualsClient.handOffsetY = XakaVisualsClient.handOffsetZ = 0.0f;
                 XakaVisualsClient.handRotationX = XakaVisualsClient.handRotationY = XakaVisualsClient.handRotationZ = 0.0f;
             }
+        } else if (selectedCategory == 9) {
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.ambienceTimeEnabled = !XakaVisualsClient.ambienceTimeEnabled;
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 24; setSlider(24, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 170)) {
+                XakaVisualsClient.ambienceTime = switch (XakaVisualsClient.ambienceTime) {
+                    case 0 -> 6000; case 6000 -> 12000; case 12000 -> 18000; default -> 0;
+                };
+            }
         } else if (selectedCategory == 8) {
             if (hitRow(mouseX, mouseY, left, right, top)) XakaVisualsClient.autoSprint = !XakaVisualsClient.autoSprint;
             if (hitRow(mouseX, mouseY, left, right, top + 49)) XakaVisualsClient.lowArmorNotify = !XakaVisualsClient.lowArmorNotify;
@@ -573,6 +596,7 @@ public final class XakaVisualsScreen extends Screen {
             case 6 -> 370;
             case 7 -> 333;
             case 8 -> 657;
+            case 9 -> 270;
             default -> 310;
         };
     }
@@ -591,7 +615,7 @@ public final class XakaVisualsScreen extends Screen {
     }
 
     private String categoryIcon(int index) {
-        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; case 7 -> "✧"; default -> "⚙"; };
+        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; case 7 -> "✧"; case 9 -> "☼"; default -> "⚙"; };
     }
 
     private float easeOut(float t) { return 1f - (float) Math.pow(1f - t, 3); }
