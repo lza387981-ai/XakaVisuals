@@ -114,7 +114,6 @@ public final class XakaVisualsRenderer {
         }
 
         if (wings) {
-            int color = color;
             float yaw = (float) Math.toRadians(bodyYaw);
             float sideX = (float) Math.cos(yaw);
             float sideZ = (float) Math.sin(yaw);
