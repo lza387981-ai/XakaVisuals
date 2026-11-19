@@ -64,6 +64,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static float handOffsetY = 0.0f;
     public static float handOffsetZ = 0.0f;
     public static boolean fpsBoost = false;
+    public static boolean customCrosshair = false;
+    public static int crosshairSize = 4;
     // Local emote playback; the renderer mixin applies it only to this player's model.
     public static boolean dancePlaying = false;
     public static int activeDance = 0;
@@ -268,6 +270,19 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 var pos = client.player.getPos();
                 String coordsText = String.format(java.util.Locale.ROOT, "XYZ %.1f / %.1f / %.1f", pos.x, pos.y, pos.z);
                 drawContext.drawTextWithShadow(client.textRenderer, coordsText, 8, hudY, 0xFFE7EAF2);
+            }
+
+            if (customCrosshair) {
+                int centerX = client.getWindow().getScaledWidth() / 2;
+                int centerY = client.getWindow().getScaledHeight() / 2;
+                int size = Math.max(2, Math.min(12, crosshairSize));
+                int gap = 3;
+                int thickness = 1;
+                int color = accent();
+                drawContext.fill(centerX - gap - size, centerY, centerX - gap, centerY + thickness, color);
+                drawContext.fill(centerX + gap + 1, centerY, centerX + gap + size + 1, centerY + thickness, color);
+                drawContext.fill(centerX, centerY - gap - size, centerX + thickness, centerY - gap, color);
+                drawContext.fill(centerX, centerY + gap + 1, centerX + thickness, centerY + gap + size + 1, color);
             }
 
             if (!markerEnabled) return;
