@@ -13,7 +13,7 @@ public final class XakaVisualsScreen extends Screen {
     private static final int TEXT = 0xFFF1F2F8;
     private static final int MUTED = 0xFF929BAF;
 
-    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC", "Cosmetics"};
+    private static final String[] CATEGORIES = {"Visuals", "HUD", "Effects", "Settings", "Hand", "Animations", "MUSIC", "Cosmetics", "CheatV2"};
     private static final String[] CATEGORY_HINTS = {
             "Small details. A cleaner game.",
             "Your information, your layout.",
@@ -22,7 +22,8 @@ public final class XakaVisualsScreen extends Screen {
             "Adjust your first-person hand and held item.",
             "Play a local character emote.",
             "Your MP3 playlist and floating mini-player.",
-            "Volumetric capes and 3D hats for your character."
+            "Volumetric capes and 3D hats for your character.",
+            "Private-world PvP tools. No anti-cheat bypass."
     };
 
     private int selectedCategory;
@@ -160,6 +161,15 @@ public final class XakaVisualsScreen extends Screen {
                         Math.round((XakaVisualsClient.handOffsetZ + 0.5f) * 20), 0, 20, accent, 7);
                 row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
             }
+            case 8 -> {
+                infoCard(c, left, top, right, "CheatV2 · private world", "Only active while hosting an integrated single-player world.");
+                row(c, mx, my, left, right, top + 72, "KillAura / AutoTarget", "Automatically attacks the nearest player in range", XakaVisualsClient.cheatKillAura, accent, true);
+                row(c, mx, my, left, right, top + 121, "VovAim", "Smoothly turns toward the nearest player", XakaVisualsClient.cheatVovAim, accent, true);
+                row(c, mx, my, left, right, top + 170, "DobleVoble / AutoCritical", "Attacks only when looking at a player while falling", XakaVisualsClient.cheatDobleVoble, accent, true);
+                row(c, mx, my, left, right, top + 219, "AntiInvis", "Highlights invisible players with an outline", XakaVisualsClient.cheatAntiInvis, accent, true);
+                sliderRow(c, mx, my, left, right, top + 268, "Target range", Math.round(XakaVisualsClient.cheatRange * 10), 30, 60, accent, 11);
+                sliderRow(c, mx, my, left, right, top + 317, "Aim smoothness", Math.round(XakaVisualsClient.cheatAimSpeed * 100), 5, 100, accent, 12);
+            }
             case 7 -> {
                 infoCard(c, left, top, right, "3D character accessories", "Real shaped cloth capes and solid hats attached to your model.");
                 row(c, mx, my, left, right, top + 72, "Cape", "Toggle the flowing 3D cape on your back", XakaVisualsClient.wingsEnabled, accent, true);
@@ -214,6 +224,8 @@ public final class XakaVisualsScreen extends Screen {
             case 8 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.danceSpeed);
             case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";
             case 10 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.wingSpeed);
+            case 11 -> String.format(java.util.Locale.ROOT, "%.1f blocks", XakaVisualsClient.cheatRange);
+            case 12 -> String.format(java.util.Locale.ROOT, "%.0f%%", XakaVisualsClient.cheatAimSpeed * 100.0f);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -239,6 +251,8 @@ public final class XakaVisualsScreen extends Screen {
             case 8 -> XakaVisualsClient.danceSpeed = 0.5f + t * 1.5f;
             case 9 -> XakaVisualsMusic.setVolume(t);
             case 10 -> XakaVisualsClient.wingSpeed = 0.5f + t * 1.5f;
+            case 11 -> XakaVisualsClient.cheatRange = 3.0f + t * 3.0f;
+            case 12 -> XakaVisualsClient.cheatAimSpeed = 0.05f + t * 0.95f;
         }
     }
 
@@ -373,6 +387,13 @@ public final class XakaVisualsScreen extends Screen {
                 XakaVisualsClient.handOffsetY = 0.0f;
                 XakaVisualsClient.handOffsetZ = 0.0f;
             }
+        } else if (selectedCategory == 8) {
+            if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.cheatKillAura = !XakaVisualsClient.cheatKillAura;
+            if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.cheatVovAim = !XakaVisualsClient.cheatVovAim;
+            if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.cheatDobleVoble = !XakaVisualsClient.cheatDobleVoble;
+            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.cheatAntiInvis = !XakaVisualsClient.cheatAntiInvis;
+            if (hitRow(mouseX, mouseY, left, right, top + 268)) { activeSlider = 11; setSlider(11, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 317)) { activeSlider = 12; setSlider(12, mouseX, left, right); }
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
@@ -409,6 +430,7 @@ public final class XakaVisualsScreen extends Screen {
             case 4, 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
+            case 8 -> 385;
             default -> 310;
         };
     }
@@ -427,7 +449,7 @@ public final class XakaVisualsScreen extends Screen {
     }
 
     private String categoryIcon(int index) {
-        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; case 7 -> "✧"; default -> "⚙"; };
+        return switch (index) { case 0 -> "✦"; case 1 -> "▤"; case 2 -> "◈"; case 5 -> "♪"; case 6 -> "♫"; case 7 -> "✧"; case 8 -> "⚔"; default -> "⚙"; };
     }
 
     private float easeOut(float t) { return 1f - (float) Math.pow(1f - t, 3); }
