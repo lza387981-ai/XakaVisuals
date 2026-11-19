@@ -107,6 +107,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static int ambienceTime = 6000;
     public static boolean hideBossBar = false;
     public static boolean noInWallOverlay = false;
+    public static boolean shulkerPreview = false;
     public static boolean cooldownHud = false;
     public static boolean waypointEnabled = false;
     public static boolean nameProtect = false;

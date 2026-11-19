@@ -10,7 +10,8 @@
     "GameRendererMixin",
     "WorldRendererMixin",
     "WorldTimeMixin",
-    "BossBarHudMixin"
+    "BossBarHudMixin",
+    "ShulkerPreviewMixin"
   ],
   "injectors": {
     "defaultRequire": 1
