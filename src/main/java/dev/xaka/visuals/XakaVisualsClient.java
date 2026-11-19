@@ -72,6 +72,16 @@ public final class XakaVisualsClient implements ClientModInitializer {
     private static boolean wasDancePlaying = false;
     private static double lastDanceX, lastDanceY, lastDanceZ;
     public static float danceStartAge = 0.0f;
+    public static String danceName() {
+        return switch (Math.floorMod(activeDance, 6)) {
+            case 0 -> "Robot";
+            case 1 -> "Shuffle";
+            case 2 -> "Floss";
+            case 3 -> "Moonwalk";
+            case 4 -> "XakaDance";
+            default -> "HohoDance";
+        };
+    }
     private static Object previousParticles = null;
     private static double previousGamma = Double.NaN;
     private static KeyBinding zoomKey;
