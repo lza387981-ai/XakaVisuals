@@ -154,6 +154,8 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 219, XakaVisualsClient.bodyMarkerSquare ? "Marker: square" : "Marker: circle", "Click to switch shape", false, accent, false);
                 sliderRow(c, mx, my, left, right, top + 268, "Body marker size", XakaVisualsClient.bodyMarkerSize, 3, 15, accent, 1);
                 row(c, mx, my, left, right, top + 317, "Hit particles", "Show a small burst when the targeted entity takes damage", XakaVisualsClient.hitParticles, accent, true);
+                row(c, mx, my, left, right, top + 366, "Jump circle", "Create a particle ring when you land from a jump", XakaVisualsClient.jumpCircle, accent, true);
+                row(c, mx, my, left, right, top + 415, "Movement trails", "Leave a subtle particle trail while airborne", XakaVisualsClient.playerTrails, accent, true);
             }
             case 4 -> {
                 infoCard(c, left, top, right, "First-person hand", "Move your hand and held item without moving the camera.");
@@ -372,6 +374,8 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.bodyMarkerEnabled = !XakaVisualsClient.bodyMarkerEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.bodyMarkerSquare = !XakaVisualsClient.bodyMarkerSquare;
             if (hitRow(mouseX, mouseY, left, right, top + 317)) XakaVisualsClient.hitParticles = !XakaVisualsClient.hitParticles;
+            if (hitRow(mouseX, mouseY, left, right, top + 366)) XakaVisualsClient.jumpCircle = !XakaVisualsClient.jumpCircle;
+            if (hitRow(mouseX, mouseY, left, right, top + 415)) XakaVisualsClient.playerTrails = !XakaVisualsClient.playerTrails;
             if (hitRow(mouseX, mouseY, left, right, top + 268)) {
                 if (XakaVisualsClient.bodyMarkerSize >= 12) {
                     XakaVisualsClient.bodyMarkerSize = 3;
@@ -426,7 +430,7 @@ public final class XakaVisualsScreen extends Screen {
         return switch (selectedCategory) {
             case 0 -> 350;
             case 1 -> 506;
-            case 2 -> 382;
+            case 2 -> 480;
             case 3 -> 333;
             case 4, 5 -> 284;
             case 6 -> 370;
