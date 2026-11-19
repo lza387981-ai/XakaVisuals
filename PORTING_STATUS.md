@@ -28,6 +28,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] Fullbright gamma toggle with restoration of the previous gamma value, including world exit
 - [x] Hold-to-zoom keybind (C) with restoration of the previous FOV, including world exit
 - [x] Coordinates, FPS, watermark and target health HUD
+- [x] HealthIndicator: local self-health and absorption HUD with separate health/absorption bar segments and locally saved toggle
 - [x] Draggable target-health HUD position editor
 - [x] Attack cooldown percentage HUD
 - [x] GPS waypoint capture, distance and clear controls
@@ -78,6 +79,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [ ] Decide which optional network features can be redesigned as opt-in, transparent Xaka services
 
 ## Implemented but awaiting in-game verification
+- HealthIndicator: local self-health and absorption HUD; implementation is CI-compiled, awaiting in-game verification.
 - NoWeather: local rain/snow rendering and weather particles/sound toggle; implementation is CI-compiled, awaiting in-game verification.
 - HideBossBar: optional local boss-bar HUD suppression; implementation is CI-compiled, awaiting in-game verification.
 - NoInWallOverlay: local suffocation-overlay suppression; implementation is CI-compiled, awaiting in-game verification.
