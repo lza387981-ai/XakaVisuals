@@ -89,6 +89,7 @@ public final class XakaWorldVisuals {
         var matrices = context.matrixStack();
         matrices.push();
         matrices.translate(px - camera.x, py - camera.y, pz - camera.z);
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-followYaw));
         matrices.scale(scale, scale, scale);
         client.getEntityRenderDispatcher().render(pet, 0.0, 0.0, 0.0, 0.0f,
                 matrices, context.consumers(), 0x00F000F0);
