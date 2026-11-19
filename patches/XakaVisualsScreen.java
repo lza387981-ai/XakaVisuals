@@ -165,7 +165,7 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 72, "Cape", "Toggle the flowing 3D cape on your back", XakaVisualsClient.wingsEnabled, accent, true);
                 row(c, mx, my, left, right, top + 121, "Cape style: " + new String[]{"Royal violet", "Shadow", "Crimson"}[Math.floorMod(XakaVisualsClient.wingStyle, 3)], "Tap to switch cape design", false, accent, false);
                 row(c, mx, my, left, right, top + 170, "Hat", "Toggle 3D headwear", XakaVisualsClient.hatEnabled, accent, true);
-                row(c, mx, my, left, right, top + 219, "Hat style: " + new String[]{"Top hat", "Witch hat", "Adventurer", "Cap"}[Math.floorMod(XakaVisualsClient.hatStyle, 4)], "Tap to switch hat design", false, accent, false);
+                row(c, mx, my, left, right, top + 219, "Hat style: " + new String[]{"Top hat", "Witch hat", "Adventurer", "Cap", "Frog"}[Math.floorMod(XakaVisualsClient.hatStyle, 5)], "Tap to switch hat design", false, accent, false);
             }
             case 6 -> {
                 infoCard(c, left, top, right, "Local MP3 player", "Choose MP3 files from your computer. The mini-player stays on the HUD.");
@@ -377,7 +377,7 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
             if (hitRow(mouseX, mouseY, left, right, top + 170)) XakaVisualsClient.hatEnabled = !XakaVisualsClient.hatEnabled;
-            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.hatStyle = (XakaVisualsClient.hatStyle + 1) % 4;
+            if (hitRow(mouseX, mouseY, left, right, top + 219)) XakaVisualsClient.hatStyle = (XakaVisualsClient.hatStyle + 1) % 5;
         } else if (selectedCategory == 6) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsMusic.chooseTrack();
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsMusic.previous();
