@@ -91,7 +91,6 @@ public final class XakaVisualsRemoteRenderer {
 
             if (state.wingsEnabled()) {
                 int color = state.accentColor();
-                float yaw = (float) Math.toRadians(bodyYaw);
                 float sideX = (float) Math.cos(yaw);
                 float sideZ = (float) Math.sin(yaw);
                 float backX = (float) Math.sin(yaw);
