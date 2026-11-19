@@ -19,6 +19,8 @@ public final class XakaVisualV2Client implements ClientModInitializer {
                 KeyBinding.MISC_CATEGORY
         ));
 
+        XakaHud.register();
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMenuKey.wasPressed()) {
                 if (client.currentScreen instanceof XakaClickScreen) {
