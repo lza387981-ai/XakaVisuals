@@ -36,6 +36,10 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] Six local player emote presets with speed control
 - [x] Reversible FPS Boost (restores the prior particle setting)
 - [x] Hit particles when the crosshair-target's health decreases
+- [x] Jump landing particle circles
+- [x] Airborne movement particle trails
+- [x] NoFluid underwater overlay toggle
+- [x] No-fire first-person overlay toggle
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
 - [x] Low-armor warning
