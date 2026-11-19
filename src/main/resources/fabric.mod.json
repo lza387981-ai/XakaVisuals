@@ -4,16 +4,23 @@
   "version": "${version}",
   "name": "XakaVisuals.V2",
   "description": "A standalone client-side visual customization mod for Minecraft 1.21.4.",
-  "authors": ["Xaka"],
+  "authors": [
+    "Xaka"
+  ],
   "license": "GPL-3.0-or-later",
   "environment": "client",
   "entrypoints": {
-    "client": ["dev.xaka.visuals.XakaVisualsClient"]
+    "client": [
+      "dev.xaka.visuals.XakaVisualsClient"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.18.4",
     "minecraft": "1.21.4",
     "java": ">=21",
     "fabric-api": "*"
-  }
+  },
+  "mixins": [
+    "xakavisuals.mixins.json"
+  ]
 }
