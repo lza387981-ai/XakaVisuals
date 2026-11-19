@@ -80,6 +80,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean noFireOverlay = false;
     public static boolean cooldownHud = false;
     public static boolean waypointEnabled = false;
+    public static boolean nameProtect = false;
     public static int waypointX, waypointY, waypointZ;
     private static boolean wasOnGround = true;
     private static int trailTicks = 0;
@@ -341,7 +342,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
                         : health / maxHealth > 0.25f ? 0xFFFFC15A : 0xFFFF626F;
                 drawContext.fill(cardX, cardY, cardX + cardW, cardY + cardH, 0xD9101420);
                 drawContext.fill(cardX, cardY, cardX + 2, cardY + cardH, accent());
-                String targetName = target.getDisplayName().getString();
+                String targetName = nameProtect ? "Protected Player" : target.getDisplayName().getString();
                 if (targetName.length() > 16) targetName = targetName.substring(0, 16);
                 drawContext.drawTextWithShadow(client.textRenderer, targetName,
                         cardX + 7, cardY + 4, 0xFFF2F3F8);
