@@ -111,10 +111,11 @@ public final class XakaVisualsClient implements ClientModInitializer {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            // Drain key presses while a screen is open so Right Shift closes the menu
-            // exactly once instead of immediately reopening it on the same tick.
+            // Right Shift toggles only the XakaVisuals menu; other screens are left alone.
             while (openMenu.wasPressed()) {
-                if (client.currentScreen == null) {
+                if (client.currentScreen instanceof XakaVisualsScreen) {
+                    client.setScreen(null);
+                } else if (client.currentScreen == null) {
                     client.setScreen(new XakaVisualsScreen());
                 }
             }
