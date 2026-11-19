@@ -55,9 +55,9 @@ public final class XakaVisualsScreen extends Screen {
         ctx.fill(left, top, left + panelW, top + panelH, 0xF0121420);
         ctx.fill(left, top, left + panelW, top + 3, 0xFF8B5CF6);
         ctx.fill(left, top + 3, left + 118, top + panelH, 0xFF171925);
-        ctx.drawTextWithShadow(textRenderer, Text.literal("XAKA").styled(s -> s.withColor(0xFFC4B5FD)),
+        ctx.drawTextWithShadow(textRenderer, Text.literal("XakaVisuals").styled(s -> s.withColor(0xFFC4B5FD)),
                 left + 17, top + 17, 0xFFFFFFFF);
-        ctx.drawTextWithShadow(textRenderer, "VISUALS  /  V2", left + 17, top + 34, 0xFF9298AA);
+        ctx.drawTextWithShadow(textRenderer, "VISUAL CLIENT", left + 17, top + 34, 0xFF9298AA);
         ctx.drawTextWithShadow(textRenderer, "RIGHT SHIFT  •  ESC TO CLOSE",
                 left + panelW - 174, top + 20, 0xFF777F94);
 
