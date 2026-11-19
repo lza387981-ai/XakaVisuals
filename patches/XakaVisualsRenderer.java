@@ -116,8 +116,8 @@ public final class XakaVisualsRenderer {
 
         if (cape || hat) {
             XakaCosmeticsRenderer.render(consumers, bx, by, bz, bodyYaw,
-                    cape ? Math.floorMod(XakaVisualsClient.wingStyle, 3) + 1 : 0,
-                    hat ? Math.floorMod(XakaVisualsClient.hatStyle, 4) + 1 : 0,
+                    player.headYaw, cape ? Math.floorMod(XakaVisualsClient.wingStyle, 3) + 1 : 0,
+                    hat ? Math.floorMod(XakaVisualsClient.hatStyle, 5) + 1 : 0,
                     client.world.getTime() + tickDelta);
         }
 
