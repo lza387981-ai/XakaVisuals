@@ -39,7 +39,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static int petSize = 5;
     public static boolean wingsEnabled = false;
     public static int wingStyle = 0;
-    public static float wingSpeed = 1.0f; // retained for config compatibility\n    public static boolean hatEnabled = false;\n    public static int hatStyle = 0;
+    public static float wingSpeed = 1.0f; // retained for config compatibility
+    public static boolean hatEnabled = false;
+    public static int hatStyle = 0;
 
     public static String petName() {
         return switch (Math.floorMod(petType, 4)) {
