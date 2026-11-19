@@ -174,6 +174,8 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 98, "Last death coordinates", "Display the last recorded death position", XakaVisualsClient.deathCoords, accent, true);
                 row(c, mx, my, left, right, top + 147, "NoFluid overlay", "Hide the underwater screen overlay", XakaVisualsClient.noFluidOverlay, accent, true);
                 row(c, mx, my, left, right, top + 196, "No fire overlay", "Hide the first-person fire overlay", XakaVisualsClient.noFireOverlay, accent, true);
+                row(c, mx, my, left, right, top + 245, "Set GPS waypoint here", "Save your current block position", XakaVisualsClient.waypointEnabled, accent, false);
+                row(c, mx, my, left, right, top + 294, "Clear GPS waypoint", "Remove the saved waypoint", false, accent, false);
             }
             case 7 -> {
                 infoCard(c, left, top, right, "3D character accessories", "Real shaped cloth capes and solid hats attached to your model.");
@@ -403,6 +405,16 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 98)) XakaVisualsClient.deathCoords = !XakaVisualsClient.deathCoords;
             if (hitRow(mouseX, mouseY, left, right, top + 147)) XakaVisualsClient.noFluidOverlay = !XakaVisualsClient.noFluidOverlay;
             if (hitRow(mouseX, mouseY, left, right, top + 196)) XakaVisualsClient.noFireOverlay = !XakaVisualsClient.noFireOverlay;
+            if (hitRow(mouseX, mouseY, left, right, top + 245)) {
+                var player = net.minecraft.client.MinecraftClient.getInstance().player;
+                if (player != null) {
+                    XakaVisualsClient.waypointX = player.getBlockX();
+                    XakaVisualsClient.waypointY = player.getBlockY();
+                    XakaVisualsClient.waypointZ = player.getBlockZ();
+                    XakaVisualsClient.waypointEnabled = true;
+                }
+            }
+            if (hitRow(mouseX, mouseY, left, right, top + 294)) XakaVisualsClient.waypointEnabled = false;
         } else if (selectedCategory == 7) {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) XakaVisualsClient.wingsEnabled = !XakaVisualsClient.wingsEnabled;
             if (hitRow(mouseX, mouseY, left, right, top + 121)) XakaVisualsClient.wingStyle = (XakaVisualsClient.wingStyle + 1) % 3;
@@ -441,7 +453,7 @@ public final class XakaVisualsScreen extends Screen {
             case 4, 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
-            case 8 -> 310;
+            case 8 -> 410;
             default -> 310;
         };
     }
