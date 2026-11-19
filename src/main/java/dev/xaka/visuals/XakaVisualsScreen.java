@@ -4,92 +4,128 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class XakaVisualsScreen extends Screen {
-    private final List<Toggle> toggles = new ArrayList<>();
-    private int scroll;
+    private static final int PANEL_W = 520;
+    private static final int PANEL_H = 340;
+    private static final List<String> TABS = List.of("Visual", "Cosmetics", "HUD", "Client");
+
     private String activeTab = "Visual";
+    private int scroll;
 
     public XakaVisualsScreen() {
         super(Text.literal("XakaVisuals.V2"));
-        toggles.add(new Toggle("Watermark", "Compact XAKA corner logo", () -> VisualSettings.watermark, v -> VisualSettings.watermark = v));
-        toggles.add(new Toggle("FPS counter", "Show current client FPS", () -> VisualSettings.fpsCounter, v -> VisualSettings.fpsCounter = v));
-        toggles.add(new Toggle("Player halo", "Decorative local visual effect", () -> VisualSettings.playerHalo, v -> VisualSettings.playerHalo = v));
-        toggles.add(new Toggle("Target marker", "Local marker display option", () -> VisualSettings.targetMarker, v -> VisualSettings.targetMarker = v));
-        toggles.add(new Toggle("Mini pets", "Decorative cosmetic companions", () -> VisualSettings.cosmeticPets, v -> VisualSettings.cosmeticPets = v));
-        toggles.add(new Toggle("Hand position", "Enable first-person hand adjustment UI", () -> VisualSettings.handPosition, v -> VisualSettings.handPosition = v));
-        toggles.add(new Toggle("Safe FPS mode", "Reduce optional visual workload only", () -> VisualSettings.safeFpsBoost, v -> VisualSettings.safeFpsBoost = v));
+    }
+
+    private List<Toggle> visibleToggles() {
+        return switch (activeTab) {
+            case "HUD" -> List.of(
+                    new Toggle("Watermark", "Compact XAKA logo in the corner", "watermark"),
+                    new Toggle("FPS counter", "Display current client FPS", "fpsCounter")
+            );
+            case "Cosmetics" -> List.of(
+                    new Toggle("Mini pets", "Decorative companion system", "cosmeticPets")
+            );
+            case "Client" -> List.of(
+                    new Toggle("First-person hand controls", "Hand position customization", "handPosition"),
+                    new Toggle("Safe FPS mode", "Reversible visual workload reduction", "safeFpsBoost")
+            );
+            default -> List.of(
+                    new Toggle("Player halo", "Player highlight visual", "playerHalo"),
+                    new Toggle("Target marker", "Configurable target marker visual", "targetMarker")
+            );
+        };
     }
 
     @Override
     public void render(DrawContext ctx, int mouseX, int mouseY, float delta) {
-        int w = width, h = height;
-        ctx.fill(0, 0, w, h, 0xB9000000);
-        int panelW = Math.min(520, w - 36);
-        int panelH = Math.min(340, h - 36);
-        int left = (w - panelW) / 2, top = (h - panelH) / 2;
-        ctx.fill(left, top, left + panelW, top + panelH, 0xF0121420);
-        ctx.fill(left, top, left + panelW, top + 2, 0xFF8B5CF6);
-        ctx.fill(left, top + 2, left + 116, top + panelH, 0xFF191B2A);
-        ctx.drawTextWithShadow(textRenderer, Text.literal("XAKA").styled(s -> s.withColor(0xFFC4B5FD)), left + 18, top + 18, 0xFFFFFFFF);
-        ctx.drawTextWithShadow(textRenderer, "VISUALS  /  V2", left + 18, top + 34, 0xFF9CA3AF);
-        ctx.drawTextWithShadow(textRenderer, "RIGHT SHIFT  •  CLOSE", left + panelW - 150, top + 22, 0xFF777F94);
+        ctx.fill(0, 0, width, height, 0xB9000000);
+        int panelW = Math.min(PANEL_W, width - 24);
+        int panelH = Math.min(PANEL_H, height - 24);
+        int left = (width - panelW) / 2;
+        int top = (height - panelH) / 2;
 
-        String[] tabs = {"Visual", "Cosmetics", "HUD", "CheatV2"};
-        for (int i = 0; i < tabs.length; i++) {
-            int ty = top + 72 + i * 30;
-            boolean selected = activeTab.equals(tabs[i]);
-            if (selected) ctx.fill(left + 10, ty - 5, left + 106, ty + 19, 0xFF34304F);
-            ctx.drawTextWithShadow(textRenderer, (selected ? "› " : "  ") + tabs[i], left + 20, ty, selected ? 0xFFE9D5FF : 0xFF9CA3AF);
+        ctx.fill(left, top, left + panelW, top + panelH, 0xF0121420);
+        ctx.fill(left, top, left + panelW, top + 3, 0xFF8B5CF6);
+        ctx.fill(left, top + 3, left + 118, top + panelH, 0xFF171925);
+        ctx.drawTextWithShadow(textRenderer, Text.literal("XAKA").styled(s -> s.withColor(0xFFC4B5FD)),
+                left + 17, top + 17, 0xFFFFFFFF);
+        ctx.drawTextWithShadow(textRenderer, "VISUALS  /  V2", left + 17, top + 34, 0xFF9298AA);
+        ctx.drawTextWithShadow(textRenderer, "RIGHT SHIFT  •  ESC TO CLOSE",
+                left + panelW - 174, top + 20, 0xFF777F94);
+
+        for (int i = 0; i < TABS.size(); i++) {
+            String tab = TABS.get(i);
+            int y = top + 72 + i * 31;
+            boolean selected = activeTab.equals(tab);
+            if (selected) {
+                ctx.fill(left + 9, y - 5, left + 109, y + 20, 0xFF332B4D);
+                ctx.fill(left + 9, y - 5, left + 12, y + 20, 0xFF9B7BFF);
+            }
+            ctx.drawTextWithShadow(textRenderer, tab, left + 22, y + 3,
+                    selected ? 0xFFE9DDFF : 0xFF9CA3AF);
         }
 
-        ctx.drawTextWithShadow(textRenderer, activeTab.toUpperCase() + " SETTINGS", left + 136, top + 62, 0xFFE5E7EB);
-        ctx.drawTextWithShadow(textRenderer, "Personalize your client experience", left + 136, top + 78, 0xFF8B93A7);
+        int contentX = left + 139;
+        ctx.drawTextWithShadow(textRenderer, activeTab.toUpperCase() + " SETTINGS",
+                contentX, top + 59, 0xFFF3F4F6);
+        ctx.drawTextWithShadow(textRenderer, "XakaVisuals.V2  •  Minecraft 1.21.4",
+                contentX, top + 76, 0xFF8E95A8);
 
-        int rowY = top + 108 - scroll;
+        List<Toggle> toggles = visibleToggles();
+        int rowY = top + 111 - scroll;
+        int maxScroll = Math.max(0, toggles.size() * 49 - (panelH - 140));
+        scroll = Math.min(scroll, maxScroll);
+        rowY = top + 111 - scroll;
         for (Toggle toggle : toggles) {
-            if (!visibleInTab(toggle)) continue;
-            if (rowY > top + 92 && rowY < top + panelH - 16) {
-                ctx.fill(left + 132, rowY - 7, left + panelW - 16, rowY + 34, 0xFF1D2030);
-                ctx.drawTextWithShadow(textRenderer, toggle.name, left + 144, rowY, 0xFFF3F4F6);
-                ctx.drawTextWithShadow(textRenderer, toggle.description, left + 144, rowY + 14, 0xFF929AAF);
-                int bx = left + panelW - 66, by = rowY + 3;
-                ctx.fill(bx, by, bx + 34, by + 16, toggle.get() ? 0xFF7655C7 : 0xFF45495A);
-                ctx.fill(toggle.get() ? bx + 19 : bx + 3, by + 3, toggle.get() ? bx + 31 : bx + 15, by + 13, 0xFFFFFFFF);
+            if (rowY + 35 >= top + 96 && rowY <= top + panelH - 26) {
+                ctx.fill(contentX - 8, rowY - 7, left + panelW - 16, rowY + 34, 0xFF1E2230);
+                ctx.drawTextWithShadow(textRenderer, toggle.title, contentX + 7, rowY,
+                        0xFFF3F4F6);
+                ctx.drawTextWithShadow(textRenderer, toggle.description, contentX + 7, rowY + 15,
+                        0xFF929AAF);
+                boolean enabled = toggle.enabled();
+                int sx = left + panelW - 68;
+                int sy = rowY + 3;
+                ctx.fill(sx, sy, sx + 38, sy + 17, enabled ? 0xFF7655C7 : 0xFF45495A);
+                ctx.fill(enabled ? sx + 22 : sx + 3, sy + 3,
+                        enabled ? sx + 35 : sx + 16, sy + 14, 0xFFFFFFFF);
             }
             rowY += 49;
         }
-        super.render(ctx, mouseX, mouseY, delta);
-    }
 
-    private boolean visibleInTab(Toggle t) {
-        return switch (activeTab) {
-            case "HUD" -> t.name.equals("Watermark") || t.name.equals("FPS counter");
-            case "Cosmetics" -> t.name.equals("Mini pets");
-            case "CheatV2" -> t.name.equals("Player halo") || t.name.equals("Target marker");
-            default -> !t.name.equals("Mini pets") && !t.name.equals("Watermark") && !t.name.equals("FPS counter");
-        };
+        ctx.drawTextWithShadow(textRenderer, "Settings are saved automatically",
+                left + 17, top + panelH - 19, 0xFF777F94);
+        super.render(ctx, mouseX, mouseY, delta);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
-        int panelW = Math.min(520, width - 36), panelH = Math.min(340, height - 36);
-        int left = (width - panelW) / 2, top = (height - panelH) / 2;
-        String[] tabs = {"Visual", "Cosmetics", "HUD", "CheatV2"};
-        for (int i = 0; i < tabs.length; i++) {
-            int ty = top + 72 + i * 30;
-            if (mouseX >= left + 8 && mouseX <= left + 112 && mouseY >= ty - 7 && mouseY <= ty + 22) {
-                activeTab = tabs[i]; scroll = 0; return true;
+        int panelW = Math.min(PANEL_W, width - 24);
+        int panelH = Math.min(PANEL_H, height - 24);
+        int left = (width - panelW) / 2;
+        int top = (height - panelH) / 2;
+
+        for (int i = 0; i < TABS.size(); i++) {
+            int y = top + 72 + i * 31;
+            if (mouseX >= left + 9 && mouseX <= left + 109
+                    && mouseY >= y - 5 && mouseY <= y + 20) {
+                activeTab = TABS.get(i);
+                scroll = 0;
+                return true;
             }
         }
-        int rowY = top + 108 - scroll;
+
+        List<Toggle> toggles = visibleToggles();
+        int rowY = top + 111 - scroll;
         for (Toggle toggle : toggles) {
-            if (!visibleInTab(toggle)) continue;
-            if (mouseX >= left + 132 && mouseX <= left + panelW - 16 && mouseY >= rowY - 7 && mouseY <= rowY + 34) {
-                toggle.set(!toggle.get()); return true;
+            if (mouseX >= left + 131 && mouseX <= left + panelW - 16
+                    && mouseY >= rowY - 7 && mouseY <= rowY + 34) {
+                toggle.flip();
+                VisualSettings.save();
+                return true;
             }
             rowY += 49;
         }
@@ -98,17 +134,46 @@ public final class XakaVisualsScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        scroll = Math.max(0, Math.min(220, scroll - (int)(verticalAmount * 24)));
+        int maxScroll = Math.max(0, visibleToggles().size() * 49 - (Math.min(PANEL_H, height - 24) - 140));
+        scroll = Math.max(0, Math.min(maxScroll, scroll - (int) (verticalAmount * 24)));
         return true;
     }
 
     @Override
-    public boolean shouldPause() { return false; }
-
-    private record Toggle(String name, String description, Getter getter, Setter setter) {
-        boolean get() { return getter.get(); }
-        void set(boolean value) { setter.set(value); }
+    public void close() {
+        VisualSettings.save();
+        super.close();
     }
-    @FunctionalInterface private interface Getter { boolean get(); }
-    @FunctionalInterface private interface Setter { void set(boolean value); }
+
+    @Override
+    public boolean shouldPause() {
+        return false;
+    }
+
+    private record Toggle(String title, String description, String id) {
+        boolean enabled() {
+            return switch (id) {
+                case "watermark" -> VisualSettings.watermark;
+                case "fpsCounter" -> VisualSettings.fpsCounter;
+                case "playerHalo" -> VisualSettings.playerHalo;
+                case "targetMarker" -> VisualSettings.targetMarker;
+                case "cosmeticPets" -> VisualSettings.cosmeticPets;
+                case "handPosition" -> VisualSettings.handPosition;
+                case "safeFpsBoost" -> VisualSettings.safeFpsBoost;
+                default -> false;
+            };
+        }
+
+        void flip() {
+            switch (id) {
+                case "watermark" -> VisualSettings.watermark = !VisualSettings.watermark;
+                case "fpsCounter" -> VisualSettings.fpsCounter = !VisualSettings.fpsCounter;
+                case "playerHalo" -> VisualSettings.playerHalo = !VisualSettings.playerHalo;
+                case "targetMarker" -> VisualSettings.targetMarker = !VisualSettings.targetMarker;
+                case "cosmeticPets" -> VisualSettings.cosmeticPets = !VisualSettings.cosmeticPets;
+                case "handPosition" -> VisualSettings.handPosition = !VisualSettings.handPosition;
+                case "safeFpsBoost" -> VisualSettings.safeFpsBoost = !VisualSettings.safeFpsBoost;
+            }
+        }
+    }
 }
