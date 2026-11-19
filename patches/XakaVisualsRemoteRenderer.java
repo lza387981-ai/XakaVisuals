@@ -90,9 +90,9 @@ public final class XakaVisualsRemoteRenderer {
             }
 
             if (state.wingsEnabled() || state.hatEnabled()) {
-                XakaCosmeticsRenderer.render(consumers, bx, by, bz, bodyYaw,
+                XakaCosmeticsRenderer.render(consumers, bx, by, bz, bodyYaw, player.headYaw,
                         state.wingsEnabled() ? Math.floorMod(state.wingStyle(), 3) + 1 : 0,
-                        player.headYaw, state.hatEnabled() ? Math.floorMod(state.hatStyle(), 5) + 1 : 0,
+                        state.hatEnabled() ? Math.floorMod(state.hatStyle(), 5) + 1 : 0,
                         client.world.getTime() + tickDelta);
             }
         }
