@@ -69,6 +69,8 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [ ] Audit nested dependencies and their licenses
 - [ ] Launch-test the mod in Minecraft 1.21.4 and verify rendering/input in-game
 
+- [x] Particle density control: local hit/jump/trail effect counts and trail cadence are adjustable from 1–5 to balance visual detail and performance.
+
 ## Security review gate
 - [x] Static inventory of embedded classes, assets, nested JARs and native DLLs
 - [x] Inspect the remote configuration and device-identification flow

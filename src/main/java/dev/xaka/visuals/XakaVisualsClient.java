@@ -90,6 +90,8 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean jumpCubes = false;
     public static boolean mouseParticles = false;
     public static int mouseParticleSize = 5;
+    // Local cosmetic particle density: 1 = lightest, 5 = fullest (default preserves current effect counts).
+    public static int particleDensity = 4;
     public static int jumpCubeCount = 5;
     public static int jumpCubeSize = 18;
     public static int jumpEffectRadius = 5;
@@ -246,7 +248,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 double x = client.player.getX();
                 double y = client.player.getY() + 0.08;
                 double z = client.player.getZ();
-                for (int i = 0; i < 28; i++) {
+                for (int i = 0; i < 12 + particleDensity * 4; i++) {
                     double angle = Math.PI * 2.0 * i / 28.0;
                     double vx = Math.cos(angle) * 0.035;
                     double vz = Math.sin(angle) * 0.035;
@@ -258,7 +260,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
             wasOnGround = onGround;
             if (playerTrails && !client.player.isOnGround()
                     && client.player.getVelocity().horizontalLengthSquared() > 0.012) {
-                if (++trailTicks % 3 == 0) {
+                if (++trailTicks % (7 - particleDensity) == 0) {
                     var velocity = client.player.getVelocity();
                     client.world.addParticle(ParticleTypes.END_ROD,
                             client.player.getX() - velocity.x * 1.5,
@@ -281,7 +283,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
             float health = target.getHealth();
             if (target.getId() == previousHitTargetId && previousHitTargetHealth >= 0.0f
                     && health < previousHitTargetHealth) {
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 4 + particleDensity * 2; i++) {
                     double vx = (Math.random() - 0.5) * 0.18;
                     double vy = 0.04 + Math.random() * 0.16;
                     double vz = (Math.random() - 0.5) * 0.18;

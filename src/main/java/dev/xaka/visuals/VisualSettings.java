@@ -74,6 +74,7 @@ public final class VisualSettings {
             XakaVisualsClient.jumpCubes = bool(p, "jumpCubes", XakaVisualsClient.jumpCubes);
             XakaVisualsClient.mouseParticles = bool(p, "mouseParticles", XakaVisualsClient.mouseParticles);
             XakaVisualsClient.mouseParticleSize = integer(p, "mouseParticleSize", XakaVisualsClient.mouseParticleSize);
+            XakaVisualsClient.particleDensity = Math.max(1, Math.min(5, integer(p, "particleDensity", XakaVisualsClient.particleDensity)));
             XakaVisualsClient.jumpCubeCount = integer(p, "jumpCubeCount", XakaVisualsClient.jumpCubeCount);
             XakaVisualsClient.jumpCubeSize = integer(p, "jumpCubeSize", XakaVisualsClient.jumpCubeSize);
             XakaVisualsClient.jumpEffectRadius = integer(p, "jumpEffectRadius", XakaVisualsClient.jumpEffectRadius);
@@ -159,6 +160,7 @@ public final class VisualSettings {
         p.setProperty("jumpCubes", Boolean.toString(XakaVisualsClient.jumpCubes));
         p.setProperty("mouseParticles", Boolean.toString(XakaVisualsClient.mouseParticles));
         p.setProperty("mouseParticleSize", Integer.toString(XakaVisualsClient.mouseParticleSize));
+        p.setProperty("particleDensity", Integer.toString(XakaVisualsClient.particleDensity));
         p.setProperty("jumpCubeCount", Integer.toString(XakaVisualsClient.jumpCubeCount));
         p.setProperty("jumpCubeSize", Integer.toString(XakaVisualsClient.jumpCubeSize));
         p.setProperty("jumpEffectRadius", Integer.toString(XakaVisualsClient.jumpEffectRadius));
