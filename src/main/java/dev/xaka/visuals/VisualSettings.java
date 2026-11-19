@@ -61,6 +61,9 @@ public final class VisualSettings {
             XakaVisualsClient.hitParticles = bool(p, "hitParticles", XakaVisualsClient.hitParticles);
             XakaVisualsClient.jumpCircle = bool(p, "jumpCircle", XakaVisualsClient.jumpCircle);
             XakaVisualsClient.jumpEffect = bool(p, "jumpEffect", XakaVisualsClient.jumpEffect);
+            XakaVisualsClient.jumpCubes = bool(p, "jumpCubes", XakaVisualsClient.jumpCubes);
+            XakaVisualsClient.jumpCubeCount = integer(p, "jumpCubeCount", XakaVisualsClient.jumpCubeCount);
+            XakaVisualsClient.jumpCubeSize = integer(p, "jumpCubeSize", XakaVisualsClient.jumpCubeSize);
             XakaVisualsClient.jumpEffectRadius = integer(p, "jumpEffectRadius", XakaVisualsClient.jumpEffectRadius);
             XakaVisualsClient.jumpEffectDuration = integer(p, "jumpEffectDuration", XakaVisualsClient.jumpEffectDuration);
             XakaVisualsClient.playerTrails = bool(p, "playerTrails", XakaVisualsClient.playerTrails);
@@ -129,6 +132,9 @@ public final class VisualSettings {
         p.setProperty("hitParticles", Boolean.toString(XakaVisualsClient.hitParticles));
         p.setProperty("jumpCircle", Boolean.toString(XakaVisualsClient.jumpCircle));
         p.setProperty("jumpEffect", Boolean.toString(XakaVisualsClient.jumpEffect));
+        p.setProperty("jumpCubes", Boolean.toString(XakaVisualsClient.jumpCubes));
+        p.setProperty("jumpCubeCount", Integer.toString(XakaVisualsClient.jumpCubeCount));
+        p.setProperty("jumpCubeSize", Integer.toString(XakaVisualsClient.jumpCubeSize));
         p.setProperty("jumpEffectRadius", Integer.toString(XakaVisualsClient.jumpEffectRadius));
         p.setProperty("jumpEffectDuration", Integer.toString(XakaVisualsClient.jumpEffectDuration));
         p.setProperty("playerTrails", Boolean.toString(XakaVisualsClient.playerTrails));

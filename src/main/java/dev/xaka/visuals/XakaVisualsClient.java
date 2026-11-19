@@ -76,6 +76,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static boolean hitParticles = false;
     public static boolean jumpCircle = false;
     public static boolean jumpEffect = false;
+    public static boolean jumpCubes = false;
+    public static int jumpCubeCount = 5;
+    public static int jumpCubeSize = 18;
     public static int jumpEffectRadius = 5;
     public static int jumpEffectDuration = 800;
     public static boolean playerTrails = false;
@@ -213,8 +216,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
                 return;
             }
             boolean onGround = client.player.isOnGround();
-            if (jumpEffect && wasOnGround && !onGround && client.player.getVelocity().y > 0.0) {
-                XakaVisualsRenderer.spawnJumpEffect(client.player.getX(), client.player.getY() + 0.04, client.player.getZ());
+            if (wasOnGround && !onGround && client.player.getVelocity().y > 0.0) {
+                if (jumpEffect) XakaVisualsRenderer.spawnJumpEffect(client.player.getX(), client.player.getY() + 0.04, client.player.getZ());
+                if (jumpCubes) XakaVisualsRenderer.spawnJumpCubes(client.player.getX(), client.player.getY() + 0.04, client.player.getZ());
             }
             if (jumpCircle && !wasOnGround && onGround) {
                 double x = client.player.getX();

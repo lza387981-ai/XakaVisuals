@@ -23,6 +23,7 @@ import java.util.List;
 /** Local-only cosmetics: a thick halo, camera-relative companion and crosshair player marker. */
 public final class XakaVisualsRenderer {
     private static final List<JumpWave> JUMP_WAVES = new ArrayList<>();
+    private static final List<JumpCubeParticle> JUMP_CUBES = new ArrayList<>();
 
     private XakaVisualsRenderer() {}
 
@@ -31,6 +32,18 @@ public final class XakaVisualsRenderer {
         if (JUMP_WAVES.size() >= 12) JUMP_WAVES.remove(0);
         JUMP_WAVES.add(new JumpWave(x, y, z, System.nanoTime(),
                 XakaVisualsClient.jumpEffectRadius, XakaVisualsClient.jumpEffectDuration));
+    }
+
+    public static void spawnJumpCubes(double x, double y, double z) {
+        if (!XakaVisualsClient.jumpCubes) return;
+        int count = Math.max(1, Math.min(10, XakaVisualsClient.jumpCubeCount));
+        for (int i = 0; i < count && JUMP_CUBES.size() < 80; i++) {
+            double angle = Math.random() * Math.PI * 2.0;
+            double distance = 0.22 + Math.random() * 0.52;
+            JUMP_CUBES.add(new JumpCubeParticle(x + Math.cos(angle) * distance, y + 0.12, z + Math.sin(angle) * distance,
+                    (Math.random() - 0.5) * 0.52, 0.62 + Math.random() * 0.72, (Math.random() - 0.5) * 0.52,
+                    XakaVisualsClient.jumpCubeSize / 100.0f, System.nanoTime()));
+        }
     }
 
     public static void register() {
@@ -42,10 +55,12 @@ public final class XakaVisualsRenderer {
         PlayerEntity player = client.player;
         if (player == null || client.world == null || context.matrixStack() == null || context.consumers() == null) {
             JUMP_WAVES.clear();
+            JUMP_CUBES.clear();
             return;
         }
         if (client.options.hudHidden) return;
         if (!XakaVisualsClient.jumpEffect) JUMP_WAVES.clear();
+        if (!XakaVisualsClient.jumpCubes) JUMP_CUBES.clear();
 
         boolean halo = XakaVisualsClient.haloEnabled;
         boolean marker = XakaVisualsClient.bodyMarkerEnabled;
@@ -53,7 +68,8 @@ public final class XakaVisualsRenderer {
         boolean cape = XakaVisualsClient.wingsEnabled;
         boolean hat = XakaVisualsClient.hatEnabled;
         boolean jumpWave = !JUMP_WAVES.isEmpty();
-        if (!halo && !marker && !pet && !cape && !hat && !jumpWave) return;
+        boolean jumpCubes = !JUMP_CUBES.isEmpty();
+        if (!halo && !marker && !pet && !cape && !hat && !jumpWave && !jumpCubes) return;
 
         Vec3d camera = context.camera().getPos();
         Vec3d playerPos = player.getLerpedPos(context.tickCounter().getTickDelta(false));
@@ -68,6 +84,7 @@ public final class XakaVisualsRenderer {
         float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, player.prevBodyYaw, player.bodyYaw);
 
         if (jumpWave) renderJumpWaves(consumers, camera);
+        if (jumpCubes) renderJumpCubes(consumers, camera);
 
         if (halo) {
             float radius = 0.34f + XakaVisualsClient.haloSize * 0.035f;
@@ -136,7 +153,7 @@ public final class XakaVisualsRenderer {
         if (cape || hat) {
             XakaCosmeticsRenderer.render(consumers, bx, by, bz, bodyYaw,
                     player.headYaw, cape ? Math.floorMod(XakaVisualsClient.wingStyle, 3) + 1 : 0,
-                    hat ? Math.floorMod(XakaVisualsClient.hatStyle, 5) + 1 : 0,
+                    hat ? Math.floorMod(XakaVisualsClient.hatStyle, 6) + 1 : 0,
                     client.world.getTime() + tickDelta);
         }
 
@@ -175,6 +192,43 @@ public final class XakaVisualsRenderer {
 
 
 
+
+    private static void renderJumpCubes(net.minecraft.client.render.VertexConsumerProvider consumers, Vec3d camera) {
+        long now = System.nanoTime();
+        var out = consumers.getBuffer(net.minecraft.client.render.RenderLayer.getLines());
+        Iterator<JumpCubeParticle> iterator = JUMP_CUBES.iterator();
+        while (iterator.hasNext()) {
+            JumpCubeParticle cube = iterator.next();
+            float age = (now - cube.startedAt) / 1_000_000.0f, progress = age / 1150.0f;
+            if (progress >= 1.0f) { iterator.remove(); continue; }
+            double seconds = age / 1000.0;
+            double cx = cube.x + cube.vx * seconds - camera.x;
+            double cy = cube.y + cube.vy * seconds - 0.62 * seconds * seconds - camera.y;
+            double cz = cube.z + cube.vz * seconds - camera.z;
+            float half = cube.size * (0.72f + progress * 0.28f);
+            float yaw = (float)(seconds * 2.8 + cube.rotation), pitch = (float)(seconds * 2.1 + cube.rotation * 0.7);
+            double[][] vertices = new double[8][3];
+            for (int i = 0; i < 8; i++) {
+                double px = (i & 1) == 0 ? -half : half, py = (i & 2) == 0 ? -half : half, pz = (i & 4) == 0 ? -half : half;
+                double x1 = px * Math.cos(yaw) - pz * Math.sin(yaw), z1 = px * Math.sin(yaw) + pz * Math.cos(yaw);
+                double y2 = py * Math.cos(pitch) - z1 * Math.sin(pitch), z2 = py * Math.sin(pitch) + z1 * Math.cos(pitch);
+                vertices[i][0] = cx + x1; vertices[i][1] = cy + y2; vertices[i][2] = cz + z2;
+            }
+            int alpha = Math.max(0, Math.min(230, Math.round(230.0f * (1.0f - progress))));
+            int color = withAlpha(XakaVisualsClient.accent(), alpha);
+            int[][] edges = {{0,1},{0,2},{0,4},{1,3},{1,5},{2,3},{2,6},{3,7},{4,5},{4,6},{5,7},{6,7}};
+            for (int[] edge : edges) { double[] a = vertices[edge[0]], b = vertices[edge[1]]; line(out,a[0],a[1],a[2],b[0],b[1],b[2],color); }
+        }
+    }
+
+    private static final class JumpCubeParticle {
+        private final double x,y,z,vx,vy,vz; private final float size,rotation; private final long startedAt;
+        private JumpCubeParticle(double x,double y,double z,double vx,double vy,double vz,float size,long startedAt) {
+            this.x=x; this.y=y; this.z=z; this.vx=vx; this.vy=vy; this.vz=vz;
+            this.size=Math.max(0.05f,Math.min(0.40f,size)); this.startedAt=startedAt;
+            this.rotation=(float)(Math.random()*Math.PI*2.0);
+        }
+    }
 
     private static void renderJumpWaves(net.minecraft.client.render.VertexConsumerProvider consumers, Vec3d camera) {
         long now = System.nanoTime();

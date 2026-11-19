@@ -160,6 +160,9 @@ public final class XakaVisualsScreen extends Screen {
                 row(c, mx, my, left, right, top + 464, "Jump effect", "Draw two expanding rings when you take off", XakaVisualsClient.jumpEffect, accent, true);
                 sliderRow(c, mx, my, left, right, top + 513, "Wave radius", XakaVisualsClient.jumpEffectRadius, 5, 100, accent, 11);
                 sliderRow(c, mx, my, left, right, top + 562, "Wave duration", XakaVisualsClient.jumpEffectDuration, 300, 2000, accent, 12);
+                row(c, mx, my, left, right, top + 611, "Jump cubes", "Small rotating cubes burst around you on takeoff", XakaVisualsClient.jumpCubes, accent, true);
+                sliderRow(c, mx, my, left, right, top + 660, "Cube count", XakaVisualsClient.jumpCubeCount, 1, 10, accent, 14);
+                sliderRow(c, mx, my, left, right, top + 709, "Cube size", XakaVisualsClient.jumpCubeSize, 5, 40, accent, 15);
             }
             case 4 -> {
                 infoCard(c, left, top, right, "First-person hand", "Move your hand and held item without moving the camera.");
@@ -240,6 +243,8 @@ public final class XakaVisualsScreen extends Screen {
             case 13 -> Integer.toString(XakaVisualsClient.crosshairSize);
             case 9 -> Math.round(XakaVisualsMusic.getVolume() * 100) + "%";
             case 10 -> String.format(java.util.Locale.ROOT, "%.1fx", XakaVisualsClient.wingSpeed);
+            case 14 -> Integer.toString(XakaVisualsClient.jumpCubeCount);
+            case 15 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.jumpCubeSize / 100.0f);
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -268,6 +273,8 @@ public final class XakaVisualsScreen extends Screen {
             case 10 -> XakaVisualsClient.wingSpeed = 0.5f + t * 1.5f;
             case 11 -> XakaVisualsClient.jumpEffectRadius = 5 + Math.round(t * 95);
             case 12 -> XakaVisualsClient.jumpEffectDuration = 300 + Math.round(t * 1700);
+            case 14 -> XakaVisualsClient.jumpCubeCount = 1 + Math.round(t * 9);
+            case 15 -> XakaVisualsClient.jumpCubeSize = 5 + Math.round(t * 35);
         }
     }
 
@@ -395,6 +402,9 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 464)) XakaVisualsClient.jumpEffect = !XakaVisualsClient.jumpEffect;
             if (hitRow(mouseX, mouseY, left, right, top + 513)) { activeSlider = 11; setSlider(11, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 562)) { activeSlider = 12; setSlider(12, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 611)) XakaVisualsClient.jumpCubes = !XakaVisualsClient.jumpCubes;
+            if (hitRow(mouseX, mouseY, left, right, top + 660)) { activeSlider = 14; setSlider(14, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 709)) { activeSlider = 15; setSlider(15, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 268)) {
                 if (XakaVisualsClient.bodyMarkerSize >= 12) {
                     XakaVisualsClient.bodyMarkerSize = 3;
@@ -466,7 +476,7 @@ public final class XakaVisualsScreen extends Screen {
         return switch (selectedCategory) {
             case 0 -> 350;
             case 1 -> 556;
-            case 2 -> 620;
+            case 2 -> 767;
             case 3 -> 333;
             case 4, 5 -> 284;
             case 6 -> 370;

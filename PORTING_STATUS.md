@@ -49,6 +49,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] NoHurtCam: disable first-person damage camera tilt
 - [x] JumpCircle and Trails controls
 - [x] JumpEffect: local expanding double-ring effect with radius and duration settings
+- [x] JumpCube: local takeoff-triggered rotating cube particles with count and size settings
 - [x] CI compile/build checks for the feature batches above
 - [x] NoWeather: hide local rain/snow rendering, particles and sound
 - [x] HideBossBar: optional local boss-bar HUD suppression
@@ -73,6 +74,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - HideBossBar: optional local boss-bar HUD suppression; implementation is CI-compiled, awaiting in-game verification.
 - NoInWallOverlay: local suffocation-overlay suppression; implementation is CI-compiled, awaiting in-game verification.
 - JumpEffect: local takeoff-triggered double ring with adjustable radius and duration; implementation is CI-compiled, awaiting in-game verification.
+- JumpCube: local takeoff-triggered wireframe cubes with adjustable count and size; implementation is CI-compiled, awaiting in-game verification.
 
 See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the findings and the porting exclusions.
 
