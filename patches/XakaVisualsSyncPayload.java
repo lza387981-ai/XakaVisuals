@@ -47,7 +47,9 @@ public record XakaVisualsSyncPayload(
         buf.writeVarInt(activeDance);
         buf.writeFloat(danceSpeed);
         buf.writeFloat(danceStartAge);
-        buf.writeInt(accentColor);\n        buf.writeBoolean(hatEnabled);\n        buf.writeVarInt(hatStyle);
+        buf.writeInt(accentColor);
+        buf.writeBoolean(hatEnabled);
+        buf.writeVarInt(hatStyle);
     }
 
     @Override
