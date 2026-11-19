@@ -55,6 +55,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - [x] NoWeather: hide local rain/snow rendering, particles and sound
 - [x] HideBossBar: optional local boss-bar HUD suppression
 - [x] NoInWallOverlay: optional local suffocation-overlay suppression
+- [x] ViewModel: first-person hand/item translation and rotation across all three axes
 - [ ] Reimplement remaining visual modules and their settings
 - [x] AutoSprint
 - [x] Low-armor warning
@@ -77,6 +78,7 @@ AutoAccept, AutoNear, AutoReconnect, AutoRespawn, AutoSprint, ChatHelper, ClickF
 - JumpEffect: local takeoff-triggered double ring with adjustable radius and duration; implementation is CI-compiled, awaiting in-game verification.
 - JumpCube: local takeoff-triggered wireframe cubes with adjustable count and size; implementation is CI-compiled, awaiting in-game verification.
 - MouseParticles: local menu cursor sparkle trail with size control; implementation is CI-compiled, awaiting in-game verification.
+- ViewModel: local first-person item transform with XYZ position and rotation sliders; implementation is CI-compiled, awaiting in-game verification.
 
 See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the findings and the porting exclusions.
 

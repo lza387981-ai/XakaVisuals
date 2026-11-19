@@ -65,6 +65,9 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static float handOffsetX = 0.0f;
     public static float handOffsetY = 0.0f;
     public static float handOffsetZ = 0.0f;
+    public static float handRotationX = 0.0f;
+    public static float handRotationY = 0.0f;
+    public static float handRotationZ = 0.0f;
     public static boolean fpsBoost = false;
     public static boolean customCrosshair = false;
     public static int crosshairSize = 4;

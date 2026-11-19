@@ -52,6 +52,9 @@ public final class VisualSettings {
             XakaVisualsClient.handOffsetX = decimal(p, "handOffsetX", XakaVisualsClient.handOffsetX);
             XakaVisualsClient.handOffsetY = decimal(p, "handOffsetY", XakaVisualsClient.handOffsetY);
             XakaVisualsClient.handOffsetZ = decimal(p, "handOffsetZ", XakaVisualsClient.handOffsetZ);
+            XakaVisualsClient.handRotationX = decimal(p, "handRotationX", XakaVisualsClient.handRotationX);
+            XakaVisualsClient.handRotationY = decimal(p, "handRotationY", XakaVisualsClient.handRotationY);
+            XakaVisualsClient.handRotationZ = decimal(p, "handRotationZ", XakaVisualsClient.handRotationZ);
             XakaVisualsClient.fpsBoost = bool(p, "fpsBoost", XakaVisualsClient.fpsBoost);
             XakaVisualsClient.customCrosshair = bool(p, "customCrosshair", XakaVisualsClient.customCrosshair);
             XakaVisualsClient.crosshairSize = integer(p, "crosshairSize", XakaVisualsClient.crosshairSize);
@@ -125,6 +128,9 @@ public final class VisualSettings {
         p.setProperty("handOffsetX", Float.toString(XakaVisualsClient.handOffsetX));
         p.setProperty("handOffsetY", Float.toString(XakaVisualsClient.handOffsetY));
         p.setProperty("handOffsetZ", Float.toString(XakaVisualsClient.handOffsetZ));
+        p.setProperty("handRotationX", Float.toString(XakaVisualsClient.handRotationX));
+        p.setProperty("handRotationY", Float.toString(XakaVisualsClient.handRotationY));
+        p.setProperty("handRotationZ", Float.toString(XakaVisualsClient.handRotationZ));
         p.setProperty("fpsBoost", Boolean.toString(XakaVisualsClient.fpsBoost));
         p.setProperty("customCrosshair", Boolean.toString(XakaVisualsClient.customCrosshair));
         p.setProperty("crosshairSize", Integer.toString(XakaVisualsClient.crosshairSize));

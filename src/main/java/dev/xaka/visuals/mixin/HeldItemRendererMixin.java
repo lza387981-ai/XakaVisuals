@@ -5,6 +5,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.item.ItemStack;
 import net.minecraft.client.render.VertexConsumerProvider;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,5 +25,8 @@ public abstract class HeldItemRendererMixin {
                 XakaVisualsClient.handOffsetY,
                 XakaVisualsClient.handOffsetZ
         );
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(XakaVisualsClient.handRotationX));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(XakaVisualsClient.handRotationY));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(XakaVisualsClient.handRotationZ));
     }
 }

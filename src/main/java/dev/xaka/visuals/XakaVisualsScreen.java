@@ -227,7 +227,10 @@ public final class XakaVisualsScreen extends Screen {
                         Math.round((XakaVisualsClient.handOffsetY + 0.5f) * 20), 0, 20, accent, 6);
                 sliderRow(c, mx, my, left, right, top + 170, "Hand near / far",
                         Math.round((XakaVisualsClient.handOffsetZ + 0.5f) * 20), 0, 20, accent, 7);
-                row(c, mx, my, left, right, top + 219, "Reset hand position", "Return all three offsets to the default position", false, accent, false);
+                sliderRow(c, mx, my, left, right, top + 219, "Rotate X", Math.round(XakaVisualsClient.handRotationX + 180), 0, 360, accent, 17);
+                sliderRow(c, mx, my, left, right, top + 268, "Rotate Y", Math.round(XakaVisualsClient.handRotationY + 180), 0, 360, accent, 18);
+                sliderRow(c, mx, my, left, right, top + 317, "Rotate Z", Math.round(XakaVisualsClient.handRotationZ + 180), 0, 360, accent, 19);
+                row(c, mx, my, left, right, top + 366, "Reset hand transform", "Restore position and all rotation axes", false, accent, false);
             }
             case 8 -> {
                 row(c, mx, my, left, right, top, "Auto Sprint", "Sprint while moving forward", XakaVisualsClient.autoSprint, accent, true);
@@ -301,6 +304,9 @@ public final class XakaVisualsScreen extends Screen {
             case 14 -> Integer.toString(XakaVisualsClient.jumpCubeCount);
             case 15 -> String.format(java.util.Locale.ROOT, "%.2f", XakaVisualsClient.jumpCubeSize / 100.0f);
             case 16 -> Integer.toString(XakaVisualsClient.mouseParticleSize);
+            case 17 -> Math.round(XakaVisualsClient.handRotationX) + "°";
+            case 18 -> Math.round(XakaVisualsClient.handRotationY) + "°";
+            case 19 -> Math.round(XakaVisualsClient.handRotationZ) + "°";
             default -> Integer.toString(value);
         };
         c.drawTextWithShadow(textRenderer, shown, right - 34, y + 6, accent);
@@ -332,6 +338,9 @@ public final class XakaVisualsScreen extends Screen {
             case 14 -> XakaVisualsClient.jumpCubeCount = 1 + Math.round(t * 9);
             case 15 -> XakaVisualsClient.jumpCubeSize = 5 + Math.round(t * 35);
             case 16 -> XakaVisualsClient.mouseParticleSize = 2 + Math.round(t * 8);
+            case 17 -> XakaVisualsClient.handRotationX = -180.0f + t * 360.0f;
+            case 18 -> XakaVisualsClient.handRotationY = -180.0f + t * 360.0f;
+            case 19 -> XakaVisualsClient.handRotationZ = -180.0f + t * 360.0f;
         }
     }
 
@@ -476,10 +485,12 @@ public final class XakaVisualsScreen extends Screen {
             if (hitRow(mouseX, mouseY, left, right, top + 72)) { activeSlider = 5; setSlider(5, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 121)) { activeSlider = 6; setSlider(6, mouseX, left, right); }
             if (hitRow(mouseX, mouseY, left, right, top + 170)) { activeSlider = 7; setSlider(7, mouseX, left, right); }
-            if (hitRow(mouseX, mouseY, left, right, top + 219)) {
-                XakaVisualsClient.handOffsetX = 0.0f;
-                XakaVisualsClient.handOffsetY = 0.0f;
-                XakaVisualsClient.handOffsetZ = 0.0f;
+            if (hitRow(mouseX, mouseY, left, right, top + 219)) { activeSlider = 17; setSlider(17, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 268)) { activeSlider = 18; setSlider(18, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 317)) { activeSlider = 19; setSlider(19, mouseX, left, right); }
+            if (hitRow(mouseX, mouseY, left, right, top + 366)) {
+                XakaVisualsClient.handOffsetX = XakaVisualsClient.handOffsetY = XakaVisualsClient.handOffsetZ = 0.0f;
+                XakaVisualsClient.handRotationX = XakaVisualsClient.handRotationY = XakaVisualsClient.handRotationZ = 0.0f;
             }
         } else if (selectedCategory == 8) {
             if (hitRow(mouseX, mouseY, left, right, top)) XakaVisualsClient.autoSprint = !XakaVisualsClient.autoSprint;
@@ -537,7 +548,8 @@ public final class XakaVisualsScreen extends Screen {
             case 1 -> 556;
             case 2 -> 767;
             case 3 -> 333;
-            case 4, 5 -> 284;
+            case 4 -> 470;
+            case 5 -> 284;
             case 6 -> 370;
             case 7 -> 333;
             case 8 -> 657;
