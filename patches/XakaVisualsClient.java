@@ -5,6 +5,14 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.client.option.KeyBinding;
@@ -56,6 +64,14 @@ public final class XakaVisualsClient implements ClientModInitializer {
     public static float handOffsetY = 0.0f;
     public static float handOffsetZ = 0.0f;
     public static boolean fpsBoost = false;
+    // CheatV2 is deliberately limited to the integrated single-player world.
+    public static boolean cheatKillAura = false;
+    public static boolean cheatVovAim = false;
+    public static boolean cheatDobleVoble = false;
+    public static boolean cheatAntiInvis = false;
+    public static float cheatRange = 4.0f;
+    public static float cheatAimSpeed = 0.25f;
+    private static final Set<UUID> antiInvisApplied = new HashSet<>();
     // Local emote playback; the renderer mixin applies it only to this player's model.
     public static boolean dancePlaying = false;
     public static int activeDance = 0;
@@ -101,6 +117,76 @@ public final class XakaVisualsClient implements ClientModInitializer {
         return TARGET_FRAME_COLOR_NAMES[Math.floorMod(targetFrameColorIndex, TARGET_FRAME_COLOR_NAMES.length)];
     }
 
+    private static void tickCheatV2(MinecraftClient client) {
+        if (client.player == null || client.world == null || client.getServer() == null) {
+            restoreAntiInvis(client);
+            return;
+        }
+
+        if (cheatAntiInvis) {
+            for (PlayerEntity other : client.world.getPlayers()) {
+                if (other == client.player || !other.isAlive() || other.isSpectator()) continue;
+                if (other.isInvisible() && !other.isGlowing()) {
+                    other.setGlowing(true);
+                    antiInvisApplied.add(other.getUuid());
+                }
+            }
+        } else {
+            restoreAntiInvis(client);
+        }
+
+        PlayerEntity target = null;
+        double nearest = cheatRange;
+        for (PlayerEntity other : client.world.getPlayers()) {
+            if (other == client.player || !other.isAlive() || other.isSpectator()) continue;
+            double distance = client.player.distanceTo(other);
+            if (distance <= nearest) {
+                nearest = distance;
+                target = other;
+            }
+        }
+
+        if (target != null && cheatVovAim) {
+            Vec3d delta = target.getEyePos().subtract(client.player.getEyePos());
+            double horizontal = Math.sqrt(delta.x * delta.x + delta.z * delta.z);
+            float targetYaw = (float) (MathHelper.atan2(delta.z, delta.x) * (180.0 / Math.PI)) - 90.0f;
+            float targetPitch = (float) (-(MathHelper.atan2(delta.y, horizontal) * (180.0 / Math.PI)));
+            float speed = MathHelper.clamp(cheatAimSpeed, 0.05f, 1.0f);
+            float yawDelta = MathHelper.wrapDegrees(targetYaw - client.player.getYaw());
+            float pitchDelta = targetPitch - client.player.getPitch();
+            client.player.setYaw(client.player.getYaw() + yawDelta * speed);
+            client.player.setPitch(MathHelper.clamp(client.player.getPitch() + pitchDelta * speed, -90.0f, 90.0f));
+        }
+
+        // Aura and auto-critical are separate modes so they never send two attacks in one tick.
+        if (cheatKillAura && !cheatDobleVoble && target != null
+                && client.player.getAttackCooldownProgress(0.0f) >= 1.0f
+                && client.interactionManager != null) {
+            client.interactionManager.attackEntity(client.player, target);
+            client.player.swingHand(Hand.MAIN_HAND);
+        }
+
+        if (cheatDobleVoble && client.crosshairTarget instanceof EntityHitResult hit
+                && hit.getEntity() instanceof PlayerEntity lookedAt
+                && lookedAt != client.player && lookedAt.isAlive()
+                && !client.player.isOnGround() && client.player.fallDistance > 0.0f
+                && client.player.getAttackCooldownProgress(0.0f) >= 1.0f
+                && client.interactionManager != null) {
+            client.interactionManager.attackEntity(client.player, lookedAt);
+            client.player.swingHand(Hand.MAIN_HAND);
+        }
+    }
+
+    private static void restoreAntiInvis(MinecraftClient client) {
+        if (antiInvisApplied.isEmpty()) return;
+        if (client.world != null) {
+            for (PlayerEntity other : client.world.getPlayers()) {
+                if (antiInvisApplied.remove(other.getUuid())) other.setGlowing(false);
+            }
+        }
+        antiInvisApplied.clear();
+    }
+
     @Override
     public void onInitializeClient() {
         KeyBinding openMenu = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -125,6 +211,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
         XakaVisualsRemoteRenderer.register();
         XakaVisualsSyncClient.register();
         ClientTickEvents.END_CLIENT_TICK.register(XakaVisualsSyncClient::tick);
+        ClientTickEvents.END_CLIENT_TICK.register(XakaVisualsClient::tickCheatV2);
         ClientTickEvents.END_CLIENT_TICK.register(XakaVisualsMusic::tickMouse);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
