@@ -51,7 +51,7 @@ public final class XakaWorldVisuals {
             Vec3d targetPos = target.getLerpedPos(tickDelta);
             if (halo) {
                 VertexConsumer lines = context.consumers().getBuffer(RenderLayer.getLines());
-                float radius = Math.max(0.42f, Math.min(0.95f, target.getWidth() * 0.72f));
+                float radius = Math.max(0.42f, Math.min(0.95f, target.getWidth() * 0.42f + XakaVisualV2Client.haloSize * 0.025f));
                 double centerY = targetPos.y + Math.min(target.getHeight() * 0.55, 1.0);
                 drawRing(lines, targetPos.x - camera.x, centerY - camera.y,
                         targetPos.z - camera.z, radius, ACCENT, 64);
@@ -62,7 +62,7 @@ public final class XakaWorldVisuals {
                 VertexConsumer lines = context.consumers().getBuffer(RenderLayer.getLines());
                 double markerY = targetPos.y - camera.y + 0.04;
                 drawRing(lines, targetPos.x - camera.x, markerY,
-                        targetPos.z - camera.z, Math.max(0.48f, target.getWidth() * 0.78f),
+                        targetPos.z - camera.z, Math.max(0.48f, target.getWidth() * 0.40f + XakaVisualV2Client.markerSize * 0.025f),
                         0xFFFFD166, 4);
             }
         }
