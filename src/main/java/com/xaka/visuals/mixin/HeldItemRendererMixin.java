@@ -13,10 +13,16 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public abstract class HeldItemRendererMixin {
     @ModifyVariable(method="renderFirstPersonItem", at=@At("HEAD"), argsOnly=true, ordinal=0)
     private MatrixStack xaka$applyViewModel(MatrixStack matrices) {
-        Feature view=FeatureRegistry.find("View Model");
-        Feature hand=FeatureRegistry.find("Hand Position");
-        if ((view!=null&&view.enabled())||(hand!=null&&hand.enabled())) {
-            matrices.translate(FeatureSettings.handX,FeatureSettings.handY,FeatureSettings.handZ);
+        Feature view = FeatureRegistry.find("View Model");
+        Feature hand = FeatureRegistry.find("Hand Position");
+        if (view != null && view.enabled()) {
+            matrices.translate(FeatureSettings.viewModelX, FeatureSettings.viewModelY, FeatureSettings.viewModelZ);
+            matrices.scale((float) FeatureSettings.viewModelScale,
+                    (float) FeatureSettings.viewModelScale,
+                    (float) FeatureSettings.viewModelScale);
+        }
+        if (hand != null && hand.enabled()) {
+            matrices.translate(FeatureSettings.handX, FeatureSettings.handY, FeatureSettings.handZ);
         }
         return matrices;
     }
