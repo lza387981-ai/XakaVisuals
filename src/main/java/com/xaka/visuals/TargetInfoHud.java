@@ -32,8 +32,8 @@ public final class TargetInfoHud {
         float maxHealth = Math.max(1.0f, target.getMaxHealth());
         float health = Math.max(0.0f, Math.min(target.getHealth(), maxHealth));
         float ratio = health / maxHealth;
-        int panelWidth = 164;
-        int panelHeight = 48;
+        int panelWidth = 190;
+        int panelHeight = 60;
         int x = context.getScaledWindowWidth() - panelWidth - 12;
         int y = context.getScaledWindowHeight() - panelHeight - 42;
 
@@ -43,9 +43,11 @@ public final class TargetInfoHud {
 
         String hp = String.format(Locale.ROOT, "%.1f / %.1f HP", health, maxHealth);
         context.drawText(client.textRenderer, hp, x + 8, y + 20, 0xFFE6E6E6, false);
+        context.drawText(client.textRenderer, "БРОНЯ ВРАГА: " + target.getArmor(),
+                x + 8, y + 32, 0xFFD8B5D0, false);
 
         int barX = x + 8;
-        int barY = y + 35;
+        int barY = y + 46;
         int barWidth = panelWidth - 16;
         context.fill(barX, barY, barX + barWidth, barY + 6, 0xFF454545);
         int fillColor = ratio > 0.6f ? 0xFF63D471 : ratio > 0.3f ? 0xFFE6C45A : 0xFFE45B67;
