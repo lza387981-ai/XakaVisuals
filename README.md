@@ -6,7 +6,7 @@ A new client-side Fabric mod project for Minecraft 1.21.4.
 - Java 21
 - Gradle 8.12
 - Fabric Loom 1.10
-- Fabric Loader 0.16.10
+- Fabric Loader 0.20.1
 - Fabric API 0.119.4+1.21.4
 
 Run:
