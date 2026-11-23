@@ -6,7 +6,8 @@
   "client": [
     "HeldItemRendererMixin",
     "InGameHudMixin",
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "FullbrightMixin"
   ],
   "injectors": {
     "defaultRequire": 1
