@@ -7,46 +7,41 @@ import net.minecraft.item.ItemStack;
 
 public final class MeArmorHud {
     private MeArmorHud() {}
-
-    public static void register() {
-        HudRenderCallback.EVENT.register((context, tickCounter) -> render(context));
-    }
-
-    private static void render(DrawContext context) {
-        Feature feature = FeatureRegistry.find("Me Armor");
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (feature == null || !feature.enabled() || client.player == null || client.currentScreen != null) return;
-
-        int x = HudDragController.x("armor", context.getScaledWindowWidth() / 2 - 76);
-        int y = HudDragController.y("armor", context.getScaledWindowHeight() - 58);
-        context.fill(x - 5, y - 19, x + 4 * 36 - 3, y + 38, 0xA9101015);
-        context.drawCenteredTextWithShadow(client.textRenderer, "МОЯ БРОНЯ",
-                context.getScaledWindowWidth() / 2, y - 15, 0xFFE7A5D2);
-
-        // Armor inventory order: boots, leggings, chestplate, helmet.
-        for (int i = 0; i < 4; i++) {
-            ItemStack stack = client.player.getInventory().armor.get(3 - i);
-            int slotX = x + i * 36;
-            context.fill(slotX, y, slotX + 32, y + 32, 0xFF252832);
-            if (stack.isEmpty()) {
-                context.drawCenteredTextWithShadow(client.textRenderer,
-                        switch (i) { case 0 -> "H"; case 1 -> "C"; case 2 -> "L"; default -> "B"; },
-                        slotX + 16, y + 12, 0xFF686E7B);
+    public static void register(){HudRenderCallback.EVENT.register((context,tickCounter)->render(context));}
+    private static void render(DrawContext c){
+        Feature f=FeatureRegistry.find("Me Armor");
+        MinecraftClient client=MinecraftClient.getInstance();
+        if(f==null||!f.enabled()||client.player==null||client.currentScreen!=null)return;
+        double scale=FeatureSettings.hudScale;
+        int slot=(int)Math.round(32*scale),step=(int)Math.round(36*scale),w=step*4;
+        int x=HudDragController.x("armor",client.getWindow().getScaledWidth()/2-w/2);
+        int y=HudDragController.y("armor",client.getWindow().getScaledHeight()-slot-26);
+        int alpha=FeatureSettings.hudAlpha;
+        c.fill(x-(int)(5*scale),y-(int)(19*scale),x+w-(int)(3*scale),y+slot+(int)(6*scale),(alpha<<24)|0x00101015);
+        c.drawCenteredTextWithShadow(client.textRenderer,"МОЯ БРОНЯ",x+w/2,y-(int)(15*scale),0xFFE7A5D2);
+        for(int i=0;i<4;i++){
+            ItemStack stack=client.player.getInventory().armor.get(3-i);
+            int sx=x+i*step;
+            c.fill(sx,y,sx+slot,y+slot,0xFF252832);
+            if(stack.isEmpty()){
+                c.drawCenteredTextWithShadow(client.textRenderer,switch(i){case 0->"H";case 1->"C";case 2->"L";default->"B";},sx+slot/2,y+(int)(12*scale),0xFF686E7B);
                 continue;
             }
-
-            context.drawItem(stack, slotX + 8, y + 1);
-            if (!stack.isDamageable()) {
-                context.drawCenteredTextWithShadow(client.textRenderer, "—", slotX + 16, y + 22, 0xFFB9BEC9);
+            c.getMatrices().push();
+            c.getMatrices().translate(sx+(slot-16*scale)/2,y+(slot-16*scale)/2,0);
+            c.getMatrices().scale((float)scale,(float)scale,1);
+            c.drawItem(stack,0,0);
+            c.getMatrices().pop();
+            if(!stack.isDamageable()){
+                c.drawCenteredTextWithShadow(client.textRenderer,"—",sx+slot/2,y+(int)(22*scale),0xFFB9BEC9);
                 continue;
             }
-
-            int remaining = Math.max(0, stack.getMaxDamage() - stack.getDamage());
-            int percent = Math.round(remaining * 100.0f / stack.getMaxDamage());
-            int color = percent > 60 ? 0xFF70D98B : percent > 25 ? 0xFFE6C66A : 0xFFE66B75;
-            context.drawCenteredTextWithShadow(client.textRenderer, percent + "%", slotX + 16, y + 22, color);
-            context.fill(slotX + 4, y + 29, slotX + 28, y + 31, 0xFF494D57);
-            context.fill(slotX + 4, y + 29, slotX + 4 + Math.round(24 * percent / 100.0f), y + 31, color);
+            int remaining=Math.max(0,stack.getMaxDamage()-stack.getDamage());
+            int percent=Math.round(remaining*100.0f/stack.getMaxDamage());
+            int color=percent>60?0xFF70D98B:percent>25?0xFFE6C66A:0xFFE66B75;
+            c.drawCenteredTextWithShadow(client.textRenderer,percent+"%",sx+slot/2,y+(int)(22*scale),color);
+            c.fill(sx+(int)(4*scale),y+(int)(29*scale),sx+(int)(28*scale),y+(int)(31*scale),0xFF494D57);
+            c.fill(sx+(int)(4*scale),y+(int)(29*scale),sx+(int)((4+24*percent/100.0)*scale),y+(int)(31*scale),color);
         }
     }
 }
