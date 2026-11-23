@@ -53,6 +53,6 @@ public final class TargetEspRenderer {
         float length=(float)Math.sqrt(nx*nx+ny*ny+nz*nz);
         if(length>0){nx/=length;ny/=length;nz/=length;}
         c.vertex(m,(float)x1,(float)y1,(float)z1).color(red,green,blue,ALPHA).normal(e,nx,ny,nz);
-        c.vertex(m,(float)x2,(float)y2,(float)z2).color(RED,GREEN,BLUE,ALPHA).normal(e,nx,ny,nz);
+        c.vertex(m,(float)x2,(float)y2,(float)z2).color(red,green,blue,ALPHA).normal(e,nx,ny,nz);
     }
 }
