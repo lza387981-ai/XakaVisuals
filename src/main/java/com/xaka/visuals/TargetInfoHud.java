@@ -41,7 +41,7 @@ public final class TargetInfoHud {
         context.fill(x, y, x + panelWidth, y + 2, 0xFFE18ACB);
         context.drawText(client.textRenderer, target.getDisplayName(), x + 8, y + 7, 0xFFFFFFFF, true);
 
-        String hp = String.format(Locale.ROOT, "%.1f / %.1f HP  |  %d ARMOR", health, maxHealth, target.getArmor());
+        String hp = String.format(Locale.ROOT, "%.1f / %.1f HP", health, maxHealth);
         context.drawText(client.textRenderer, hp, x + 8, y + 20, 0xFFE6E6E6, false);
 
         int barX = x + 8;
