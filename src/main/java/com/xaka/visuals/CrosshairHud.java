@@ -19,18 +19,19 @@ public final class CrosshairHud {
 
         int cx = context.getScaledWindowWidth() / 2;
         int cy = context.getScaledWindowHeight() / 2;
-        int color = 0xFFE9A0D1;
+        int size = (int)Math.round(FeatureSettings.crosshairSize);
+        int gap = (int)Math.round(FeatureSettings.crosshairGap);
+        int color = FeatureSettings.crosshairColor;
         int shadow = 0xAA17131B;
 
-        // Four compact brackets with a center pixel; custom overlay stays fully client-side.
-        context.fill(cx - 1, cy - 7, cx + 1, cy - 2, shadow);
-        context.fill(cx - 1, cy + 2, cx + 1, cy + 7, shadow);
-        context.fill(cx - 7, cy - 1, cx - 2, cy + 1, shadow);
-        context.fill(cx + 2, cy - 1, cx + 7, cy + 1, shadow);
-        context.fill(cx - 1, cy - 6, cx + 1, cy - 2, color);
-        context.fill(cx - 1, cy + 2, cx + 1, cy + 6, color);
-        context.fill(cx - 6, cy - 1, cx - 2, cy + 1, color);
-        context.fill(cx + 2, cy - 1, cx + 6, cy + 1, color);
+        context.fill(cx - 1, cy - gap - size, cx + 1, cy - gap, shadow);
+        context.fill(cx - 1, cy + gap, cx + 1, cy + gap + size, shadow);
+        context.fill(cx - gap - size, cy - 1, cx - gap, cy + 1, shadow);
+        context.fill(cx + gap, cy - 1, cx + gap + size, cy + 1, shadow);
+        context.fill(cx - 1, cy - gap - size, cx + 1, cy - gap, color);
+        context.fill(cx - 1, cy + gap, cx + 1, cy + gap + size, color);
+        context.fill(cx - gap - size, cy - 1, cx - gap, cy + 1, color);
+        context.fill(cx + gap, cy - 1, cx + gap + size, cy + 1, color);
         context.fill(cx, cy, cx + 1, cy + 1, 0xFFFFFFFF);
     }
 }
