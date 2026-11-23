@@ -7,8 +7,12 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public final class XakaVisualsClient implements ClientModInitializer {
     private static KeyBinding openMenuKey;
+    private final Set<Integer> keysDown = new HashSet<>();
 
     @Override
     public void onInitializeClient() {
@@ -26,6 +30,19 @@ public final class XakaVisualsClient implements ClientModInitializer {
                     client.setScreen(new XakaMenuScreen());
                 } else if (client.currentScreen instanceof XakaMenuScreen) {
                     client.setScreen(null);
+                }
+            }
+
+            if (client.getWindow() == null) return;
+            for (Feature feature : FeatureRegistry.all()) {
+                int key = feature.bindKey();
+                if (key < 0) continue;
+                boolean down = InputUtil.isKeyPressed(client.getWindow(), key);
+                if (down && keysDown.add(key)) {
+                    feature.setEnabled(!feature.enabled());
+                    FeatureConfig.save();
+                } else if (!down) {
+                    keysDown.remove(key);
                 }
             }
         });
