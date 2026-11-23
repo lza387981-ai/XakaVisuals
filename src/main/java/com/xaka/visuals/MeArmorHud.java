@@ -19,7 +19,9 @@ public final class MeArmorHud {
 
         int x = context.getScaledWindowWidth() / 2 - 76;
         int y = context.getScaledWindowHeight() - 58;
-        context.fill(x - 5, y - 5, x + 4 * 36 - 3, y + 38, 0xA9101015);
+        context.fill(x - 5, y - 19, x + 4 * 36 - 3, y + 38, 0xA9101015);
+        context.drawCenteredTextWithShadow(client.textRenderer, "МОЯ БРОНЯ",
+                context.getScaledWindowWidth() / 2, y - 15, 0xFFE7A5D2);
 
         // Armor inventory order: boots, leggings, chestplate, helmet.
         for (int i = 0; i < 4; i++) {
