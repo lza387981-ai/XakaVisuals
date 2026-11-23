@@ -24,7 +24,7 @@ public final class XakaMenuScreen extends Screen {
     }
 
     @Override public void render(DrawContext c,int mouseX,int mouseY,float delta){
-        renderBackground(c,mouseX,mouseY,delta);
+        c.fill(0,0,width,height,0xB0000000); // Dark overlay without vanilla menu blur
         c.fill(panelX,panelY,panelX+panelWidth,panelY+panelHeight,0xFFE3E3E3);
         c.fill(panelX+2,panelY+2,panelX+panelWidth-2,panelY+panelHeight-2,0xF20E1015);
         c.fill(panelX+3,panelY+3,panelX+panelWidth-3,panelY+54,0xFF171920);
