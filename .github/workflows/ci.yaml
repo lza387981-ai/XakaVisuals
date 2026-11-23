@@ -1,0 +1,27 @@
+name: Build XakaVisuals V3
+
+on:
+  push:
+    branches: [xakavisuals-v3]
+  pull_request:
+    branches: [xakavisuals-v3]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.12'
+      - name: Build mod
+        run: gradle build
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: xakavisuals-v3
+          path: build/libs/*.jar
