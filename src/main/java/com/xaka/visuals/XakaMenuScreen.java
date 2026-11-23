@@ -72,7 +72,7 @@ public final class XakaMenuScreen extends Screen {
     private String[] settingNames(){
         if(settingsFeature==null)return new String[0];
         return switch(settingsFeature.name()){
-            case "Target ESP" -> new String[]{"Corner length","Vertical offset","Frame color"};
+            case "Target ESP" -> new String[]{"Marker size","Vertical offset","Shape","Frame color"};
             case "Chinese Hat" -> new String[]{"Hat size","Hat height","Opacity"};
             case "Target Info","Me Armor" -> new String[]{"HUD scale","HUD opacity"};
             case "Hand Position" -> new String[]{"Hand X","Hand Y","Hand Z"};
@@ -84,7 +84,7 @@ public final class XakaMenuScreen extends Screen {
     }
     private String settingValue(int i){
         return switch(settingsFeature.name()){
-            case "Target ESP" -> i==0?String.format("%.2f",FeatureSettings.targetEspLength):i==1?String.format("%.2f",FeatureSettings.targetEspHeight):colorName(FeatureSettings.targetEspColor);
+            case "Target ESP" -> i==0?String.format("%.2f",FeatureSettings.targetEspLength):i==1?String.format("%.2f",FeatureSettings.targetEspHeight):i==2?(FeatureSettings.targetEspCircle?"Circle":"Square"):colorName(FeatureSettings.targetEspColor);
             case "Chinese Hat" -> i==0?String.format("%.2f",FeatureSettings.hatScale):i==1?String.format("%.2f",FeatureSettings.hatHeight):FeatureSettings.hatAlpha+"";
             case "Target Info","Me Armor" -> i==0?String.format("%.2f",FeatureSettings.hudScale):FeatureSettings.hudAlpha+"";
             case "Hand Position" -> String.format("%.2f",i==0?FeatureSettings.handX:i==1?FeatureSettings.handY:FeatureSettings.handZ);
@@ -96,7 +96,7 @@ public final class XakaMenuScreen extends Screen {
     }
     private void changeSetting(int i,int dir){
         switch(settingsFeature.name()){
-            case "Target ESP" -> {if(i==0)FeatureSettings.targetEspLength=clamp(FeatureSettings.targetEspLength+dir*0.04,0.10,0.50);else if(i==1)FeatureSettings.targetEspHeight=clamp(FeatureSettings.targetEspHeight+dir*0.05,-0.8,0.8);else FeatureSettings.targetEspColor=nextColor(FeatureSettings.targetEspColor,dir);}
+            case "Target ESP" -> {if(i==0)FeatureSettings.targetEspLength=clamp(FeatureSettings.targetEspLength+dir*0.04,0.10,0.50);else if(i==1)FeatureSettings.targetEspHeight=clamp(FeatureSettings.targetEspHeight+dir*0.05,-0.8,0.8);else if(i==2)FeatureSettings.targetEspCircle=!FeatureSettings.targetEspCircle;else FeatureSettings.targetEspColor=nextColor(FeatureSettings.targetEspColor,dir);}
             case "Chinese Hat" -> {if(i==0)FeatureSettings.hatScale=clamp(FeatureSettings.hatScale+dir*0.1,0.4,2);else if(i==1)FeatureSettings.hatHeight=clamp(FeatureSettings.hatHeight+dir*0.1,0.2,1.6);else FeatureSettings.hatAlpha=(int)clamp(FeatureSettings.hatAlpha+dir*15,30,255);}
             case "Target Info","Me Armor" -> {if(i==0)FeatureSettings.hudScale=clamp(FeatureSettings.hudScale+dir*0.1,0.6,1.8);else FeatureSettings.hudAlpha=(int)clamp(FeatureSettings.hudAlpha+dir*15,50,255);}
             case "Hand Position" -> {if(i==0)FeatureSettings.handX=clamp(FeatureSettings.handX+dir*0.05,-1,1);else if(i==1)FeatureSettings.handY=clamp(FeatureSettings.handY+dir*0.05,-1,1);else FeatureSettings.handZ=clamp(FeatureSettings.handZ+dir*0.05,-1,1);}
