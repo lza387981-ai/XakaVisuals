@@ -76,7 +76,6 @@ public final class XakaMenuScreen extends Screen {
             case "Chinese Hat" -> new String[]{"Hat size","Hat height","Opacity"};
             case "Target Info","Me Armor" -> new String[]{"HUD scale","HUD opacity"};
             case "Hand Position" -> new String[]{"Hand X","Hand Y","Hand Z"};
-            case "Sword Animations" -> new String[]{"Animation speed"};
             default -> new String[0];
         };
     }
@@ -86,7 +85,6 @@ public final class XakaMenuScreen extends Screen {
             case "Chinese Hat" -> i==0?String.format("%.2f",FeatureSettings.hatScale):i==1?String.format("%.2f",FeatureSettings.hatHeight):FeatureSettings.hatAlpha+"";
             case "Target Info","Me Armor" -> i==0?String.format("%.2f",FeatureSettings.hudScale):FeatureSettings.hudAlpha+"";
             case "Hand Position" -> String.format("%.2f",i==0?FeatureSettings.handX:i==1?FeatureSettings.handY:FeatureSettings.handZ);
-            case "Sword Animations" -> String.format("%.2f",FeatureSettings.swordSpeed);
             default -> "";
         };
     }
@@ -96,7 +94,6 @@ public final class XakaMenuScreen extends Screen {
             case "Chinese Hat" -> {if(i==0)FeatureSettings.hatScale=clamp(FeatureSettings.hatScale+dir*0.1,0.4,2);else if(i==1)FeatureSettings.hatHeight=clamp(FeatureSettings.hatHeight+dir*0.1,0.2,1.6);else FeatureSettings.hatAlpha=(int)clamp(FeatureSettings.hatAlpha+dir*15,30,255);}
             case "Target Info","Me Armor" -> {if(i==0)FeatureSettings.hudScale=clamp(FeatureSettings.hudScale+dir*0.1,0.6,1.8);else FeatureSettings.hudAlpha=(int)clamp(FeatureSettings.hudAlpha+dir*15,50,255);}
             case "Hand Position" -> {if(i==0)FeatureSettings.handX=clamp(FeatureSettings.handX+dir*0.05,-1,1);else if(i==1)FeatureSettings.handY=clamp(FeatureSettings.handY+dir*0.05,-1,1);else FeatureSettings.handZ=clamp(FeatureSettings.handZ+dir*0.05,-1,1);}
-            case "Sword Animations" -> FeatureSettings.swordSpeed=clamp(FeatureSettings.swordSpeed+dir*0.1,0.25,3);
         }
         FeatureConfig.save();
     }
