@@ -65,7 +65,7 @@ public final class HudDragController {
             Feature target = FeatureRegistry.find("Target Info");
             Feature armor = FeatureRegistry.find("Me Armor");
 
-            if (target != null && target.enabled() && client.crosshairTarget != null) {
+            if (target != null && target.enabled()) {
                 int dx = x("target", client.getWindow().getScaledWidth() - targetWidth - 12);
                 int dy = y("target", client.getWindow().getScaledHeight() - targetHeight - (int) Math.round(42 * scale));
                 if (inside(mx, my, dx, dy, targetWidth, targetHeight)) {
