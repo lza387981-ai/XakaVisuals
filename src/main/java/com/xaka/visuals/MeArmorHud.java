@@ -15,7 +15,7 @@ public final class MeArmorHud {
         double scale=FeatureSettings.hudScale;
         int slot=(int)Math.round(32*scale),step=(int)Math.round(36*scale),w=step*4;
         int x=HudDragController.x("armor",client.getWindow().getScaledWidth()/2-w/2);
-        int y=HudDragController.y("armor",client.getWindow().getScaledHeight()-slot-26);
+        int y=HudDragController.y("armor",client.getWindow().getScaledHeight()-slot-(int)Math.round(26*scale));
         int alpha=FeatureSettings.hudAlpha;
         c.fill(x-(int)(5*scale),y-(int)(19*scale),x+w-(int)(3*scale),y+slot+(int)(6*scale),(alpha<<24)|0x00101015);
         c.drawCenteredTextWithShadow(client.textRenderer,"МОЯ БРОНЯ",x+w/2,y-(int)(15*scale),0xFFE7A5D2);
