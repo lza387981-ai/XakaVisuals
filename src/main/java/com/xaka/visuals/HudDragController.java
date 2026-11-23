@@ -3,7 +3,6 @@ package com.xaka.visuals;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFW;
 
 public final class HudDragController {
     private static int targetX = -1, targetY = -1;
@@ -20,6 +19,11 @@ public final class HudDragController {
 
     public static int x(String id, int fallback) { return "target".equals(id) ? (targetX < 0 ? fallback : targetX) : (armorX < 0 ? fallback : armorX); }
     public static int y(String id, int fallback) { return "target".equals(id) ? (targetY < 0 ? fallback : targetY) : (armorY < 0 ? fallback : armorY); }
+
+    public static int targetX() { return targetX; }
+    public static int targetY() { return targetY; }
+    public static int armorX() { return armorX; }
+    public static int armorY() { return armorY; }
 
     public static void load(int tx, int ty, int ax, int ay) {
         targetX = tx; targetY = ty; armorX = ax; armorY = ay;
