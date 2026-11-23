@@ -78,6 +78,7 @@ public final class XakaMenuScreen extends Screen {
             case "Hand Position" -> new String[]{"Hand X","Hand Y","Hand Z"};
             case "View Model" -> new String[]{"View X","View Y","View Z","View scale"};
             case "Crosshair" -> new String[]{"Size","Gap","Color"};
+            case "Aspect Ratio" -> new String[]{"Horizontal ratio"};
             default -> new String[0];
         };
     }
@@ -89,6 +90,7 @@ public final class XakaMenuScreen extends Screen {
             case "Hand Position" -> String.format("%.2f",i==0?FeatureSettings.handX:i==1?FeatureSettings.handY:FeatureSettings.handZ);
             case "View Model" -> String.format("%.2f",i==0?FeatureSettings.viewModelX:i==1?FeatureSettings.viewModelY:i==2?FeatureSettings.viewModelZ:FeatureSettings.viewModelScale);
             case "Crosshair" -> i==0?String.format("%.1f",FeatureSettings.crosshairSize):i==1?String.format("%.1f",FeatureSettings.crosshairGap):colorName(FeatureSettings.crosshairColor);
+            case "Aspect Ratio" -> String.format("%.2f",FeatureSettings.aspectRatio);
             default -> "";
         };
     }
@@ -100,6 +102,7 @@ public final class XakaMenuScreen extends Screen {
             case "Hand Position" -> {if(i==0)FeatureSettings.handX=clamp(FeatureSettings.handX+dir*0.05,-1,1);else if(i==1)FeatureSettings.handY=clamp(FeatureSettings.handY+dir*0.05,-1,1);else FeatureSettings.handZ=clamp(FeatureSettings.handZ+dir*0.05,-1,1);}
             case "View Model" -> {if(i==0)FeatureSettings.viewModelX=clamp(FeatureSettings.viewModelX+dir*0.05,-1,1);else if(i==1)FeatureSettings.viewModelY=clamp(FeatureSettings.viewModelY+dir*0.05,-1,1);else if(i==2)FeatureSettings.viewModelZ=clamp(FeatureSettings.viewModelZ+dir*0.05,-1,1);else FeatureSettings.viewModelScale=clamp(FeatureSettings.viewModelScale+dir*0.05,0.5,1.5);}
             case "Crosshair" -> {if(i==0)FeatureSettings.crosshairSize=clamp(FeatureSettings.crosshairSize+dir,2,14);else if(i==1)FeatureSettings.crosshairGap=clamp(FeatureSettings.crosshairGap+dir,0,8);else FeatureSettings.crosshairColor=nextColor(FeatureSettings.crosshairColor,dir);}
+            case "Aspect Ratio" -> FeatureSettings.aspectRatio=clamp(FeatureSettings.aspectRatio+dir*0.05,0.5,2.0);
         }
         FeatureConfig.save();
     }
