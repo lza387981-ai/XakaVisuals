@@ -20,6 +20,7 @@ public final class FeatureSettings {
     public static double crosshairGap = 2.0;
     public static int crosshairColor = 0xFFE9A0D1;
     public static int targetEspColor = 0xFFEB6BD1;
+    public static double aspectRatio = 1.0;
 
     private FeatureSettings() {}
 
@@ -42,6 +43,7 @@ public final class FeatureSettings {
         crosshairGap = decimal(p, "setting.crosshairGap", 2.0, 0.0, 8.0);
         crosshairColor = integer(p, "setting.crosshairColor", 0xFFE9A0D1, 0, 0xFFFFFFFF);
         targetEspColor = integer(p, "setting.targetEspColor", 0xFFEB6BD1, 0, 0xFFFFFFFF);
+        aspectRatio = decimal(p, "setting.aspectRatio", 1.0, 0.5, 2.0);
     }
 
     public static void save(java.util.Properties p) {
@@ -63,6 +65,7 @@ public final class FeatureSettings {
         p.setProperty("setting.crosshairGap", Double.toString(crosshairGap));
         p.setProperty("setting.crosshairColor", Integer.toString(crosshairColor));
         p.setProperty("setting.targetEspColor", Integer.toString(targetEspColor));
+        p.setProperty("setting.aspectRatio", Double.toString(aspectRatio));
     }
 
     private static double decimal(java.util.Properties p, String key, double fallback, double min, double max) {
