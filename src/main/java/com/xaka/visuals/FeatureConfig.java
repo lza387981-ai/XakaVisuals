@@ -20,6 +20,10 @@ public final class FeatureConfig {
         Properties properties = new Properties();
         try (InputStream input = Files.newInputStream(FILE)) {
             properties.load(input);
+            HudDragController.load(parseInt(properties.getProperty("hud.target.x"), -1),
+                    parseInt(properties.getProperty("hud.target.y"), -1),
+                    parseInt(properties.getProperty("hud.armor.x"), -1),
+                    parseInt(properties.getProperty("hud.armor.y"), -1));
             for (Feature feature : FeatureRegistry.all()) {
                 String key = key(feature);
                 feature.setEnabled(Boolean.parseBoolean(properties.getProperty(key + ".enabled",
@@ -38,6 +42,10 @@ public final class FeatureConfig {
             properties.setProperty(key + ".enabled", Boolean.toString(feature.enabled()));
             properties.setProperty(key + ".bind", Integer.toString(feature.bindKey()));
         }
+        properties.setProperty("hud.target.x", Integer.toString(HudDragController.targetX()));
+        properties.setProperty("hud.target.y", Integer.toString(HudDragController.targetY()));
+        properties.setProperty("hud.armor.x", Integer.toString(HudDragController.armorX()));
+        properties.setProperty("hud.armor.y", Integer.toString(HudDragController.armorY()));
         try {
             Files.createDirectories(FILE.getParent());
             try (OutputStream output = Files.newOutputStream(FILE)) {
