@@ -37,7 +37,11 @@ public final class FeatureRegistry {
         FEATURES.add(new Feature(name, category, enabled));
     }
 
-    public static Feature find(String name) {\n        return FEATURES.stream().filter(feature -> feature.name().equals(name)).findFirst().orElse(null);\n    }\n\n    public static List<Feature> all() {
+    public static Feature find(String name) {
+        return FEATURES.stream().filter(feature -> feature.name().equals(name)).findFirst().orElse(null);
+    }
+
+    public static List<Feature> all() {
         return Collections.unmodifiableList(FEATURES);
     }
 
