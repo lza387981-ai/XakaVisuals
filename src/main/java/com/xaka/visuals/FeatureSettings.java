@@ -3,7 +3,7 @@ package com.xaka.visuals;
 /** Persistent client-side visual tuning values. */
 public final class FeatureSettings {
     public static double targetEspLength = 0.28;
-    public static double targetEspHeight = 0.0;
+    public static double targetEspHeight = 0.0;\n    public static boolean targetEspCircle = false;
     public static double hatScale = 1.0;
     public static double hatHeight = 0.82;
     public static int hatAlpha = 145;
@@ -26,7 +26,7 @@ public final class FeatureSettings {
 
     public static void load(java.util.Properties p) {
         targetEspLength = decimal(p, "setting.targetEspLength", 0.28, 0.10, 0.50);
-        targetEspHeight = decimal(p, "setting.targetEspHeight", 0.0, -0.8, 0.8);
+        targetEspHeight = decimal(p, "setting.targetEspHeight", 0.0, -0.8, 0.8);\n        targetEspCircle = Boolean.parseBoolean(p.getProperty("setting.targetEspCircle", "false"));
         hatScale = decimal(p, "setting.hatScale", 1.0, 0.4, 2.0);
         hatHeight = decimal(p, "setting.hatHeight", 0.82, 0.2, 1.6);
         hatAlpha = integer(p, "setting.hatAlpha", 145, 30, 255);
@@ -48,7 +48,7 @@ public final class FeatureSettings {
 
     public static void save(java.util.Properties p) {
         p.setProperty("setting.targetEspLength", Double.toString(targetEspLength));
-        p.setProperty("setting.targetEspHeight", Double.toString(targetEspHeight));
+        p.setProperty("setting.targetEspHeight", Double.toString(targetEspHeight));\n        p.setProperty("setting.targetEspCircle", Boolean.toString(targetEspCircle));
         p.setProperty("setting.hatScale", Double.toString(hatScale));
         p.setProperty("setting.hatHeight", Double.toString(hatHeight));
         p.setProperty("setting.hatAlpha", Integer.toString(hatAlpha));
