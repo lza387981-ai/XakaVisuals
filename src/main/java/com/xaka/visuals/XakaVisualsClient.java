@@ -37,7 +37,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
             for (Feature feature : FeatureRegistry.all()) {
                 int key = feature.bindKey();
                 if (key < 0) continue;
-                boolean down = InputUtil.isKeyPressed(client.getWindow(), key);
+                boolean down = InputUtil.isKeyPressed(client.getWindow().getHandle(), key);
                 if (down && keysDown.add(key)) {
                     feature.setEnabled(!feature.enabled());
                     FeatureConfig.save();
