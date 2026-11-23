@@ -17,8 +17,8 @@ public final class MeArmorHud {
         MinecraftClient client = MinecraftClient.getInstance();
         if (feature == null || !feature.enabled() || client.player == null || client.currentScreen != null) return;
 
-        int x = context.getScaledWindowWidth() / 2 - 76;
-        int y = context.getScaledWindowHeight() - 58;
+        int x = HudDragController.x("armor", context.getScaledWindowWidth() / 2 - 76);
+        int y = HudDragController.y("armor", context.getScaledWindowHeight() - 58);
         context.fill(x - 5, y - 19, x + 4 * 36 - 3, y + 38, 0xA9101015);
         context.drawCenteredTextWithShadow(client.textRenderer, "МОЯ БРОНЯ",
                 context.getScaledWindowWidth() / 2, y - 15, 0xFFE7A5D2);
