@@ -41,8 +41,8 @@ public final class FeatureSettings {
         viewModelScale = decimal(p, "setting.viewModelScale", 1.0, 0.5, 1.5);
         crosshairSize = decimal(p, "setting.crosshairSize", 6.0, 2.0, 14.0);
         crosshairGap = decimal(p, "setting.crosshairGap", 2.0, 0.0, 8.0);
-        crosshairColor = integer(p, "setting.crosshairColor", 0xFFE9A0D1, 0, 0xFFFFFFFF);
-        targetEspColor = integer(p, "setting.targetEspColor", 0xFFEB6BD1, 0, 0xFFFFFFFF);
+        crosshairColor = integer(p, "setting.crosshairColor", 0xFFE9A0D1, Integer.MIN_VALUE, -1);
+        targetEspColor = integer(p, "setting.targetEspColor", 0xFFEB6BD1, Integer.MIN_VALUE, -1);
         aspectRatio = decimal(p, "setting.aspectRatio", 1.0, 0.5, 2.0);
     }
 
