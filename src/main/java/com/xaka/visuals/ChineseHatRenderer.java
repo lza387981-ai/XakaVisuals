@@ -45,8 +45,11 @@ public final class ChineseHatRenderer {
                 float a0=(float)(Math.PI*2*i/SEGMENTS),a1=(float)(Math.PI*2*(i+1)/SEGMENTS);
                 float x0=MathHelper.cos(a0)*coneRadius,z0=MathHelper.sin(a0)*coneRadius;
                 float x1=MathHelper.cos(a1)*coneRadius,z1=MathHelper.sin(a1)*coneRadius;
+                // Debug quads consume four vertices per face; duplicate the apex
+                // to form a correctly grouped triangle for each cone segment.
                 vertex(vertices,matrix,entry,x0,0.025f,z0,x0,0.35f,z0,alpha);
                 vertex(vertices,matrix,entry,x1,0.025f,z1,x1,0.35f,z1,alpha);
+                vertex(vertices,matrix,entry,0,coneHeight,0,0,1,0,alpha);
                 vertex(vertices,matrix,entry,0,coneHeight,0,0,1,0,alpha);
             }
             matrices.pop();
