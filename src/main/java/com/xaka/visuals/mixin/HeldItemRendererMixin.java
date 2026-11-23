@@ -5,7 +5,6 @@ import com.xaka.visuals.FeatureRegistry;
 import com.xaka.visuals.FeatureSettings;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -20,12 +19,5 @@ public abstract class HeldItemRendererMixin {
             matrices.translate(FeatureSettings.handX,FeatureSettings.handY,FeatureSettings.handZ);
         }
         return matrices;
-    }
-
-    @ModifyVariable(method="renderFirstPersonItem", at=@At("HEAD"), argsOnly=true, ordinal=2)
-    private float xaka$adjustSwordSwing(float swingProgress) {
-        Feature sword=FeatureRegistry.find("Sword Animations");
-        if (sword==null||!sword.enabled()) return swingProgress;
-        return MathHelper.clamp(swingProgress*(float)FeatureSettings.swordSpeed,0.0f,1.0f);
     }
 }
