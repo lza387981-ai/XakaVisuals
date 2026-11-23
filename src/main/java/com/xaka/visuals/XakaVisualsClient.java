@@ -22,6 +22,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
         VisualFeatureController.register();
         HudDragController.register();
         CrosshairHud.register();
+        TargetEspRenderer.register();
 
         openMenuKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.xakavisuals.open_menu",
