@@ -4,10 +4,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 /**
@@ -40,7 +40,7 @@ public final class ChineseHatRenderer {
             matrices.push();
             matrices.translate(x, y, z);
             Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
-            Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
+            MatrixStack.Entry entry = matrices.peek();
             VertexConsumer vertices = context.consumers().getBuffer(RenderLayer.getDebugQuads());
 
             float brimRadius = 0.78f;
@@ -55,7 +55,7 @@ public final class ChineseHatRenderer {
                 float a1 = (float) (Math.PI * 2.0 * (i + 1) / SEGMENTS);
                 float x0 = MathHelper.cos(a0), z0 = MathHelper.sin(a0);
                 float x1 = MathHelper.cos(a1), z1 = MathHelper.sin(a1);
-                vertex(vertices, positionMatrix, normalMatrix, x0 * brimRadius, brimY, z0 * brimRadius, 0, 1, 0);
+                vertex(vertices, positionMatrix, entry, x0 * brimRadius, brimY, z0 * brimRadius, 0, 1, 0);
                 vertex(vertices, positionMatrix, normalMatrix, x1 * brimRadius, brimY, z1 * brimRadius, 0, 1, 0);
                 vertex(vertices, positionMatrix, normalMatrix, x1 * brimInner, brimY, z1 * brimInner, 0, 1, 0);
                 vertex(vertices, positionMatrix, normalMatrix, x0 * brimInner, brimY, z0 * brimInner, 0, 1, 0);
@@ -77,7 +77,7 @@ public final class ChineseHatRenderer {
         });
     }
 
-    private static void vertex(VertexConsumer consumer, Matrix4f position, Matrix3f normal,
+    private static void vertex(VertexConsumer consumer, Matrix4f position, MatrixStack.Entry normal,
                                float x, float y, float z, float nx, float ny, float nz) {
         consumer.vertex(position, x, y, z)
                 .color((int) (RED * 255), (int) (GREEN * 255), (int) (BLUE * 255), ALPHA)
