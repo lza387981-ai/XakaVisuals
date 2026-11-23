@@ -4,6 +4,7 @@ public final class Feature {
     private final String name;
     private final Category category;
     private boolean enabled;
+    private int bindKey = -1;
 
     public Feature(String name, Category category, boolean enabled) {
         this.name = name;
@@ -15,6 +16,8 @@ public final class Feature {
     public Category category() { return category; }
     public boolean enabled() { return enabled; }
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public int bindKey() { return bindKey; }
+    public void setBindKey(int bindKey) { this.bindKey = bindKey; }
 
     public enum Category {
         RENDER("Render"), HUD("HUD"), PLAYER("Player"), MISC("Misc");
