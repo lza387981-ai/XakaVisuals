@@ -25,7 +25,7 @@ public final class TargetInfoHud {
         double scale=FeatureSettings.hudScale;
         int w=(int)Math.round(190*scale),h=(int)Math.round(60*scale);
         int x=HudDragController.x("target",client.getWindow().getScaledWidth()-w-12);
-        int y=HudDragController.y("target",client.getWindow().getScaledHeight()-h-42);
+        int y=HudDragController.y("target",client.getWindow().getScaledHeight()-h-(int)Math.round(42*scale));
         int alpha=FeatureSettings.hudAlpha;
         c.fill(x,y,x+w,y+h,(alpha<<24)|0x00101010);
         c.fill(x,y,x+w,y+Math.max(1,(int)(2*scale)),0xFFE18ACB);
