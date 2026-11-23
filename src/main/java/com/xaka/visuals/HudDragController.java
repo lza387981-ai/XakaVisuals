@@ -55,7 +55,7 @@ public final class HudDragController {
 
         double scale = FeatureSettings.hudScale;
         int targetWidth = (int) Math.round(190 * scale);
-        int targetHeight = (int) Math.round(60 * scale);
+        int targetHeight = (int) Math.round(82 * scale);
         int armorSlot = (int) Math.round(32 * scale);
         int armorStep = (int) Math.round(36 * scale);
         int armorWidth = armorStep * 4;
