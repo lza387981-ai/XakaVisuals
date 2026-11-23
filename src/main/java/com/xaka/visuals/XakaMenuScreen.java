@@ -9,12 +9,14 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 
 public final class XakaMenuScreen extends Screen {
-    private Feature.Category selected = Feature.Category.RENDER;
     private static final int PANEL_WIDTH = 690;
     private static final int PANEL_HEIGHT = 390;
+    private static final int ACCENT = 0xFFE58BCB;
+    private Feature.Category selected = Feature.Category.RENDER;
     private int panelX;
     private int panelY;
     private String searchQuery = "";
+    private boolean searchFocused;
     private Feature bindingFeature;
 
     public XakaMenuScreen() {
@@ -36,79 +38,105 @@ public final class XakaMenuScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         renderBackground(context, mouseX, mouseY, delta);
-        context.fill(panelX, panelY, panelX + PANEL_WIDTH, panelY + PANEL_HEIGHT, 0xE8D0D0D0);
-        context.fill(panelX + 3, panelY + 3, panelX + PANEL_WIDTH - 3, panelY + PANEL_HEIGHT - 3, 0xE91A1A1A);
-        context.fill(panelX + 12, panelY + 12, panelX + PANEL_WIDTH - 12, panelY + 48, 0xFF252525);
-        context.drawText(textRenderer, "XakaVisuals V3", panelX + 20, panelY + 24, 0xFFFFFFFF, true);
+        context.fill(panelX, panelY, panelX + PANEL_WIDTH, panelY + PANEL_HEIGHT, 0xFFE3E3E3);
+        context.fill(panelX + 2, panelY + 2, panelX + PANEL_WIDTH - 2, panelY + PANEL_HEIGHT - 2, 0xF20E1015);
 
-        int tabWidth = 88;
-        int tabsX = panelX + 210;
+        // Header
+        context.fill(panelX + 3, panelY + 3, panelX + PANEL_WIDTH - 3, panelY + 54, 0xFF171920);
+        context.fill(panelX + 3, panelY + 3, panelX + 6, panelY + 54, ACCENT);
+        context.drawText(textRenderer, "XAKA", panelX + 18, panelY + 12, ACCENT, true);
+        context.drawText(textRenderer, "VISUALS  /  V3", panelX + 18, panelY + 27, 0xFFE6E7EC, true);
+        context.drawText(textRenderer, "CLIENT EDITION", panelX + 112, panelY + 29, 0xFF777C89, false);
+
+        int tabWidth = 77;
+        int tabsX = panelX + 232;
         for (Feature.Category category : Feature.Category.values()) {
-            int x = tabsX + category.ordinal() * (tabWidth + 4);
-            int color = category == selected ? 0xFFE8E2D8 : 0xFF343434;
-            context.fill(x, panelY + 13, x + tabWidth, panelY + 43, color);
-            context.drawCenteredTextWithShadow(textRenderer, category.title(), x + tabWidth / 2, panelY + 24,
-                    category == selected ? 0xFF202020 : 0xFFFFFFFF);
+            int x = tabsX + category.ordinal() * (tabWidth + 5);
+            boolean active = category == selected;
+            context.fill(x, panelY + 13, x + tabWidth, panelY + 43, active ? 0xFFE9C4DE : 0xFF292C35);
+            if (active) context.fill(x, panelY + 40, x + tabWidth, panelY + 43, ACCENT);
+            context.drawCenteredTextWithShadow(textRenderer, category.title(), x + tabWidth / 2,
+                    panelY + 24, active ? 0xFF25202A : 0xFFD7D9E0);
         }
 
-        // Search box and close control follow the reference layout.
-        int searchX = panelX + PANEL_WIDTH - 164;
-        context.fill(searchX, panelY + 56, panelX + PANEL_WIDTH - 14, panelY + 78, 0xFF090909);
-        String searchLabel = searchQuery.isEmpty() ? "Search..." : searchQuery;
-        context.drawText(textRenderer, searchLabel, searchX + 8, panelY + 63, 0xFFBBBBBB, false);
-        context.fill(panelX + PANEL_WIDTH - 31, panelY + 8, panelX + PANEL_WIDTH - 10, panelY + 29, 0xFFD93636);
-        context.drawCenteredTextWithShadow(textRenderer, "X", panelX + PANEL_WIDTH - 20, panelY + 14, 0xFFFFFFFF);
+        // Search and close
+        int searchX = panelX + PANEL_WIDTH - 158;
+        context.fill(searchX, panelY + 62, panelX + PANEL_WIDTH - 42, panelY + 85,
+                searchFocused ? 0xFF34313B : 0xFF20232B);
+        context.drawText(textRenderer, searchQuery.isEmpty() ? "Search modules..." : searchQuery,
+                searchX + 7, panelY + 70, searchQuery.isEmpty() ? 0xFF858996 : 0xFFF1EAF0, false);
+        context.fill(panelX + PANEL_WIDTH - 32, panelY + 62, panelX + PANEL_WIDTH - 12, panelY + 85, 0xFF3B252F);
+        context.drawCenteredTextWithShadow(textRenderer, "×", panelX + PANEL_WIDTH - 22, panelY + 68, 0xFFFF9DAF);
 
-        context.drawText(textRenderer, selected.title(), panelX + 22, panelY + 62, 0xFFEAEAEA, true);
+        context.drawText(textRenderer, selected.title().toUpperCase(), panelX + 18, panelY + 69, 0xFFEDEEF2, true);
+        context.drawText(textRenderer, visibleFeatures().size() + " MODULES",
+                panelX + 18, panelY + 82, 0xFF777D8B, false);
+
         List<Feature> features = visibleFeatures();
         int cardWidth = 210;
-        int cardHeight = 48;
-        int gapX = 10;
-        int gapY = 8;
+        int cardHeight = 52;
         int startX = panelX + 18;
-        int startY = panelY + 84;
+        int startY = panelY + 103;
 
         for (int i = 0; i < features.size(); i++) {
             Feature feature = features.get(i);
-            int col = i % 3;
-            int row = i / 3;
-            int x = startX + col * (cardWidth + gapX);
-            int y = startY + row * (cardHeight + gapY);
-            context.fill(x, y, x + cardWidth, y + cardHeight, 0xFF101010);
-            context.fill(x + 1, y + 1, x + cardWidth - 1, y + cardHeight - 1, 0xFF242424);
-            context.drawText(textRenderer, feature.name(), x + 9, y + 8, 0xFFFFFFFF, true);
-            int toggleColor = feature.enabled() ? 0xFFBFBFBF : 0xFF555555;
-            context.fill(x + 9, y + 27, x + 22, y + 39, toggleColor);
-            context.drawText(textRenderer, feature.enabled() ? "Enabled" : "Disabled",
-                    x + 28, y + 29, 0xFFBBBBBB, false);
-            context.fill(x + cardWidth - 48, y + 25, x + cardWidth - 8, y + 41, 0xFF3A3A3A);
-            String bindLabel = bindingFeature == feature ? "Press..." :
-                    feature.bindKey() < 0 ? "Bind" :
+            int x = startX + (i % 3) * 220;
+            int y = startY + (i / 3) * 61;
+            boolean hovered = mouseX >= x && mouseX <= x + cardWidth && mouseY >= y && mouseY <= y + cardHeight;
+            context.fill(x, y, x + cardWidth, y + cardHeight, hovered ? 0xFF35313B : 0xFF282B34);
+            context.fill(x + 1, y + 1, x + cardWidth - 1, y + cardHeight - 1, 0xFF1C1F27);
+            context.fill(x, y, x + 2, y + cardHeight, feature.enabled() ? ACCENT : 0xFF555A66);
+            context.drawText(textRenderer, feature.name(), x + 10, y + 8, 0xFFF0F1F5, true);
+
+            context.drawText(textRenderer, feature.enabled() ? "ACTIVE" : "INACTIVE",
+                    x + 10, y + 29, feature.enabled() ? 0xFFE7A5D2 : 0xFF858A96, false);
+
+            int toggleX = x + cardWidth - 54;
+            context.fill(toggleX, y + 27, toggleX + 44, y + 44,
+                    feature.enabled() ? 0xFF744765 : 0xFF353944);
+            int knobX = feature.enabled() ? toggleX + 29 : toggleX + 4;
+            context.fill(knobX, y + 30, knobX + 11, y + 41,
+                    feature.enabled() ? 0xFFFFD9F0 : 0xFF9AA0AC);
+
+            String bindLabel = bindingFeature == feature ? "PRESS KEY" :
+                    feature.bindKey() < 0 ? "BIND" :
                     InputUtil.fromKeyCode(feature.bindKey(), 0).getLocalizedText().getString();
-            context.drawCenteredTextWithShadow(textRenderer, bindLabel, x + cardWidth - 28, y + 29, 0xFFCCCCCC);
+            context.drawText(textRenderer, bindLabel, x + 10, y + 43, 0xFF858A96, false);
+        }
+
+        if (features.isEmpty()) {
+            context.drawCenteredTextWithShadow(textRenderer, "No modules found",
+                    panelX + PANEL_WIDTH / 2, panelY + 190, 0xFF9A9EAA);
         }
         if (bindingFeature != null) {
-            context.drawText(textRenderer, "Press a key to bind, Esc to cancel",
-                    panelX + 22, panelY + PANEL_HEIGHT - 43, 0xFFFFD36A, false);
+            context.drawCenteredTextWithShadow(textRenderer, "PRESS A KEY  •  ESC TO CANCEL",
+                    panelX + PANEL_WIDTH / 2, panelY + PANEL_HEIGHT - 42, 0xFFFFD0E8);
+        } else {
+            context.drawText(textRenderer, "RIGHT SHIFT  •  TOGGLE MENU",
+                    panelX + 18, panelY + PANEL_HEIGHT - 23, 0xFF777D8B, false);
         }
-        context.drawText(textRenderer, "Right Shift: close menu", panelX + 20,
-                panelY + PANEL_HEIGHT - 24, 0xFF888888, false);
+        context.drawText(textRenderer, "XAKAVISUALS", panelX + PANEL_WIDTH - 105,
+                panelY + PANEL_HEIGHT - 23, 0xFF777D8B, false);
         super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
-        if (mouseX >= panelX + PANEL_WIDTH - 31 && mouseX <= panelX + PANEL_WIDTH - 10
-                && mouseY >= panelY + 8 && mouseY <= panelY + 29) {
+        if (mouseX >= panelX + PANEL_WIDTH - 32 && mouseX <= panelX + PANEL_WIDTH - 12
+                && mouseY >= panelY + 62 && mouseY <= panelY + 85) {
             close();
             return true;
         }
 
-        int tabWidth = 88;
-        int tabsX = panelX + 210;
+        int searchX = panelX + PANEL_WIDTH - 158;
+        searchFocused = mouseX >= searchX && mouseX <= panelX + PANEL_WIDTH - 42
+                && mouseY >= panelY + 62 && mouseY <= panelY + 85;
+
+        int tabWidth = 77;
+        int tabsX = panelX + 232;
         for (Feature.Category category : Feature.Category.values()) {
-            int x = tabsX + category.ordinal() * (tabWidth + 4);
+            int x = tabsX + category.ordinal() * (tabWidth + 5);
             if (mouseX >= x && mouseX <= x + tabWidth && mouseY >= panelY + 13 && mouseY <= panelY + 43) {
                 selected = category;
                 return true;
@@ -116,23 +144,23 @@ public final class XakaMenuScreen extends Screen {
         }
 
         List<Feature> features = visibleFeatures();
-        int cardWidth = 210, cardHeight = 48, gapX = 10, gapY = 8;
-        int startX = panelX + 18, startY = panelY + 84;
+        int cardWidth = 210, cardHeight = 52, startX = panelX + 18, startY = panelY + 103;
         for (int i = 0; i < features.size(); i++) {
-            int x = startX + (i % 3) * (cardWidth + gapX);
-            int y = startY + (i / 3) * (cardHeight + gapY);
-            if (mouseX >= x + cardWidth - 54 && mouseX <= x + cardWidth - 4
-                    && mouseY >= y + 20 && mouseY <= y + cardHeight) {
-                bindingFeature = features.get(i);
-                return true;
-            }
-            if (mouseX >= x && mouseX <= x + cardWidth - 54
-                    && mouseY >= y && mouseY <= y + cardHeight) {
-                Feature feature = features.get(i);
+            int x = startX + (i % 3) * 220;
+            int y = startY + (i / 3) * 61;
+            if (mouseX < x || mouseX > x + cardWidth || mouseY < y || mouseY > y + cardHeight) continue;
+            Feature feature = features.get(i);
+            if (mouseX >= x + cardWidth - 58 && mouseY >= y + 24) {
                 feature.setEnabled(!feature.enabled());
                 FeatureConfig.save();
-                return true;
+            } else if (mouseY >= y + 39) {
+                bindingFeature = feature;
+                searchFocused = false;
+            } else {
+                feature.setEnabled(!feature.enabled());
+                FeatureConfig.save();
             }
+            return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -140,17 +168,20 @@ public final class XakaMenuScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (bindingFeature != null) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                bindingFeature = null;
-            } else {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) bindingFeature = null;
+            else {
                 bindingFeature.setBindKey(keyCode);
                 FeatureConfig.save();
                 bindingFeature = null;
             }
             return true;
         }
-        if (keyCode == GLFW.GLFW_KEY_BACKSPACE && !searchQuery.isEmpty()) {
-            searchQuery = searchQuery.substring(0, searchQuery.length() - 1);
+        if (searchFocused) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) searchFocused = false;
+            else if (keyCode == GLFW.GLFW_KEY_BACKSPACE && !searchQuery.isEmpty())
+                searchQuery = searchQuery.substring(0, searchQuery.length() - 1);
+            else if (keyCode == GLFW.GLFW_KEY_ENTER) searchFocused = false;
+            else return true;
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -158,7 +189,7 @@ public final class XakaMenuScreen extends Screen {
 
     @Override
     public boolean charTyped(char chr, int modifiers) {
-        if (bindingFeature == null && !Character.isISOControl(chr) && searchQuery.length() < 32) {
+        if (searchFocused && bindingFeature == null && !Character.isISOControl(chr) && searchQuery.length() < 32) {
             searchQuery += chr;
             return true;
         }
