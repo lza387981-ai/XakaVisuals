@@ -12,7 +12,6 @@ public final class FeatureRegistry {
 
     public static void init() {
         if (initialized) return;
-        add("Moco Helper", Feature.Category.RENDER, false);
         add("Target ESP", Feature.Category.RENDER, false);
         add("Fullbright", Feature.Category.RENDER, false);
         add("View Model", Feature.Category.RENDER, false);
