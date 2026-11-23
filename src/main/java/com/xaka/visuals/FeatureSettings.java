@@ -12,6 +12,10 @@ public final class FeatureSettings {
     public static double handX = 0.0;
     public static double handY = 0.0;
     public static double handZ = 0.0;
+    public static double crosshairSize = 6.0;
+    public static double crosshairGap = 2.0;
+    public static int crosshairColor = 0xFFE9A0D1;
+    public static int targetEspColor = 0xFFEB6BD1;
 
     private FeatureSettings() {}
 
@@ -26,6 +30,10 @@ public final class FeatureSettings {
         handX = decimal(p, "setting.handX", 0.0, -1.0, 1.0);
         handY = decimal(p, "setting.handY", 0.0, -1.0, 1.0);
         handZ = decimal(p, "setting.handZ", 0.0, -1.0, 1.0);
+        crosshairSize = decimal(p, "setting.crosshairSize", 6.0, 2.0, 14.0);
+        crosshairGap = decimal(p, "setting.crosshairGap", 2.0, 0.0, 8.0);
+        crosshairColor = integer(p, "setting.crosshairColor", 0xFFE9A0D1, 0, 0xFFFFFFFF);
+        targetEspColor = integer(p, "setting.targetEspColor", 0xFFEB6BD1, 0, 0xFFFFFFFF);
     }
 
     public static void save(java.util.Properties p) {
@@ -39,6 +47,10 @@ public final class FeatureSettings {
         p.setProperty("setting.handX", Double.toString(handX));
         p.setProperty("setting.handY", Double.toString(handY));
         p.setProperty("setting.handZ", Double.toString(handZ));
+        p.setProperty("setting.crosshairSize", Double.toString(crosshairSize));
+        p.setProperty("setting.crosshairGap", Double.toString(crosshairGap));
+        p.setProperty("setting.crosshairColor", Integer.toString(crosshairColor));
+        p.setProperty("setting.targetEspColor", Integer.toString(targetEspColor));
     }
 
     private static double decimal(java.util.Properties p, String key, double fallback, double min, double max) {
