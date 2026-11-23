@@ -130,6 +130,7 @@ public final class XakaMenuScreen extends Screen {
                     && mouseY >= y && mouseY <= y + cardHeight) {
                 Feature feature = features.get(i);
                 feature.setEnabled(!feature.enabled());
+                FeatureConfig.save();
                 return true;
             }
         }
@@ -143,6 +144,7 @@ public final class XakaMenuScreen extends Screen {
                 bindingFeature = null;
             } else {
                 bindingFeature.setBindKey(keyCode);
+                FeatureConfig.save();
                 bindingFeature = null;
             }
             return true;
