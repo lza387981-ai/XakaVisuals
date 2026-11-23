@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.VertexRendering;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -26,7 +26,7 @@ public final class TargetEspRenderer {
             Vec3d camera = context.camera().getPos();
             Box box = target.getBoundingBox().expand(0.035).offset(-camera.x, -camera.y, -camera.z);
             VertexConsumer lines = context.consumers().getBuffer(RenderLayer.getLines());
-            WorldRenderer.drawBox(context.matrixStack(), lines, box,
+            VertexRendering.drawBox(context.matrixStack(), lines, box,
                     0.92f, 0.42f, 0.82f, 0.92f);
         });
     }
