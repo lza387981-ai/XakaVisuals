@@ -16,7 +16,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        FeatureRegistry.init();
+        FeatureRegistry.init();\n        TargetInfoHud.register();
         openMenuKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.xakavisuals.open_menu",
                 InputUtil.Type.KEYSYM,
