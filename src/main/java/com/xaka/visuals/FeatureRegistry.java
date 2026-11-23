@@ -18,7 +18,6 @@ public final class FeatureRegistry {
         add("NoRender / Optimization", Feature.Category.RENDER, false);
         add("Crosshair", Feature.Category.RENDER, false);
         add("Trails", Feature.Category.RENDER, false);
-        add("See Own Name", Feature.Category.RENDER, false);
         add("Aspect Ratio", Feature.Category.RENDER, false);
 
         add("Target Info", Feature.Category.HUD, false);
