@@ -20,6 +20,7 @@ public final class XakaVisualsClient implements ClientModInitializer {
         TargetInfoHud.register();
         MeArmorHud.register();
         VisualFeatureController.register();
+        HudDragController.register();
 
         openMenuKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.xakavisuals.open_menu",
