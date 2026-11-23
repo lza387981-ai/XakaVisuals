@@ -6,7 +6,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 
@@ -26,33 +25,48 @@ public final class TargetEspRenderer {
             float red = ((color >> 16) & 255) / 255.0f;
             float green = ((color >> 8) & 255) / 255.0f;
             float blue = (color & 255) / 255.0f;
+
+            // A camera-facing marker around the torso, deliberately independent
+            // from the entity bounding box/hitbox.
             Vec3d camera = context.camera().getPos();
-            double yOffset = FeatureSettings.targetEspHeight;
-            Box box = target.getBoundingBox().expand(0.025).offset(-camera.x, -camera.y + yOffset, -camera.z);
-            double fraction = FeatureSettings.targetEspLength;
-            double sx = (box.maxX - box.minX) * fraction;
-            double sy = (box.maxY - box.minY) * fraction;
-            double sz = (box.maxZ - box.minZ) * fraction;
-            MatrixStack.Entry entry = context.matrixStack().peek();
+            double markerY = target.getBodyY(0.5) + FeatureSettings.targetEspHeight;
+            double half = 0.24 + FeatureSettings.targetEspLength * 0.55;
+            MatrixStack matrices = context.matrixStack();
+            matrices.push();
+            matrices.translate(target.getX() - camera.x, markerY - camera.y, target.getZ() - camera.z);
+            matrices.multiply(context.camera().getRotation());
+
+            MatrixStack.Entry entry = matrices.peek();
             Matrix4f matrix = entry.getPositionMatrix();
             VertexConsumer lines = context.consumers().getBuffer(RenderLayer.getLines());
-            for (int ix = 0; ix < 2; ix++) for (int iy = 0; iy < 2; iy++) for (int iz = 0; iz < 2; iz++) {
-                double x = ix == 0 ? box.minX : box.maxX, y = iy == 0 ? box.minY : box.maxY;
-                double z = iz == 0 ? box.minZ : box.maxZ;
-                double dx = ix == 0 ? sx : -sx, dy = iy == 0 ? sy : -sy, dz = iz == 0 ? sz : -sz;
-                line(lines, matrix, entry, x, y, z, x + dx, y, z, red, green, blue);
-                line(lines, matrix, entry, x, y, z, x, y + dy, z, red, green, blue);
-                line(lines, matrix, entry, x, y, z, x, y, z + dz, red, green, blue);
+            if (FeatureSettings.targetEspCircle) {
+                int segments = 32;
+                for (int i = 0; i < segments; i++) {
+                    double a0 = Math.PI * 2.0 * i / segments;
+                    double a1 = Math.PI * 2.0 * (i + 1) / segments;
+                    line(lines, matrix, entry, Math.cos(a0) * half, Math.sin(a0) * half,
+                            Math.cos(a1) * half, Math.sin(a1) * half, red, green, blue);
+                }
+            } else {
+                line(lines, matrix, entry, -half, -half, half, -half, red, green, blue);
+                line(lines, matrix, entry, half, -half, half, half, red, green, blue);
+                line(lines, matrix, entry, half, half, -half, half, red, green, blue);
+                line(lines, matrix, entry, -half, half, -half, -half, red, green, blue);
             }
+            matrices.pop();
         });
     }
 
-    private static void line(VertexConsumer c, Matrix4f m, MatrixStack.Entry e,
-                             double x1, double y1, double z1, double x2, double y2, double z2, float red, float green, float blue) {
-        float nx=(float)(x2-x1), ny=(float)(y2-y1), nz=(float)(z2-z1);
-        float length=(float)Math.sqrt(nx*nx+ny*ny+nz*nz);
-        if(length>0){nx/=length;ny/=length;nz/=length;}
-        c.vertex(m,(float)x1,(float)y1,(float)z1).color(red,green,blue,ALPHA).normal(e,nx,ny,nz);
-        c.vertex(m,(float)x2,(float)y2,(float)z2).color(red,green,blue,ALPHA).normal(e,nx,ny,nz);
+    private static void line(VertexConsumer consumer, Matrix4f matrix, MatrixStack.Entry entry,
+                             double x1, double y1, double x2, double y2,
+                             float red, float green, float blue) {
+        float nx = (float) (x2 - x1);
+        float ny = (float) (y2 - y1);
+        float length = (float) Math.sqrt(nx * nx + ny * ny);
+        if (length > 0) { nx /= length; ny /= length; }
+        consumer.vertex(matrix, (float) x1, (float) y1, 0)
+                .color(red, green, blue, ALPHA).normal(entry, nx, ny, 0);
+        consumer.vertex(matrix, (float) x2, (float) y2, 0)
+                .color(red, green, blue, ALPHA).normal(entry, nx, ny, 0);
     }
 }
