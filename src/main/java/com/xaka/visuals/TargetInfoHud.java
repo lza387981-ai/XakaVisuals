@@ -34,8 +34,8 @@ public final class TargetInfoHud {
         float ratio = health / maxHealth;
         int panelWidth = 190;
         int panelHeight = 60;
-        int x = context.getScaledWindowWidth() - panelWidth - 12;
-        int y = context.getScaledWindowHeight() - panelHeight - 42;
+        int x = HudDragController.x("target", context.getScaledWindowWidth() - panelWidth - 12);
+        int y = HudDragController.y("target", context.getScaledWindowHeight() - panelHeight - 42);
 
         context.fill(x, y, x + panelWidth, y + panelHeight, 0xC9101010);
         context.fill(x, y, x + panelWidth, y + 2, 0xFFE18ACB);
