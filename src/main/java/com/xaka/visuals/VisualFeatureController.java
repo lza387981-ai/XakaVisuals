@@ -8,7 +8,6 @@ import net.minecraft.particle.ParticleTypes;
  * Applies client-only visual features without changing server state.
  */
 public final class VisualFeatureController {
-    private static Double previousGamma;
     private static int trailTick;
 
     private VisualFeatureController() {}
@@ -18,20 +17,6 @@ public final class VisualFeatureController {
     }
 
     private static void tick(MinecraftClient client) {
-        Feature fullbright = FeatureRegistry.find("Fullbright");
-        boolean fullbrightEnabled = fullbright != null && fullbright.enabled();
-        if (client.options != null) {
-            if (fullbrightEnabled) {
-                if (previousGamma == null) previousGamma = client.options.getGamma().getValue();
-                if (client.options.getGamma().getValue() < 16.0) {
-                    client.options.getGamma().setValue(16.0);
-                }
-            } else if (previousGamma != null) {
-                client.options.getGamma().setValue(previousGamma);
-                previousGamma = null;
-            }
-        }
-
         Feature trails = FeatureRegistry.find("Trails");
         if (trails == null || !trails.enabled() || client.player == null || client.world == null) return;
         if (++trailTick % 2 != 0) return;
