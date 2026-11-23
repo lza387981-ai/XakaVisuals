@@ -12,6 +12,10 @@ public final class FeatureSettings {
     public static double handX = 0.0;
     public static double handY = 0.0;
     public static double handZ = 0.0;
+    public static double viewModelX = 0.0;
+    public static double viewModelY = 0.0;
+    public static double viewModelZ = 0.0;
+    public static double viewModelScale = 1.0;
     public static double crosshairSize = 6.0;
     public static double crosshairGap = 2.0;
     public static int crosshairColor = 0xFFE9A0D1;
@@ -30,6 +34,10 @@ public final class FeatureSettings {
         handX = decimal(p, "setting.handX", 0.0, -1.0, 1.0);
         handY = decimal(p, "setting.handY", 0.0, -1.0, 1.0);
         handZ = decimal(p, "setting.handZ", 0.0, -1.0, 1.0);
+        viewModelX = decimal(p, "setting.viewModelX", 0.0, -1.0, 1.0);
+        viewModelY = decimal(p, "setting.viewModelY", 0.0, -1.0, 1.0);
+        viewModelZ = decimal(p, "setting.viewModelZ", 0.0, -1.0, 1.0);
+        viewModelScale = decimal(p, "setting.viewModelScale", 1.0, 0.5, 1.5);
         crosshairSize = decimal(p, "setting.crosshairSize", 6.0, 2.0, 14.0);
         crosshairGap = decimal(p, "setting.crosshairGap", 2.0, 0.0, 8.0);
         crosshairColor = integer(p, "setting.crosshairColor", 0xFFE9A0D1, 0, 0xFFFFFFFF);
@@ -47,6 +55,10 @@ public final class FeatureSettings {
         p.setProperty("setting.handX", Double.toString(handX));
         p.setProperty("setting.handY", Double.toString(handY));
         p.setProperty("setting.handZ", Double.toString(handZ));
+        p.setProperty("setting.viewModelX", Double.toString(viewModelX));
+        p.setProperty("setting.viewModelY", Double.toString(viewModelY));
+        p.setProperty("setting.viewModelZ", Double.toString(viewModelZ));
+        p.setProperty("setting.viewModelScale", Double.toString(viewModelScale));
         p.setProperty("setting.crosshairSize", Double.toString(crosshairSize));
         p.setProperty("setting.crosshairGap", Double.toString(crosshairGap));
         p.setProperty("setting.crosshairColor", Integer.toString(crosshairColor));
