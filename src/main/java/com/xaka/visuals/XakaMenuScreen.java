@@ -172,8 +172,9 @@ public final class XakaMenuScreen extends Screen {
             if(mx>=x&&mx<=x+tabWidth&&my>=panelY+13&&my<=panelY+43){selected=category;return true;}
         }
         List<Feature> fs=visibleFeatures();
+        int columns=panelWidth>=650?3:panelWidth>=470?2:1;int gap=10,cardWidth=(panelWidth-36-gap*(columns-1))/columns;
         for(int i=0;i<fs.size();i++){
-            int x=panelX+18+(i%3)*220,y=panelY+103+(i/3)*61;
+            int x=panelX+18+(i%columns)*(cardWidth+gap),y=panelY+103+(i/columns)*61-scrollOffset;
             if(mx<x||mx>x+cardWidth||my<y||my>y+52)continue;
             Feature f=fs.get(i);
             if(mx>=x+cardWidth-58&&my>=y+24){f.setEnabled(!f.enabled());FeatureConfig.save();}
