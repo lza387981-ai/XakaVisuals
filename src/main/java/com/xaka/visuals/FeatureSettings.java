@@ -12,7 +12,6 @@ public final class FeatureSettings {
     public static double handX = 0.0;
     public static double handY = 0.0;
     public static double handZ = 0.0;
-    public static double swordSpeed = 1.0;
 
     private FeatureSettings() {}
 
@@ -27,7 +26,6 @@ public final class FeatureSettings {
         handX = decimal(p, "setting.handX", 0.0, -1.0, 1.0);
         handY = decimal(p, "setting.handY", 0.0, -1.0, 1.0);
         handZ = decimal(p, "setting.handZ", 0.0, -1.0, 1.0);
-        swordSpeed = decimal(p, "setting.swordSpeed", 1.0, 0.25, 3.0);
     }
 
     public static void save(java.util.Properties p) {
@@ -41,7 +39,6 @@ public final class FeatureSettings {
         p.setProperty("setting.handX", Double.toString(handX));
         p.setProperty("setting.handY", Double.toString(handY));
         p.setProperty("setting.handZ", Double.toString(handZ));
-        p.setProperty("setting.swordSpeed", Double.toString(swordSpeed));
     }
 
     private static double decimal(java.util.Properties p, String key, double fallback, double min, double max) {
