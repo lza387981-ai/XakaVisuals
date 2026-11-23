@@ -10,17 +10,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 
-/**
- * Local-only cosmetic Chinese hat. It renders a translucent brim and cone
- * above the local player's head; it does not send packets or modify gameplay.
- */
 public final class ChineseHatRenderer {
     private static final int SEGMENTS = 48;
-    private static final float RED = 90.0f / 255.0f;
-    private static final float GREEN = 235.0f / 255.0f;
-    private static final float BLUE = 145.0f / 255.0f;
-    private static final int ALPHA = 145;
-
     private ChineseHatRenderer() {}
 
     public static void register() {
@@ -29,58 +20,41 @@ public final class ChineseHatRenderer {
             Feature feature = FeatureRegistry.find("Chinese Hat");
             PlayerEntity player = client.player;
             if (feature == null || !feature.enabled() || player == null || client.world == null) return;
-
-            Vec3d camera = context.camera().getPos();
-            Vec3d position = player.getPos();
-            float x = (float) (position.x - camera.x);
-            float y = (float) (position.y + player.getHeight() + 0.12 - camera.y);
-            float z = (float) (position.z - camera.z);
-
-            var matrices = context.matrixStack();
+            Vec3d camera = context.camera().getPos(), position = player.getPos();
+            float x=(float)(position.x-camera.x), y=(float)(position.y+player.getHeight()+0.12-camera.y), z=(float)(position.z-camera.z);
+            float scale=(float)FeatureSettings.hatScale;
+            var matrices=context.matrixStack();
             matrices.push();
-            matrices.translate(x, y, z);
-            Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
-            MatrixStack.Entry entry = matrices.peek();
-            VertexConsumer vertices = context.consumers().getBuffer(RenderLayer.getDebugQuads());
-
-            float brimRadius = 0.78f;
-            float brimInner = 0.10f;
-            float brimY = 0.015f;
-            float coneHeight = 0.82f;
-            float coneRadius = 0.43f;
-
-            // Wide, slightly flattened annular brim.
-            for (int i = 0; i < SEGMENTS; i++) {
-                float a0 = (float) (Math.PI * 2.0 * i / SEGMENTS);
-                float a1 = (float) (Math.PI * 2.0 * (i + 1) / SEGMENTS);
-                float x0 = MathHelper.cos(a0), z0 = MathHelper.sin(a0);
-                float x1 = MathHelper.cos(a1), z1 = MathHelper.sin(a1);
-                vertex(vertices, positionMatrix, entry, x0 * brimRadius, brimY, z0 * brimRadius, 0, 1, 0);
-                vertex(vertices, positionMatrix, entry, x1 * brimRadius, brimY, z1 * brimRadius, 0, 1, 0);
-                vertex(vertices, positionMatrix, entry, x1 * brimInner, brimY, z1 * brimInner, 0, 1, 0);
-                vertex(vertices, positionMatrix, entry, x0 * brimInner, brimY, z0 * brimInner, 0, 1, 0);
+            matrices.translate(x,y,z);
+            matrices.scale(scale,scale,scale);
+            Matrix4f matrix=matrices.peek().getPositionMatrix();
+            MatrixStack.Entry entry=matrices.peek();
+            VertexConsumer vertices=context.consumers().getBuffer(RenderLayer.getDebugQuads());
+            float brimRadius=0.78f, brimInner=0.10f, brimY=0.015f;
+            float coneHeight=(float)FeatureSettings.hatHeight, coneRadius=0.43f;
+            int alpha=FeatureSettings.hatAlpha;
+            for(int i=0;i<SEGMENTS;i++){
+                float a0=(float)(Math.PI*2*i/SEGMENTS),a1=(float)(Math.PI*2*(i+1)/SEGMENTS);
+                float x0=MathHelper.cos(a0),z0=MathHelper.sin(a0),x1=MathHelper.cos(a1),z1=MathHelper.sin(a1);
+                vertex(vertices,matrix,entry,x0*brimRadius,brimY,z0*brimRadius,0,1,0,alpha);
+                vertex(vertices,matrix,entry,x1*brimRadius,brimY,z1*brimRadius,0,1,0,alpha);
+                vertex(vertices,matrix,entry,x1*brimInner,brimY,z1*brimInner,0,1,0,alpha);
+                vertex(vertices,matrix,entry,x0*brimInner,brimY,z0*brimInner,0,1,0,alpha);
             }
-
-            // Translucent conical crown.
-            for (int i = 0; i < SEGMENTS; i++) {
-                float a0 = (float) (Math.PI * 2.0 * i / SEGMENTS);
-                float a1 = (float) (Math.PI * 2.0 * (i + 1) / SEGMENTS);
-                float x0 = MathHelper.cos(a0) * coneRadius;
-                float z0 = MathHelper.sin(a0) * coneRadius;
-                float x1 = MathHelper.cos(a1) * coneRadius;
-                float z1 = MathHelper.sin(a1) * coneRadius;
-                vertex(vertices, positionMatrix, entry, x0, 0.025f, z0, x0, 0.35f, z0);
-                vertex(vertices, positionMatrix, entry, x1, 0.025f, z1, x1, 0.35f, z1);
-                vertex(vertices, positionMatrix, entry, 0, coneHeight, 0, 0, 1, 0);
+            for(int i=0;i<SEGMENTS;i++){
+                float a0=(float)(Math.PI*2*i/SEGMENTS),a1=(float)(Math.PI*2*(i+1)/SEGMENTS);
+                float x0=MathHelper.cos(a0)*coneRadius,z0=MathHelper.sin(a0)*coneRadius;
+                float x1=MathHelper.cos(a1)*coneRadius,z1=MathHelper.sin(a1)*coneRadius;
+                vertex(vertices,matrix,entry,x0,0.025f,z0,x0,0.35f,z0,alpha);
+                vertex(vertices,matrix,entry,x1,0.025f,z1,x1,0.35f,z1,alpha);
+                vertex(vertices,matrix,entry,0,coneHeight,0,0,1,0,alpha);
             }
             matrices.pop();
         });
     }
 
-    private static void vertex(VertexConsumer consumer, Matrix4f position, MatrixStack.Entry normal,
-                               float x, float y, float z, float nx, float ny, float nz) {
-        consumer.vertex(position, x, y, z)
-                .color((int) (RED * 255), (int) (GREEN * 255), (int) (BLUE * 255), ALPHA)
-                .normal(normal, nx, ny, nz);
+    private static void vertex(VertexConsumer c,Matrix4f p,MatrixStack.Entry n,float x,float y,float z,
+                               float nx,float ny,float nz,int alpha){
+        c.vertex(p,x,y,z).color(90,235,145,alpha).normal(n,nx,ny,nz);
     }
 }
