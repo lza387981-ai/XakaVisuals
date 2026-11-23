@@ -56,9 +56,9 @@ public final class ChineseHatRenderer {
                 float x0 = MathHelper.cos(a0), z0 = MathHelper.sin(a0);
                 float x1 = MathHelper.cos(a1), z1 = MathHelper.sin(a1);
                 vertex(vertices, positionMatrix, entry, x0 * brimRadius, brimY, z0 * brimRadius, 0, 1, 0);
-                vertex(vertices, positionMatrix, normalMatrix, x1 * brimRadius, brimY, z1 * brimRadius, 0, 1, 0);
-                vertex(vertices, positionMatrix, normalMatrix, x1 * brimInner, brimY, z1 * brimInner, 0, 1, 0);
-                vertex(vertices, positionMatrix, normalMatrix, x0 * brimInner, brimY, z0 * brimInner, 0, 1, 0);
+                vertex(vertices, positionMatrix, entry, x1 * brimRadius, brimY, z1 * brimRadius, 0, 1, 0);
+                vertex(vertices, positionMatrix, entry, x1 * brimInner, brimY, z1 * brimInner, 0, 1, 0);
+                vertex(vertices, positionMatrix, entry, x0 * brimInner, brimY, z0 * brimInner, 0, 1, 0);
             }
 
             // Translucent conical crown.
@@ -69,9 +69,9 @@ public final class ChineseHatRenderer {
                 float z0 = MathHelper.sin(a0) * coneRadius;
                 float x1 = MathHelper.cos(a1) * coneRadius;
                 float z1 = MathHelper.sin(a1) * coneRadius;
-                vertex(vertices, positionMatrix, normalMatrix, x0, 0.025f, z0, x0, 0.35f, z0);
-                vertex(vertices, positionMatrix, normalMatrix, x1, 0.025f, z1, x1, 0.35f, z1);
-                vertex(vertices, positionMatrix, normalMatrix, 0, coneHeight, 0, 0, 1, 0);
+                vertex(vertices, positionMatrix, entry, x0, 0.025f, z0, x0, 0.35f, z0);
+                vertex(vertices, positionMatrix, entry, x1, 0.025f, z1, x1, 0.35f, z1);
+                vertex(vertices, positionMatrix, entry, 0, coneHeight, 0, 0, 1, 0);
             }
             matrices.pop();
         });
