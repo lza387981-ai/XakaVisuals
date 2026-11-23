@@ -25,7 +25,6 @@ public final class FeatureRegistry {
         add("Target Info", Feature.Category.HUD, false);
         add("Me Armor", Feature.Category.HUD, false);
         add("Hand Position", Feature.Category.HUD, false);
-        add("Sword Animations", Feature.Category.HUD, false);
         add("No Fire", Feature.Category.HUD, false);
 
         add("Chinese Hat", Feature.Category.PLAYER, false);
